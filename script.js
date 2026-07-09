@@ -1,511 +1,428 @@
-const STORAGE_KEY = "controle-acordos-local";
-const SORT_STORAGE_KEY = "controle-acordos-ordem";
-const DEFAULT_SORT_ORDER = "due-soon";
+const DEMO_STORAGE_KEY = "portfolio-acordos-demo";
+const DEFAULT_GOAL = 42000;
 
 const state = {
-    meta: 0,
-    contratos: [],
-    ordem: DEFAULT_SORT_ORDER
+    agreements: [],
+    sortOrder: "due-soon",
+    statusFilter: "all",
+    search: ""
 };
-
-let storageMode = "browser";
-let saveTimer;
-let dataFileHandle;
 
 const elements = {};
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
     cacheElements();
-    await loadData();
-    loadSortOrder();
+    loadDemoState();
     bindEvents();
     render();
 });
 
 function cacheElements() {
-    elements.form = document.querySelector("#contractForm");
-    elements.contractNumber = document.querySelector("#contractNumber");
-    elements.dueDate = document.querySelector("#dueDate");
-    elements.contractValue = document.querySelector("#contractValue");
+    elements.lastUpdated = document.querySelector("#lastUpdated");
+    elements.resetDemoButton = document.querySelector("#resetDemoButton");
+    elements.form = document.querySelector("#agreementForm");
+    elements.client = document.querySelector("#agreementClient");
+    elements.number = document.querySelector("#agreementNumber");
+    elements.dueDate = document.querySelector("#agreementDueDate");
+    elements.value = document.querySelector("#agreementValue");
     elements.formMessage = document.querySelector("#formMessage");
-    elements.goalInput = document.querySelector("#goalInput");
-    elements.contractList = document.querySelector("#contractList");
-    elements.emptyState = document.querySelector("#emptyState");
-    elements.clearAllButton = document.querySelector("#clearAllButton");
+    elements.searchInput = document.querySelector("#searchInput");
+    elements.statusFilter = document.querySelector("#statusFilter");
     elements.sortOrder = document.querySelector("#sortOrder");
-    elements.connectDataFileButton = document.querySelector("#connectDataFileButton");
-    elements.exportDataButton = document.querySelector("#exportDataButton");
-    elements.importDataInput = document.querySelector("#importDataInput");
+    elements.table = document.querySelector("#agreementTable");
+    elements.emptyState = document.querySelector("#emptyState");
+    elements.listSummary = document.querySelector("#listSummary");
+    elements.monthGeneratedValue = document.querySelector("#monthGeneratedValue");
+    elements.monthGeneratedCount = document.querySelector("#monthGeneratedCount");
+    elements.paidValue = document.querySelector("#paidValue");
     elements.paidCount = document.querySelector("#paidCount");
-    elements.totalCount = document.querySelector("#totalCount");
-    elements.generatedTodayValue = document.querySelector("#generatedTodayValue");
-    elements.generatedTodayCount = document.querySelector("#generatedTodayCount");
-    elements.generatedMonthValue = document.querySelector("#generatedMonthValue");
-    elements.generatedMonthCount = document.querySelector("#generatedMonthCount");
-    elements.remainingGoal = document.querySelector("#remainingGoal");
+    elements.openValue = document.querySelector("#openValue");
+    elements.openCount = document.querySelector("#openCount");
+    elements.overdueValue = document.querySelector("#overdueValue");
+    elements.overdueCount = document.querySelector("#overdueCount");
+    elements.goalProgress = document.querySelector("#goalProgress");
+    elements.goalProgressBar = document.querySelector("#goalProgressBar");
     elements.goalHint = document.querySelector("#goalHint");
-    elements.dailyNeed = document.querySelector("#dailyNeed");
-    elements.daysLeft = document.querySelector("#daysLeft");
-    elements.storageStatus = document.querySelector("#storageStatus");
 }
 
-async function loadData() {
-    if (window.location.protocol !== "file:") {
-        try {
-            const response = await fetch("/api/dados", { cache: "no-store" });
-            if (response.ok) {
-                applyData(await response.json());
-                storageMode = "server";
-                elements.storageStatus.textContent = "Salvando em dados/acordos.json nesta pasta.";
-                return;
-            }
-        } catch (error) {
-            storageMode = "browser";
+function bindEvents() {
+    elements.form.addEventListener("submit", handleAddAgreement);
+    elements.value.addEventListener("blur", () => {
+        const value = parseCurrency(elements.value.value);
+
+        if (value > 0) {
+            elements.value.value = formatCurrencyInput(value);
         }
+    });
+    elements.searchInput.addEventListener("input", () => {
+        state.search = elements.searchInput.value.trim().toLowerCase();
+        renderList();
+    });
+    elements.statusFilter.addEventListener("change", () => {
+        state.statusFilter = elements.statusFilter.value;
+        saveDemoState();
+        renderList();
+    });
+    elements.sortOrder.addEventListener("change", () => {
+        state.sortOrder = elements.sortOrder.value;
+        saveDemoState();
+        renderList();
+    });
+    elements.resetDemoButton.addEventListener("click", resetDemo);
+    elements.table.addEventListener("click", handleTableAction);
+}
+
+function loadDemoState() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(DEMO_STORAGE_KEY) || "null");
+
+        if (saved && Array.isArray(saved.agreements)) {
+            state.agreements = saved.agreements.map(normalizeAgreement).filter(Boolean);
+            state.sortOrder = normalizeSortOrder(saved.sortOrder);
+            state.statusFilter = normalizeStatusFilter(saved.statusFilter);
+            return;
+        }
+    } catch (error) {
+        state.agreements = [];
     }
 
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-        try {
-            applyData(JSON.parse(saved));
-        } catch (error) {
-            applyData({});
-        }
-    }
-
-    elements.storageStatus.textContent = "Salvando neste navegador.";
+    state.agreements = createDemoAgreements();
+    saveDemoState();
 }
 
-function applyData(data) {
-    state.meta = parseCurrency(data.meta);
-    state.contratos = Array.isArray(data.contratos)
-        ? data.contratos.map(normalizeContract).filter(Boolean)
-        : [];
+function saveDemoState() {
+    localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({
+        agreements: state.agreements,
+        sortOrder: state.sortOrder,
+        statusFilter: state.statusFilter
+    }));
 }
 
-function normalizeContract(contract) {
-    if (!contract || !contract.numero || !contract.vencimento) {
+function createDemoAgreements() {
+    return [
+        createDemoAgreement("CT-2026-001", "Unidade Centro", 8420.5, -4, -19, true),
+        createDemoAgreement("CT-2026-002", "Colegio Horizonte", 5930, 0, -8, false),
+        createDemoAgreement("CT-2026-003", "Unidade Norte", 12780.9, 4, -2, false),
+        createDemoAgreement("CT-2026-004", "Centro Educacional Vale", 3760, 12, -5, true),
+        createDemoAgreement("CT-2026-005", "Polo Jardim", 9145.75, 20, 0, false),
+        createDemoAgreement("CT-2026-006", "Unidade Sul", 2210.35, -11, -32, false),
+        createDemoAgreement("CT-2026-007", "Colegio Sao Lucas", 4680, 7, -1, false)
+    ];
+}
+
+function createDemoAgreement(numero, cliente, valor, dueOffset, createdOffset, pago) {
+    const now = new Date();
+    const createdAt = addDays(now, createdOffset);
+
+    return {
+        id: createId(),
+        numero,
+        cliente,
+        valor,
+        vencimento: formatInputDate(addDays(now, dueOffset)),
+        criadoEm: createdAt.toISOString(),
+        pago,
+        pagoEm: pago ? addDays(createdAt, 3).toISOString() : null
+    };
+}
+
+function normalizeAgreement(agreement) {
+    if (!agreement || !agreement.numero || !agreement.cliente || !agreement.vencimento) {
         return null;
     }
 
     return {
-        id: contract.id || createId(),
-        numero: String(contract.numero),
-        vencimento: String(contract.vencimento),
-        valor: normalizeCurrencyValue(contract.valor),
-        pago: Boolean(contract.pago),
-        criadoEm: normalizeDateTime(contract.criadoEm),
-        pagoEm: contract.pagoEm || null
+        id: agreement.id || createId(),
+        numero: String(agreement.numero),
+        cliente: String(agreement.cliente),
+        valor: normalizeCurrencyValue(agreement.valor),
+        vencimento: String(agreement.vencimento).slice(0, 10),
+        criadoEm: normalizeDateTime(agreement.criadoEm),
+        pago: Boolean(agreement.pago),
+        pagoEm: agreement.pagoEm || null
     };
 }
 
-function bindEvents() {
-    elements.form.addEventListener("submit", handleAddContract);
-    elements.goalInput.addEventListener("input", handleGoalChange);
-    elements.goalInput.addEventListener("blur", () => syncCurrencyInput(elements.goalInput, state.meta));
-    elements.contractValue.addEventListener("blur", () => {
-        const value = parseCurrency(elements.contractValue.value);
-        if (value > 0) {
-            syncCurrencyInput(elements.contractValue, value);
-        }
+function render() {
+    elements.searchInput.value = state.search;
+    elements.statusFilter.value = state.statusFilter;
+    elements.sortOrder.value = state.sortOrder;
+    elements.lastUpdated.textContent = `Atualizado em ${formatDateTime(new Date())}`;
+    renderMetrics();
+    renderList();
+}
+
+function renderMetrics() {
+    const monthGenerated = state.agreements.filter(wasCreatedThisMonth);
+    const paid = state.agreements.filter((agreement) => agreement.pago);
+    const open = state.agreements.filter((agreement) => !agreement.pago);
+    const overdue = state.agreements.filter((agreement) => isOverdue(agreement));
+    const paidValue = centsToCurrency(sumCurrency(paid));
+    const progress = Math.min(Math.round((paidValue / DEFAULT_GOAL) * 100), 100);
+
+    elements.monthGeneratedValue.textContent = formatCurrency(centsToCurrency(sumCurrency(monthGenerated)));
+    elements.monthGeneratedCount.textContent = `${monthGenerated.length} ${monthGenerated.length === 1 ? "acordo gerado" : "acordos gerados"}`;
+    elements.paidValue.textContent = formatCurrency(paidValue);
+    elements.paidCount.textContent = `${paid.length} ${paid.length === 1 ? "acordo pago" : "acordos pagos"}`;
+    elements.openValue.textContent = formatCurrency(centsToCurrency(sumCurrency(open)));
+    elements.openCount.textContent = `${open.length} ${open.length === 1 ? "acordo pendente" : "acordos pendentes"}`;
+    elements.overdueValue.textContent = formatCurrency(centsToCurrency(sumCurrency(overdue)));
+    elements.overdueCount.textContent = `${overdue.length} ${overdue.length === 1 ? "acordo atrasado" : "acordos atrasados"}`;
+    elements.goalProgress.textContent = `${progress}%`;
+    elements.goalProgressBar.style.width = `${progress}%`;
+    elements.goalHint.textContent = `${formatCurrency(paidValue)} de ${formatCurrency(DEFAULT_GOAL)}`;
+}
+
+function renderList() {
+    const visibleAgreements = getVisibleAgreements();
+    elements.table.innerHTML = "";
+    elements.emptyState.classList.toggle("is-visible", visibleAgreements.length === 0);
+    elements.listSummary.textContent = `${visibleAgreements.length} ${visibleAgreements.length === 1 ? "acordo encontrado" : "acordos encontrados"} de ${state.agreements.length}`;
+
+    visibleAgreements.forEach((agreement) => {
+        elements.table.appendChild(createAgreementRow(agreement));
     });
-    elements.clearAllButton.addEventListener("click", handleClearAll);
-    elements.sortOrder.addEventListener("change", handleSortOrderChange);
-    elements.connectDataFileButton.addEventListener("click", handleConnectDataFile);
-    elements.exportDataButton.addEventListener("click", handleExportData);
-    elements.importDataInput.addEventListener("change", handleImportData);
 }
 
-function handleSortOrderChange() {
-    state.ordem = normalizeSortOrder(elements.sortOrder.value);
-    localStorage.setItem(SORT_STORAGE_KEY, state.ordem);
-    renderContracts();
+function getVisibleAgreements() {
+    return state.agreements
+        .filter(matchesSearch)
+        .filter(matchesStatusFilter)
+        .sort(compareAgreements);
 }
 
-function handleAddContract(event) {
+function matchesSearch(agreement) {
+    if (!state.search) {
+        return true;
+    }
+
+    return `${agreement.numero} ${agreement.cliente}`.toLowerCase().includes(state.search);
+}
+
+function matchesStatusFilter(agreement) {
+    if (state.statusFilter === "paid") {
+        return agreement.pago;
+    }
+
+    if (state.statusFilter === "open") {
+        return !agreement.pago;
+    }
+
+    if (state.statusFilter === "overdue") {
+        return isOverdue(agreement);
+    }
+
+    return true;
+}
+
+function createAgreementRow(agreement) {
+    const row = document.createElement("tr");
+    const status = getStatusInfo(agreement);
+    const primaryAction = agreement.pago
+        ? `<button type="button" class="row-button reopen" data-action="toggle-paid" data-id="${agreement.id}">Reabrir</button>`
+        : `<button type="button" class="row-button pay" data-action="toggle-paid" data-id="${agreement.id}">Marcar pago</button>`;
+
+    row.innerHTML = `
+        <td>
+            <strong>${escapeHtml(agreement.numero)}</strong>
+            <small>Gerado em ${formatDate(agreement.criadoEm)}</small>
+        </td>
+        <td>${escapeHtml(agreement.cliente)}</td>
+        <td class="value-cell">${formatCurrency(agreement.valor)}</td>
+        <td>
+            <strong>${formatDate(agreement.vencimento)}</strong>
+            <small>${status.detail}</small>
+        </td>
+        <td><span class="status-pill ${status.className}">${status.label}</span></td>
+        <td>
+            <div class="row-actions">
+                ${primaryAction}
+                <button type="button" class="row-button remove" data-action="remove" data-id="${agreement.id}">Remover</button>
+            </div>
+        </td>
+    `;
+
+    return row;
+}
+
+function handleAddAgreement(event) {
     event.preventDefault();
 
-    const numero = elements.contractNumber.value.trim();
+    const cliente = elements.client.value.trim();
+    const numero = elements.number.value.trim();
     const vencimento = elements.dueDate.value;
-    const valor = parseCurrency(elements.contractValue.value);
+    const valor = parseCurrency(elements.value.value);
 
-    if (!numero || !vencimento || valor <= 0) {
-        showMessage("Preencha o n\u00famero, a data de vencimento e um valor maior que zero.", true);
+    if (!cliente || !numero || !vencimento || valor <= 0) {
+        showMessage("Preencha cliente, contrato, vencimento e valor.", true);
         return;
     }
 
-    const alreadyExists = state.contratos.some((contract) => (
-        contract.numero.toLowerCase() === numero.toLowerCase()
+    const exists = state.agreements.some((agreement) => (
+        agreement.numero.toLowerCase() === numero.toLowerCase()
     ));
 
-    if (alreadyExists) {
-        showMessage("Esse contrato j\u00e1 est\u00e1 na lista.", true);
+    if (exists) {
+        showMessage("Esse contrato ja existe na carteira.", true);
         return;
     }
 
-    state.contratos.push({
+    state.agreements.push({
         id: createId(),
         numero,
+        cliente,
         vencimento,
         valor,
-        pago: false,
         criadoEm: new Date().toISOString(),
+        pago: false,
         pagoEm: null
     });
 
     elements.form.reset();
-    elements.contractNumber.focus();
-    showMessage("Contrato adicionado.");
-    render();
-    scheduleSave();
-}
-
-function handleGoalChange() {
-    state.meta = parseCurrency(elements.goalInput.value);
-    render(false);
-    scheduleSave();
-}
-
-function handleClearAll() {
-    if (!state.contratos.length) {
-        showMessage("N\u00e3o h\u00e1 acordos para limpar.");
-        return;
-    }
-
-    const typedText = window.prompt(
-        "Esta a\u00e7\u00e3o remove todos os acordos cadastrados. Para confirmar, digite: Limpar Acordos"
-    );
-
-    if (typedText === null) {
-        return;
-    }
-
-    if (typedText !== "Limpar Acordos") {
-        window.alert("Texto incorreto. Nenhum acordo foi removido.");
-        showMessage("Nenhum acordo foi removido.");
-        return;
-    }
-
-    state.contratos = [];
-    render();
-    scheduleSave();
-    showMessage("Todos os acordos foram removidos.");
-}
-
-async function handleConnectDataFile() {
-    if (!window.showOpenFilePicker) {
-        window.alert("Este navegador n\u00e3o permite salvar direto em um JSON. Use Importar JSON e Exportar JSON para manter backups.");
-        elements.importDataInput.click();
-        return;
-    }
-
-    try {
-        const [handle] = await window.showOpenFilePicker({
-            multiple: false,
-            types: [
-                {
-                    description: "Arquivo JSON",
-                    accept: {
-                        "application/json": [".json"]
-                    }
-                }
-            ]
-        });
-        const data = await readJsonFile(await handle.getFile());
-        applyData(data);
-        dataFileHandle = handle;
-        storageMode = "json-file";
-        render();
-        await saveData();
-        showMessage("Arquivo JSON conectado.");
-        elements.storageStatus.textContent = "Salvando no JSON conectado.";
-    } catch (error) {
-        if (error.name !== "AbortError") {
-            window.alert("N\u00e3o consegui abrir esse arquivo JSON.");
-        }
-    }
-}
-
-async function handleImportData(event) {
-    const [file] = event.target.files;
-    if (!file) {
-        return;
-    }
-
-    try {
-        applyData(await readJsonFile(file));
-        render();
-        scheduleSave();
-        showMessage("Dados importados.");
-    } catch (error) {
-        window.alert("N\u00e3o consegui importar esse arquivo JSON.");
-    } finally {
-        event.target.value = "";
-    }
-}
-
-function handleExportData() {
-    const blob = new Blob([JSON.stringify(createDataSnapshot(), null, 2)], {
-        type: "application/json"
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "acordos.json";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    showMessage("JSON exportado.");
-}
-
-function render(syncGoalInput = true) {
-    if (syncGoalInput && document.activeElement !== elements.goalInput) {
-        syncCurrencyInput(elements.goalInput, state.meta);
-    }
-
-    elements.sortOrder.value = state.ordem;
+    elements.client.focus();
+    showMessage("Acordo adicionado na carteira demo.");
+    saveDemoState();
     renderMetrics();
-    renderContracts();
+    renderList();
 }
 
-function renderMetrics() {
-    const paidContracts = state.contratos.filter((contract) => contract.pago);
-    const generatedTodayContracts = state.contratos.filter(wasCreatedToday);
-    const generatedMonthContracts = state.contratos.filter(wasCreatedThisMonth);
-    const paidCount = paidContracts.length;
-    const paidValue = centsToCurrency(sumCurrency(paidContracts));
-    const generatedTodayCount = generatedTodayContracts.length;
-    const generatedTodayValue = centsToCurrency(sumCurrency(generatedTodayContracts));
-    const generatedMonthCount = generatedMonthContracts.length;
-    const generatedMonthValue = centsToCurrency(sumCurrency(generatedMonthContracts));
-    const total = state.contratos.length;
-    const remaining = Math.max(currencyToCents(state.meta) - currencyToCents(paidValue), 0);
-    const daysLeft = getDaysLeftInMonth();
-    const dailyNeed = remaining / daysLeft;
+function handleTableAction(event) {
+    const button = event.target instanceof Element
+        ? event.target.closest("button[data-action]")
+        : null;
 
-    elements.paidCount.textContent = formatCurrency(paidValue);
-    elements.totalCount.textContent = `${paidCount} ${paidCount === 1 ? "pago" : "pagos"} de ${total} ${total === 1 ? "cadastrado" : "cadastrados"}`;
-    elements.generatedTodayValue.textContent = formatCurrency(generatedTodayValue);
-    elements.generatedTodayCount.textContent = `${generatedTodayCount} ${generatedTodayCount === 1 ? "acordo gerado" : "acordos gerados"} hoje`;
-    elements.generatedMonthValue.textContent = formatCurrency(generatedMonthValue);
-    elements.generatedMonthCount.textContent = `${generatedMonthCount} ${generatedMonthCount === 1 ? "acordo gerado" : "acordos gerados"} no m\u00eas`;
-    elements.remainingGoal.textContent = state.meta ? formatCurrency(centsToCurrency(remaining)) : "-";
-    elements.goalHint.textContent = state.meta
-        ? `${formatCurrency(paidValue)} de ${formatCurrency(state.meta)} pagos`
-        : "Defina sua meta mensal";
-    elements.dailyNeed.textContent = state.meta ? formatCurrency(centsToCurrency(dailyNeed)) : "-";
-    elements.daysLeft.textContent = `${daysLeft} ${daysLeft === 1 ? "dia restante" : "dias restantes"} no m\u00eas`;
-}
-
-function renderContracts() {
-    elements.contractList.innerHTML = "";
-
-    const sortedContracts = [...state.contratos].sort(compareContractsBySortOrder);
-
-    elements.emptyState.classList.toggle("is-visible", sortedContracts.length === 0);
-    elements.clearAllButton.disabled = state.contratos.length === 0;
-
-    sortedContracts.forEach((contract) => {
-        elements.contractList.appendChild(createContractItem(contract));
-    });
-}
-
-function createContractItem(contract) {
-    const item = document.createElement("article");
-    const dueInfo = getDueInfo(contract);
-    item.className = "contract-item";
-    item.classList.toggle("is-paid", contract.pago);
-    item.classList.toggle("is-overdue", dueInfo.kind === "danger");
-
-    const toggleLabel = document.createElement("label");
-    toggleLabel.className = "paid-toggle";
-    toggleLabel.title = contract.pago ? "Marcado como pago" : "Marcar como pago";
-
-    const toggle = document.createElement("input");
-    toggle.type = "checkbox";
-    toggle.checked = contract.pago;
-    toggle.addEventListener("change", () => {
-        contract.pago = toggle.checked;
-        contract.pagoEm = toggle.checked ? new Date().toISOString() : null;
-        render();
-        scheduleSave();
-    });
-
-    const mark = document.createElement("span");
-    mark.className = "toggle-mark";
-
-    toggleLabel.append(toggle, mark);
-
-    const main = document.createElement("div");
-    main.className = "contract-main";
-
-    const number = document.createElement("span");
-    number.className = "contract-number";
-    number.textContent = `Contrato ${contract.numero}`;
-
-    const date = document.createElement("span");
-    date.className = "contract-date";
-    date.textContent = `Vencimento: ${formatDate(contract.vencimento)}`;
-
-    const value = document.createElement("span");
-    value.className = "contract-value";
-    value.textContent = `Valor: ${formatCurrency(contract.valor)}`;
-
-    const status = document.createElement("span");
-    status.className = `status-pill ${dueInfo.kind}`;
-    status.textContent = contract.pago ? "Pago" : dueInfo.label;
-
-    main.append(number, date, value, status);
-
-    const removeButton = document.createElement("button");
-    removeButton.type = "button";
-    removeButton.className = "remove-button";
-    removeButton.textContent = "Remover";
-    removeButton.addEventListener("click", () => removeContract(contract.id));
-
-    item.append(toggleLabel, main, removeButton);
-    return item;
-}
-
-function removeContract(id) {
-    const contract = state.contratos.find((item) => item.id === id);
-    if (!contract) {
+    if (!button) {
         return;
     }
 
-    const confirmed = window.confirm(`Remover o contrato ${contract.numero}?`);
-    if (!confirmed) {
+    const agreement = state.agreements.find((item) => item.id === button.dataset.id);
+
+    if (!agreement) {
         return;
     }
 
-    state.contratos = state.contratos.filter((item) => item.id !== id);
+    if (button.dataset.action === "toggle-paid") {
+        agreement.pago = !agreement.pago;
+        agreement.pagoEm = agreement.pago ? new Date().toISOString() : null;
+        showMessage(agreement.pago ? "Acordo marcado como pago." : "Acordo reaberto.");
+    }
+
+    if (button.dataset.action === "remove") {
+        state.agreements = state.agreements.filter((item) => item.id !== agreement.id);
+        showMessage("Acordo removido da demo.");
+    }
+
+    saveDemoState();
+    renderMetrics();
+    renderList();
+}
+
+function resetDemo() {
+    state.agreements = createDemoAgreements();
+    state.sortOrder = "due-soon";
+    state.statusFilter = "all";
+    state.search = "";
+    saveDemoState();
+    showMessage("Base ficticia restaurada.");
     render();
-    scheduleSave();
 }
 
-function scheduleSave() {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveData, 180);
-}
-
-async function saveData() {
-    const data = createDataSnapshot();
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-
-    if (storageMode === "json-file" && dataFileHandle) {
-        try {
-            await writeJsonFile(dataFileHandle, data);
-            elements.storageStatus.textContent = "Salvo no JSON conectado.";
-            return;
-        } catch (error) {
-            storageMode = "browser";
-            dataFileHandle = null;
-            elements.storageStatus.textContent = "N\u00e3o consegui salvar no JSON; mantive uma c\u00f3pia neste navegador.";
-            return;
-        }
+function compareAgreements(a, b) {
+    if (state.sortOrder === "due-late") {
+        return compareNumbers(getDueDateTime(b), getDueDateTime(a)) || compareText(a.numero, b.numero);
     }
 
-    if (storageMode !== "server") {
-        elements.storageStatus.textContent = "Salvo neste navegador.";
-        return;
+    if (state.sortOrder === "created-new") {
+        return compareNumbers(getCreatedTime(b), getCreatedTime(a)) || compareText(a.numero, b.numero);
     }
 
-    try {
-        const response = await fetch("/api/dados", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-            throw new Error("Falha ao salvar.");
-        }
-
-        elements.storageStatus.textContent = "Salvo em dados/acordos.json.";
-    } catch (error) {
-        storageMode = "browser";
-        elements.storageStatus.textContent = "N\u00e3o consegui salvar o arquivo; mantive uma c\u00f3pia neste navegador.";
+    if (state.sortOrder === "created-old") {
+        return compareNumbers(getCreatedTime(a), getCreatedTime(b)) || compareText(a.numero, b.numero);
     }
+
+    return compareNumbers(getDueDateTime(a), getDueDateTime(b)) || compareText(a.numero, b.numero);
 }
 
-function showMessage(message, isError = false) {
-    elements.formMessage.textContent = message;
-    elements.formMessage.classList.toggle("error", isError);
-}
+function getStatusInfo(agreement) {
+    if (agreement.pago) {
+        return {
+            label: "Pago",
+            detail: agreement.pagoEm ? `Pago em ${formatDate(agreement.pagoEm)}` : "Pagamento registrado",
+            className: "status-paid"
+        };
+    }
 
-function createDataSnapshot() {
+    const diffDays = getDueDiffDays(agreement);
+
+    if (diffDays < 0) {
+        const days = Math.abs(diffDays);
+        return {
+            label: "Atrasado",
+            detail: `${days} ${days === 1 ? "dia" : "dias"} em atraso`,
+            className: "status-overdue"
+        };
+    }
+
+    if (diffDays === 0) {
+        return {
+            label: "Vence hoje",
+            detail: "Prioridade do dia",
+            className: "status-due"
+        };
+    }
+
     return {
-        meta: state.meta,
-        contratos: state.contratos
+        label: "Em aberto",
+        detail: `Vence em ${diffDays} ${diffDays === 1 ? "dia" : "dias"}`,
+        className: "status-open"
     };
 }
 
-function loadSortOrder() {
-    state.ordem = normalizeSortOrder(localStorage.getItem(SORT_STORAGE_KEY));
+function isOverdue(agreement) {
+    return !agreement.pago && getDueDiffDays(agreement) < 0;
+}
+
+function getDueDiffDays(agreement) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return Math.round((getDueDateTime(agreement) - today.getTime()) / 86400000);
+}
+
+function wasCreatedThisMonth(agreement) {
+    const createdAt = new Date(agreement.criadoEm);
+    const today = new Date();
+
+    return !Number.isNaN(createdAt.getTime())
+        && createdAt.getFullYear() === today.getFullYear()
+        && createdAt.getMonth() === today.getMonth();
 }
 
 function normalizeSortOrder(value) {
     const validOptions = ["due-soon", "due-late", "created-new", "created-old"];
-    return validOptions.includes(value) ? value : DEFAULT_SORT_ORDER;
+    return validOptions.includes(value) ? value : "due-soon";
 }
 
-function compareContractsBySortOrder(a, b) {
-    if (state.ordem === "due-late") {
-        return compareNumbers(getDueDateTime(b), getDueDateTime(a)) || compareContractNumbers(a, b);
-    }
-
-    if (state.ordem === "created-new") {
-        return compareNumbers(getCreatedTime(b), getCreatedTime(a)) || compareContractNumbers(a, b);
-    }
-
-    if (state.ordem === "created-old") {
-        return compareNumbers(getCreatedTime(a), getCreatedTime(b)) || compareContractNumbers(a, b);
-    }
-
-    return compareNumbers(getDueDateTime(a), getDueDateTime(b)) || compareContractNumbers(a, b);
+function normalizeStatusFilter(value) {
+    const validOptions = ["all", "open", "paid", "overdue"];
+    return validOptions.includes(value) ? value : "all";
 }
 
 function compareNumbers(a, b) {
     return a - b;
 }
 
-function compareContractNumbers(a, b) {
-    return a.numero.localeCompare(b.numero, "pt-BR", { numeric: true, sensitivity: "base" });
+function compareText(a, b) {
+    return a.localeCompare(b, "pt-BR", { numeric: true, sensitivity: "base" });
 }
 
-function getDueDateTime(contract) {
-    const dueDate = new Date(`${contract.vencimento}T00:00:00`);
+function getDueDateTime(agreement) {
+    const dueDate = new Date(`${agreement.vencimento}T00:00:00`);
     return Number.isNaN(dueDate.getTime()) ? Number.MAX_SAFE_INTEGER : dueDate.getTime();
 }
 
-function getCreatedTime(contract) {
-    const createdAt = new Date(contract.criadoEm);
+function getCreatedTime(agreement) {
+    const createdAt = new Date(agreement.criadoEm);
     return Number.isNaN(createdAt.getTime()) ? 0 : createdAt.getTime();
-}
-
-async function readJsonFile(file) {
-    const text = await file.text();
-    if (!text.trim()) {
-        return {};
-    }
-
-    return JSON.parse(text);
-}
-
-async function writeJsonFile(handle, data) {
-    const writable = await handle.createWritable();
-    await writable.write(JSON.stringify(data, null, 2));
-    await writable.close();
-}
-
-function getDaysLeftInMonth() {
-    const now = new Date();
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    return Math.max(lastDay - now.getDate() + 1, 1);
 }
 
 function normalizeDateTime(value) {
@@ -513,56 +430,17 @@ function normalizeDateTime(value) {
     return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
 }
 
-function wasCreatedToday(contract) {
-    const createdAt = new Date(contract.criadoEm);
-
-    if (Number.isNaN(createdAt.getTime())) {
-        return false;
-    }
-
-    const today = new Date();
-    return createdAt.getFullYear() === today.getFullYear()
-        && createdAt.getMonth() === today.getMonth()
-        && createdAt.getDate() === today.getDate();
+function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
 }
 
-function wasCreatedThisMonth(contract) {
-    const createdAt = new Date(contract.criadoEm);
-
-    if (Number.isNaN(createdAt.getTime())) {
-        return false;
-    }
-
-    const today = new Date();
-    return createdAt.getFullYear() === today.getFullYear()
-        && createdAt.getMonth() === today.getMonth();
-}
-
-function getDueInfo(contract) {
-    if (contract.pago) {
-        return { kind: "", label: "Pago" };
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const dueDate = new Date(`${contract.vencimento}T00:00:00`);
-    const diffDays = Math.round((dueDate - today) / 86400000);
-
-    if (diffDays < 0) {
-        return { kind: "danger", label: `Atrasado h\u00e1 ${Math.abs(diffDays)} ${Math.abs(diffDays) === 1 ? "dia" : "dias"}` };
-    }
-
-    if (diffDays === 0) {
-        return { kind: "warn", label: "Vence hoje" };
-    }
-
-    return { kind: "", label: `Vence em ${diffDays} ${diffDays === 1 ? "dia" : "dias"}` };
-}
-
-function formatDate(value) {
-    const [year, month, day] = value.split("-");
-    return `${day}/${month}/${year}`;
+function formatInputDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
 }
 
 function parseCurrency(value) {
@@ -592,12 +470,12 @@ function parseCurrency(value) {
             : rawValue.replace(/\./g, "");
     }
 
-    const parsed = Number.parseFloat(normalizedValue);
-    return normalizeCurrencyValue(parsed);
+    return normalizeCurrencyValue(Number.parseFloat(normalizedValue));
 }
 
 function normalizeCurrencyValue(value) {
     const parsed = Number(value);
+
     if (!Number.isFinite(parsed) || parsed <= 0) {
         return 0;
     }
@@ -613,8 +491,8 @@ function centsToCurrency(value) {
     return Math.round(Number(value) || 0) / 100;
 }
 
-function sumCurrency(contracts) {
-    return contracts.reduce((total, contract) => total + currencyToCents(contract.valor), 0);
+function sumCurrency(agreements) {
+    return agreements.reduce((total, agreement) => total + currencyToCents(agreement.valor), 0);
 }
 
 function formatCurrency(value) {
@@ -635,8 +513,38 @@ function formatCurrencyInput(value) {
     });
 }
 
-function syncCurrencyInput(input, value) {
-    input.value = formatCurrencyInput(value);
+function formatDate(value) {
+    const date = new Date(String(value).includes("T") ? value : `${value}T00:00:00`);
+
+    if (Number.isNaN(date.getTime())) {
+        return "--/--/----";
+    }
+
+    return new Intl.DateTimeFormat("pt-BR").format(date);
+}
+
+function formatDateTime(value) {
+    return new Intl.DateTimeFormat("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    }).format(value);
+}
+
+function showMessage(message, isError = false) {
+    elements.formMessage.textContent = message;
+    elements.formMessage.classList.toggle("error", isError);
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 function createId() {

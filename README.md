@@ -1,75 +1,47 @@
 # Carteira de Acordos
 
-Projeto front-end para controle de acordos financeiros, criado em HTML, CSS e JavaScript puro. O repositorio agora tem duas experiencias:
+Dashboard front-end para acompanhamento de acordos financeiros, criado como projeto de portfolio com HTML, CSS e JavaScript puro.
 
-- `index.html`: versao demonstrativa para portfolio e GitHub Pages, com dados ficticios e interacoes salvas no navegador.
-- `inicio.html`: versao operacional local, com importacao/exportacao de JSON e uso com arquivo de dados.
+A aplicacao simula uma carteira de contratos com dados demonstrativos e permite acompanhar indicadores, filtrar registros, ordenar a lista e testar operacoes comuns de uma rotina administrativa.
 
-## Demo de portfolio
+## Funcionalidades
 
-A versao `index.html` foi pensada para mostrar o projeto de forma mais completa em um portfolio:
+- Indicadores de valor gerado no mes, valor pago, valor em aberto, atrasos e progresso de meta.
+- Base inicial com acordos demonstrativos.
+- Cadastro de novos acordos.
+- Busca por contrato ou cliente.
+- Filtro por status: todos, em aberto, pagos e atrasados.
+- Ordenacao por vencimento ou por data de geracao.
+- Marcacao de acordos como pagos, reabertura e remocao.
+- Restauracao da base demonstrativa.
+- Persistencia local com `localStorage`.
+- Layout responsivo para desktop e celular.
 
-- indicadores de valor gerado no mes, valor pago, valor em aberto, atrasados e progresso da meta;
-- contratos ficticios carregados automaticamente;
-- cadastro de novos acordos demo;
-- busca por contrato ou cliente;
-- filtro por status;
-- ordenacao por vencimento ou data de geracao;
-- marcacao de acordos como pagos, reabertura e remocao;
-- restauracao da base ficticia;
-- layout responsivo para desktop e celular.
+## Tecnologias
 
-## Versao local
+- HTML sem frameworks.
+- CSS responsivo com Grid e Flexbox.
+- JavaScript puro para estado, renderizacao, filtros, ordenacao e calculos financeiros.
+- `localStorage` para manter as interacoes da demo no navegador.
 
-A versao `inicio.html` continua focada no uso do dia a dia:
+## Como visualizar
 
-- cadastro de contrato, vencimento e valor;
-- meta mensal;
-- soma de acordos pagos;
-- soma de acordos gerados hoje e no mes;
-- lista de acordos com ordenacao escolhida pelo usuario;
-- armazenamento no navegador;
-- importacao e exportacao de JSON;
-- opcao de conectar um arquivo JSON quando o navegador permitir.
-
-## Como executar
-
-Para ver a demo de portfolio, abra:
+Abra o arquivo:
 
 ```text
 index.html
 ```
 
-Para usar a versao local operacional, abra:
+Ou publique o repositorio no GitHub Pages. Como a aplicacao principal esta em `index.html`, o Pages carrega o dashboard automaticamente.
+
+## Estrutura
 
 ```text
-inicio.html
+index.html   Estrutura da aplicacao
+style.css    Estilos e responsividade
+script.js    Regras de negocio e interacoes
 ```
-
-Tambem e possivel iniciar o servidor local:
-
-```text
-node servidor-local.js
-```
-
-Depois acesse `http://127.0.0.1:4173/inicio.html`.
-
-## Publicacao no GitHub Pages
-
-Como a demo principal esta em `index.html`, o projeto pode ser publicado diretamente pelo GitHub Pages:
-
-1. Envie os arquivos para um repositorio no GitHub.
-2. Abra as configuracoes do repositorio.
-3. Ative GitHub Pages usando a branch principal.
-4. A pagina inicial exibira a versao de portfolio.
-
-## Tecnologias
-
-- HTML sem dependencias externas.
-- CSS responsivo com Grid e Flexbox.
-- JavaScript puro para estado, filtros, ordenacao, calculos e persistencia local.
-- Dados ficticios na demo e armazenamento via `localStorage`.
 
 ## Observacao
 
-Os dados exibidos na versao de portfolio sao ficticios e existem apenas para demonstrar o funcionamento da interface.
+Os dados exibidos sao ficticios e servem apenas para demonstrar a interface e o fluxo de uso.
