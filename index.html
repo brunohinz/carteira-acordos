@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carteira de acordos | Demo portfolio</title>
+    <link rel="stylesheet" href="portfolio.css">
+    <script src="portfolio.js" defer></script>
+</head>
+<body>
+    <main class="portfolio-app">
+        <header class="topbar">
+            <div class="brand-block">
+                <div class="brand-mark" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div>
+                    <p class="eyebrow">Demo portfolio</p>
+                    <h1>Carteira de acordos</h1>
+                </div>
+            </div>
+            <div class="topbar-actions">
+                <span class="last-updated" id="lastUpdated">Carregando...</span>
+                <a class="ghost-link" href="inicio.html">Vers&atilde;o local</a>
+                <button type="button" class="ghost-button" id="resetDemoButton">Restaurar demo</button>
+            </div>
+        </header>
+
+        <section class="metrics-grid" aria-label="Indicadores da carteira">
+            <article class="metric-card metric-card-feature">
+                <span>Gerado no m&ecirc;s</span>
+                <strong id="monthGeneratedValue">R$ 0,00</strong>
+                <small id="monthGeneratedCount">0 acordos gerados</small>
+            </article>
+            <article class="metric-card">
+                <span>Valor pago</span>
+                <strong id="paidValue">R$ 0,00</strong>
+                <small id="paidCount">0 acordos pagos</small>
+            </article>
+            <article class="metric-card">
+                <span>Em aberto</span>
+                <strong id="openValue">R$ 0,00</strong>
+                <small id="openCount">0 acordos pendentes</small>
+            </article>
+            <article class="metric-card">
+                <span>Atrasados</span>
+                <strong id="overdueValue">R$ 0,00</strong>
+                <small id="overdueCount">0 acordos atrasados</small>
+            </article>
+            <article class="metric-card progress-card">
+                <span>Meta mensal</span>
+                <strong id="goalProgress">0%</strong>
+                <div class="progress-track" aria-hidden="true">
+                    <span id="goalProgressBar"></span>
+                </div>
+                <small id="goalHint">R$ 0,00 de R$ 0,00</small>
+            </article>
+        </section>
+
+        <section class="workspace">
+            <section class="panel form-panel" aria-labelledby="formTitle">
+                <div class="panel-heading">
+                    <div>
+                        <h2 id="formTitle">Novo acordo</h2>
+                        <p>Inclua um registro ficticio para testar o fluxo.</p>
+                    </div>
+                    <span class="panel-badge">Demo</span>
+                </div>
+
+                <form id="agreementForm" class="agreement-form">
+                    <label for="agreementClient">Cliente ou unidade</label>
+                    <input id="agreementClient" type="text" autocomplete="off" placeholder="Ex.: Unidade Centro" required>
+
+                    <label for="agreementNumber">Contrato</label>
+                    <input id="agreementNumber" type="text" autocomplete="off" placeholder="Ex.: CT-2026-010" required>
+
+                    <label for="agreementDueDate">Vencimento</label>
+                    <input id="agreementDueDate" type="date" required>
+
+                    <label for="agreementValue">Valor</label>
+                    <input id="agreementValue" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" required>
+
+                    <button type="submit" class="primary-button">Adicionar acordo</button>
+                    <p class="form-message" id="formMessage" aria-live="polite"></p>
+                </form>
+            </section>
+
+            <section class="panel list-panel" aria-labelledby="listTitle">
+                <div class="panel-heading list-heading">
+                    <div>
+                        <h2 id="listTitle">Acordos</h2>
+                        <p id="listSummary">Carregando carteira...</p>
+                    </div>
+                    <div class="list-tools">
+                        <label class="tool-field" for="searchInput">
+                            <span>Buscar</span>
+                            <input id="searchInput" type="search" placeholder="Contrato ou cliente">
+                        </label>
+                        <label class="tool-field" for="statusFilter">
+                            <span>Status</span>
+                            <select id="statusFilter">
+                                <option value="all">Todos</option>
+                                <option value="open">Em aberto</option>
+                                <option value="paid">Pagos</option>
+                                <option value="overdue">Atrasados</option>
+                            </select>
+                        </label>
+                        <label class="tool-field" for="sortOrder">
+                            <span>Ordenar por</span>
+                            <select id="sortOrder">
+                                <option value="due-soon">Mais perto de vencer</option>
+                                <option value="due-late">Mais longe de vencer</option>
+                                <option value="created-new">Gerado mais recentemente</option>
+                                <option value="created-old">Gerado h&aacute; mais tempo</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="table-shell">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Contrato</th>
+                                <th>Cliente</th>
+                                <th>Valor</th>
+                                <th>Vencimento</th>
+                                <th>Status</th>
+                                <th>A&ccedil;&otilde;es</th>
+                            </tr>
+                        </thead>
+                        <tbody id="agreementTable"></tbody>
+                    </table>
+                </div>
+
+                <p class="empty-state" id="emptyState">Nenhum acordo encontrado.</p>
+            </section>
+        </section>
+
+        <footer class="page-footer">
+            Projeto demonstrativo com dados ficticios, pronto para publicar no GitHub Pages.
+        </footer>
+    </main>
+</body>
+</html>

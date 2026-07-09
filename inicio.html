@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de acordos</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <main class="app-shell">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">Controle local</p>
+                <h1>Acordos e metas</h1>
+            </div>
+            <p class="storage-status" id="storageStatus">Carregando...</p>
+        </header>
+
+        <section class="summary-grid" aria-label="Indicadores">
+            <article class="metric-card">
+                <span>Valor pago</span>
+                <strong id="paidCount">0</strong>
+                <small id="totalCount">0 acordos cadastrados</small>
+            </article>
+            <article class="metric-card">
+                <span>Valor gerado hoje</span>
+                <strong id="generatedTodayValue">0</strong>
+                <small id="generatedTodayCount">0 acordos gerados hoje</small>
+            </article>
+            <article class="metric-card">
+                <span>Valor gerado no m&ecirc;s</span>
+                <strong id="generatedMonthValue">0</strong>
+                <small id="generatedMonthCount">0 acordos gerados no m&ecirc;s</small>
+            </article>
+            <article class="metric-card">
+                <span>Faltam para a meta</span>
+                <strong id="remainingGoal">0</strong>
+                <small id="goalHint">Defina sua meta mensal</small>
+            </article>
+            <article class="metric-card">
+                <span>M&eacute;dia di&aacute;ria necess&aacute;ria</span>
+                <strong id="dailyNeed">0</strong>
+                <small id="daysLeft">at&eacute; o fim do m&ecirc;s</small>
+            </article>
+        </section>
+
+        <section class="work-area">
+            <form class="panel form-panel" id="contractForm">
+                <h2>Adicionar acordo</h2>
+
+                <label for="contractNumber">N&uacute;mero do contrato</label>
+                <input id="contractNumber" name="contractNumber" type="text" autocomplete="off" required>
+
+                <label for="dueDate">Data do vencimento</label>
+                <input id="dueDate" name="dueDate" type="date" required>
+
+                <label for="contractValue">Valor do acordo</label>
+                <input id="contractValue" name="contractValue" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" required>
+
+                <button type="submit" class="primary-button">Adicionar</button>
+                <p class="form-message" id="formMessage" aria-live="polite"></p>
+            </form>
+
+            <section class="panel target-panel" aria-labelledby="goalTitle">
+                <h2 id="goalTitle">Meta do usu&aacute;rio</h2>
+                <label for="goalInput">Meta mensal em valor pago</label>
+                <input id="goalInput" type="text" inputmode="decimal" placeholder="0,00">
+            </section>
+
+            <section class="panel data-panel" aria-labelledby="dataTitle">
+                <h2 id="dataTitle">Dados locais</h2>
+                <div class="data-actions">
+                    <button type="button" class="data-button" id="connectDataFileButton">Conectar JSON</button>
+                    <button type="button" class="data-button" id="exportDataButton">Exportar JSON</button>
+                    <label class="data-button file-button" for="importDataInput">Importar JSON</label>
+                    <input id="importDataInput" type="file" accept=".json,application/json">
+                </div>
+            </section>
+
+            <section class="panel list-panel" aria-labelledby="listTitle">
+                <div class="list-header">
+                    <div>
+                        <h2 id="listTitle">Lista de acordos</h2>
+                        <p id="listSubtitle">Marque os acordos que j&aacute; foram pagos.</p>
+                    </div>
+                    <div class="list-actions">
+                        <label class="sort-control" for="sortOrder">
+                            <span>Ordenar por</span>
+                            <select id="sortOrder">
+                                <option value="due-soon">Mais perto de vencer</option>
+                                <option value="due-late">Mais longe de vencer</option>
+                                <option value="created-new">Gerado mais recentemente</option>
+                                <option value="created-old">Gerado h&aacute; mais tempo</option>
+                            </select>
+                        </label>
+                        <button type="button" class="danger-button" id="clearAllButton">Limpar todos</button>
+                    </div>
+                </div>
+
+                <div class="contract-list" id="contractList"></div>
+                <p class="empty-state" id="emptyState">Nenhum acordo cadastrado ainda.</p>
+            </section>
+        </section>
+
+        <footer class="page-footer">
+            Feito por Bruno Hinz Cristiani - BLP1943
+        </footer>
+    </main>
+</body>
+</html>

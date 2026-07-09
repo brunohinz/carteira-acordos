@@ -1,0 +1,11 @@
+Carteira de Acordos
+
+Este projeto agora tem duas versoes:
+
+1. index.html
+   Versao demonstrativa para portfolio e GitHub Pages, com dados ficticios.
+
+2. inicio.html
+   Versao local para uso operacional, com cadastro, meta, importacao/exportacao de JSON e armazenamento no navegador.
+
+Para detalhes de funcionamento, publicacao no GitHub Pages e tecnologias usadas, veja o arquivo README.md.
