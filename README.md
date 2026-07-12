@@ -36,13 +36,11 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 
 ## Como visualizar
 
-Abra o arquivo:
+Acesse a demo online:
 
-```text
-index.html
-```
+https://brunohinz.github.io/carteira-acordos/
 
-Ou publique o repositorio no GitHub Pages. Como a aplicacao principal esta em `index.html`, o Pages carrega o dashboard automaticamente.
+Ou abra o arquivo `index.html` localmente no navegador.
 
 ## Estrutura
 
