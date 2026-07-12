@@ -1,8 +1,8 @@
 # Carteira de Acordos
 
-Dashboard front-end para acompanhamento de acordos financeiros, criado como projeto de portfolio com HTML, CSS e JavaScript puro.
+![Tela principal do dashboard](assets/dashboard.png)
 
-A aplicacao simula uma carteira de contratos com dados demonstrativos e permite acompanhar indicadores, filtrar registros, ordenar a lista e testar operacoes comuns de uma rotina administrativa.
+Dashboard front-end para acompanhamento de acordos financeiros, criado como projeto de portfolio com HTML, CSS e JavaScript puro.
 
 ## Funcionalidades
 
@@ -16,6 +16,16 @@ A aplicacao simula uma carteira de contratos com dados demonstrativos e permite 
 - Restauracao da base demonstrativa.
 - Persistencia local com `localStorage`.
 - Layout responsivo para desktop e celular.
+
+## O que este projeto demonstra
+
+- Manipulação de DOM com JavaScript puro.
+- Controle de estado da aplicação no front-end.
+- Filtros, busca e ordenação de registros.
+- Cálculo e atualização de indicadores financeiros.
+- Persistência de dados no navegador com localStorage.
+- Layout responsivo com CSS Grid e Flexbox.
+- Organização de uma interface administrativa em formato de dashboard.
 
 ## Tecnologias
 
