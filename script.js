@@ -308,6 +308,12 @@ function handleTableAction(event) {
     }
 
     if (button.dataset.action === "remove") {
+        const confirmed = window.confirm(`Remover o acordo ${agreement.numero} (${agreement.cliente})? Essa acao nao pode ser desfeita.`);
+
+        if (!confirmed) {
+            return;
+        }
+
         state.agreements = state.agreements.filter((item) => item.id !== agreement.id);
         showMessage("Acordo removido da demo.");
     }
