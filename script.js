@@ -91,11 +91,17 @@ function loadDemoState() {
 }
 
 function saveDemoState() {
-    localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({
-        agreements: state.agreements,
-        sortOrder: state.sortOrder,
-        statusFilter: state.statusFilter
-    }));
+    try {
+        localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({
+            agreements: state.agreements,
+            sortOrder: state.sortOrder,
+            statusFilter: state.statusFilter
+        }));
+        return true;
+    } catch (error) {
+        showMessage("Nao foi possivel salvar no navegador (armazenamento cheio ou bloqueado). As alteracoes valem so ate recarregar a pagina.", true);
+        return false;
+    }
 }
 
 function createDemoAgreements() {
@@ -328,8 +334,8 @@ function resetDemo() {
     state.sortOrder = "due-soon";
     state.statusFilter = "all";
     state.search = "";
-    saveDemoState();
     showMessage("Base ficticia restaurada.");
+    saveDemoState();
     render();
 }
 
