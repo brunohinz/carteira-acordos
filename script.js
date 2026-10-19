@@ -202,7 +202,14 @@ function matchesSearch(agreement) {
         return true;
     }
 
-    return `${agreement.numero} ${agreement.cliente}`.toLowerCase().includes(state.search);
+    return normalizeSearchText(`${agreement.numero} ${agreement.cliente}`).includes(normalizeSearchText(state.search));
+}
+
+function normalizeSearchText(value) {
+    return String(value)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
 }
 
 function matchesStatusFilter(agreement) {
