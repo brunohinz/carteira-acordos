@@ -232,13 +232,14 @@ function createAgreementRow(agreement) {
     const row = document.createElement("tr");
     const status = getStatusInfo(agreement);
     const safeId = escapeHtml(agreement.id);
+    const safeNumber = escapeHtml(agreement.numero);
     const primaryAction = agreement.pago
-        ? `<button type="button" class="row-button reopen" data-action="toggle-paid" data-id="${safeId}">Reabrir</button>`
-        : `<button type="button" class="row-button pay" data-action="toggle-paid" data-id="${safeId}">Marcar pago</button>`;
+        ? `<button type="button" class="row-button reopen" data-action="toggle-paid" data-id="${safeId}" aria-label="Reabrir acordo ${safeNumber}">Reabrir</button>`
+        : `<button type="button" class="row-button pay" data-action="toggle-paid" data-id="${safeId}" aria-label="Marcar acordo ${safeNumber} como pago">Marcar pago</button>`;
 
     row.innerHTML = `
         <td>
-            <strong>${escapeHtml(agreement.numero)}</strong>
+            <strong>${safeNumber}</strong>
             <small>Gerado em ${formatDate(agreement.criadoEm)}</small>
         </td>
         <td>${escapeHtml(agreement.cliente)}</td>
@@ -251,7 +252,7 @@ function createAgreementRow(agreement) {
         <td>
             <div class="row-actions">
                 ${primaryAction}
-                <button type="button" class="row-button remove" data-action="remove" data-id="${safeId}">Remover</button>
+                <button type="button" class="row-button remove" data-action="remove" data-id="${safeId}" aria-label="Remover acordo ${safeNumber}">Remover</button>
             </div>
         </td>
     `;
