@@ -167,13 +167,13 @@ function renderMetrics() {
     const progress = Math.min(Math.round((paidValue / DEFAULT_GOAL) * 100), 100);
 
     elements.monthGeneratedValue.textContent = formatCurrency(centsToCurrency(sumCurrency(monthGenerated)));
-    elements.monthGeneratedCount.textContent = `${monthGenerated.length} ${monthGenerated.length === 1 ? "acordo gerado" : "acordos gerados"}`;
+    elements.monthGeneratedCount.textContent = pluralize(monthGenerated.length, "acordo gerado", "acordos gerados");
     elements.paidValue.textContent = formatCurrency(paidValue);
-    elements.paidCount.textContent = `${paid.length} ${paid.length === 1 ? "acordo pago" : "acordos pagos"}`;
+    elements.paidCount.textContent = pluralize(paid.length, "acordo pago", "acordos pagos");
     elements.openValue.textContent = formatCurrency(centsToCurrency(sumCurrency(open)));
-    elements.openCount.textContent = `${open.length} ${open.length === 1 ? "acordo pendente" : "acordos pendentes"}`;
+    elements.openCount.textContent = pluralize(open.length, "acordo pendente", "acordos pendentes");
     elements.overdueValue.textContent = formatCurrency(centsToCurrency(sumCurrency(overdue)));
-    elements.overdueCount.textContent = `${overdue.length} ${overdue.length === 1 ? "acordo atrasado" : "acordos atrasados"}`;
+    elements.overdueCount.textContent = pluralize(overdue.length, "acordo atrasado", "acordos atrasados");
     elements.goalProgress.textContent = `${progress}%`;
     elements.goalProgressBar.style.width = `${progress}%`;
     elements.goalHint.textContent = `${formatCurrency(paidValue)} de ${formatCurrency(DEFAULT_GOAL)}`;
@@ -183,7 +183,7 @@ function renderList() {
     const visibleAgreements = getVisibleAgreements();
     elements.table.innerHTML = "";
     elements.emptyState.classList.toggle("is-visible", visibleAgreements.length === 0);
-    elements.listSummary.textContent = `${visibleAgreements.length} ${visibleAgreements.length === 1 ? "acordo encontrado" : "acordos encontrados"} de ${state.agreements.length}`;
+    elements.listSummary.textContent = `${pluralize(visibleAgreements.length, "acordo encontrado", "acordos encontrados")} de ${state.agreements.length}`;
 
     visibleAgreements.forEach((agreement) => {
         elements.table.appendChild(createAgreementRow(agreement));
@@ -385,7 +385,7 @@ function getStatusInfo(agreement) {
         const days = Math.abs(diffDays);
         return {
             label: "Atrasado",
-            detail: `${days} ${days === 1 ? "dia" : "dias"} em atraso`,
+            detail: `${pluralize(days, "dia", "dias")} em atraso`,
             className: "status-overdue"
         };
     }
@@ -400,7 +400,7 @@ function getStatusInfo(agreement) {
 
     return {
         label: "Em aberto",
-        detail: `Vence em ${diffDays} ${diffDays === 1 ? "dia" : "dias"}`,
+        detail: `Vence em ${pluralize(diffDays, "dia", "dias")}`,
         className: "status-open"
     };
 }
@@ -537,6 +537,10 @@ function centsToCurrency(value) {
 
 function sumCurrency(agreements) {
     return agreements.reduce((total, agreement) => total + currencyToCents(agreement.valor), 0);
+}
+
+function pluralize(count, singular, plural) {
+    return `${count} ${count === 1 ? singular : plural}`;
 }
 
 function formatCurrency(value) {
