@@ -1,0 +1,14 @@
+{
+  "name": "carteira-acordos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dashboard front-end para acompanhamento de acordos financeiros (HTML, CSS e JavaScript puro).",
+  "scripts": {
+    "check": "node --check utils.js && node --check script.js",
+    "test": "node --test tests/"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED"
+}
