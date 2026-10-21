@@ -25,6 +25,7 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 - Cálculo e atualização de indicadores financeiros.
 - Persistência de dados no navegador com localStorage.
 - Layout responsivo com CSS Grid e Flexbox.
+- Testes automatizados das regras de moeda e datas com `node --test` e CI no GitHub Actions.
 - Organização de uma interface administrativa em formato de dashboard.
 
 ## Tecnologias
@@ -45,9 +46,21 @@ Ou abra o arquivo `index.html` localmente no navegador.
 ## Estrutura
 
 ```text
-index.html   Estrutura da aplicação
-style.css    Estilos e responsividade
-script.js    Regras de negócio e interações
+index.html                 Estrutura da aplicação
+style.css                  Estilos e responsividade
+script.js                  Estado, renderização e interações (DOM)
+utils.js                   Funções puras: moeda, datas, busca e textos
+tests/utils.test.js        Testes das funções puras
+.github/workflows/ci.yml   Check e testes automáticos a cada push
+```
+
+## Como rodar os testes
+
+Requer Node.js 18 ou superior (sem dependências externas):
+
+```bash
+npm test        # roda os testes com node --test
+npm run check   # verifica a sintaxe de utils.js e script.js
 ```
 
 ## Observação
