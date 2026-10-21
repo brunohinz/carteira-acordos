@@ -273,6 +273,12 @@ function handleAddAgreement(event) {
         return;
     }
 
+    if (!isValidDueDate(vencimento)) {
+        showMessage("Informe um vencimento valido entre 2000 e 2100.", true);
+        elements.dueDate.focus();
+        return;
+    }
+
     const exists = state.agreements.some((agreement) => (
         agreement.numero.toLowerCase() === numero.toLowerCase()
     ));
@@ -407,6 +413,23 @@ function getDueDiffDays(agreement) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return Math.round((getDueDateTime(agreement) - today.getTime()) / 86400000);
+}
+
+function isValidDueDate(value) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value));
+
+    if (!match) {
+        return false;
+    }
+
+    const [, year, month, day] = match.map(Number);
+    const date = new Date(year, month - 1, day);
+
+    return year >= 2000
+        && year <= 2100
+        && date.getFullYear() === year
+        && date.getMonth() === month - 1
+        && date.getDate() === day;
 }
 
 function wasCreatedThisMonth(agreement) {
