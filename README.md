@@ -6,15 +6,15 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 
 ## Funcionalidades
 
-- Indicadores de valor gerado no mes, valor pago, valor em aberto, atrasos e progresso de meta.
+- Indicadores de valor gerado no mês, valor pago, valor em aberto, atrasos e progresso de meta.
 - Base inicial com acordos demonstrativos.
 - Cadastro de novos acordos.
 - Busca por contrato ou cliente.
 - Filtro por status: todos, em aberto, pagos e atrasados.
-- Ordenacao por vencimento ou por data de geracao.
-- Marcacao de acordos como pagos, reabertura e remocao.
-- Restauracao da base demonstrativa.
-- Persistencia local com `localStorage`.
+- Ordenação por vencimento ou por data de geração.
+- Marcação de acordos como pagos, reabertura e remoção.
+- Restauração da base demonstrativa.
+- Persistência local com `localStorage`.
 - Layout responsivo para desktop e celular.
 
 ## O que este projeto demonstra
@@ -31,8 +31,8 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 
 - HTML sem frameworks.
 - CSS responsivo com Grid e Flexbox.
-- JavaScript puro para estado, renderizacao, filtros, ordenacao e calculos financeiros.
-- `localStorage` para manter as interacoes da demo no navegador.
+- JavaScript puro para estado, renderização, filtros, ordenação e cálculos financeiros.
+- `localStorage` para manter as interações da demo no navegador.
 
 ## Como visualizar
 
@@ -45,11 +45,11 @@ Ou abra o arquivo `index.html` localmente no navegador.
 ## Estrutura
 
 ```text
-index.html   Estrutura da aplicacao
+index.html   Estrutura da aplicação
 style.css    Estilos e responsividade
-script.js    Regras de negocio e interacoes
+script.js    Regras de negócio e interações
 ```
 
-## Observacao
+## Observação
 
-Os dados exibidos sao ficticios e servem apenas para demonstrar a interface e o fluxo de uso.
+Os dados exibidos são fictícios e servem apenas para demonstrar a interface e o fluxo de uso.
