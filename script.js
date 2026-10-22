@@ -350,6 +350,12 @@ function handleTableAction(event) {
 }
 
 function resetDemo() {
+    const confirmed = window.confirm("Restaurar a base demonstrativa? Os acordos adicionados ou alterados por voce serao substituidos.");
+
+    if (!confirmed) {
+        return;
+    }
+
     state.agreements = createDemoAgreements();
     state.sortOrder = "due-soon";
     state.statusFilter = "all";
