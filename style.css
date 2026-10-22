@@ -190,6 +190,13 @@ h2 {
     background: #245cc3;
 }
 
+.ghost-button:focus-visible,
+.primary-button:focus-visible,
+.row-button:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+}
+
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -322,7 +329,9 @@ select:hover {
 }
 
 input:focus,
-select:focus {
+select:focus,
+input:focus-visible,
+select:focus-visible {
     border-color: var(--blue);
     box-shadow: 0 0 0 4px rgba(45, 108, 223, .16);
 }
