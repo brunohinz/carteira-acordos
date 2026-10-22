@@ -498,8 +498,10 @@ function showMessage(message, isError = false) {
 }
 
 function createId() {
-    if (window.crypto && window.crypto.randomUUID) {
-        return window.crypto.randomUUID();
+    const cryptoApi = globalThis.crypto;
+
+    if (cryptoApi && typeof cryptoApi.randomUUID === "function") {
+        return cryptoApi.randomUUID();
     }
 
     return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
