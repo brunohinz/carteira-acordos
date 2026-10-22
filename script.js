@@ -55,7 +55,8 @@ function bindEvents() {
         }
     });
     elements.searchInput.addEventListener("input", () => {
-        state.search = elements.searchInput.value.trim().toLowerCase();
+        state.search = elements.searchInput.value.trim();
+        saveDemoState();
         renderList();
     });
     elements.searchInput.addEventListener("keydown", (event) => {
@@ -63,6 +64,7 @@ function bindEvents() {
             event.preventDefault();
             elements.searchInput.value = "";
             state.search = "";
+            saveDemoState();
             renderList();
         }
     });
@@ -88,6 +90,7 @@ function loadDemoState() {
             state.agreements = saved.agreements.map(normalizeAgreement).filter(Boolean);
             state.sortOrder = normalizeSortOrder(saved.sortOrder);
             state.statusFilter = normalizeStatusFilter(saved.statusFilter);
+            state.search = typeof saved.search === "string" ? saved.search.trim().slice(0, 100) : "";
             return;
         }
     } catch (error) {
@@ -103,7 +106,8 @@ function saveDemoState() {
         localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({
             agreements: state.agreements,
             sortOrder: state.sortOrder,
-            statusFilter: state.statusFilter
+            statusFilter: state.statusFilter,
+            search: state.search
         }));
         return true;
     } catch (error) {
