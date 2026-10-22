@@ -24,6 +24,15 @@ function isValidDueDate(value) {
         && date.getDate() === day;
 }
 
+function normalizeOptionalDateTime(value) {
+    if (value === null || value === undefined || value === "") {
+        return null;
+    }
+
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
+
 function addDays(date, days) {
     const result = new Date(date);
     result.setDate(result.getDate() + days);
@@ -120,6 +129,7 @@ if (typeof module !== "undefined" && module.exports) {
     module.exports = {
         normalizeSearchText,
         isValidDueDate,
+        normalizeOptionalDateTime,
         addDays,
         formatInputDate,
         parseCurrency,

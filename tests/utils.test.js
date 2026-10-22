@@ -10,7 +10,8 @@ const {
     isValidDueDate,
     escapeHtml,
     formatInputDate,
-    addDays
+    addDays,
+    normalizeOptionalDateTime
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -60,4 +61,12 @@ test("escapeHtml neutraliza caracteres especiais", () => {
 test("addDays e formatInputDate geram datas no formato do input", () => {
     assert.equal(formatInputDate(addDays(new Date(2026, 0, 31), 1)), "2026-02-01");
     assert.equal(formatInputDate(addDays(new Date(2026, 2, 1), -1)), "2026-02-28");
+});
+
+test("normalizeOptionalDateTime aceita datas validas e descarta lixo", () => {
+    assert.equal(normalizeOptionalDateTime("2026-10-20T12:00:00.000Z"), "2026-10-20T12:00:00.000Z");
+    assert.equal(normalizeOptionalDateTime("data-invalida"), null);
+    assert.equal(normalizeOptionalDateTime(""), null);
+    assert.equal(normalizeOptionalDateTime(null), null);
+    assert.equal(normalizeOptionalDateTime(undefined), null);
 });

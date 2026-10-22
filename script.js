@@ -145,7 +145,7 @@ function normalizeAgreement(agreement) {
         vencimento: String(agreement.vencimento).slice(0, 10),
         criadoEm: normalizeDateTime(agreement.criadoEm),
         pago: Boolean(agreement.pago),
-        pagoEm: agreement.pagoEm || null
+        pagoEm: agreement.pago ? normalizeOptionalDateTime(agreement.pagoEm) : null
     };
 }
 
