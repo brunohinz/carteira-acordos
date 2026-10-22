@@ -58,6 +58,14 @@ function bindEvents() {
         state.search = elements.searchInput.value.trim().toLowerCase();
         renderList();
     });
+    elements.searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && elements.searchInput.value) {
+            event.preventDefault();
+            elements.searchInput.value = "";
+            state.search = "";
+            renderList();
+        }
+    });
     elements.statusFilter.addEventListener("change", () => {
         state.statusFilter = elements.statusFilter.value;
         saveDemoState();
