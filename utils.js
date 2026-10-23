@@ -50,6 +50,22 @@ function formatInputDate(date) {
     return `${year}-${month}-${day}`;
 }
 
+function getDueDateTime(agreement) {
+    const dueDate = new Date(`${agreement.vencimento}T00:00:00`);
+    return Number.isNaN(dueDate.getTime()) ? Number.MAX_SAFE_INTEGER : dueDate.getTime();
+}
+
+// "today" e injetavel para os testes nao dependerem da data atual.
+function getDueDiffDays(agreement, today = new Date()) {
+    const start = new Date(today);
+    start.setHours(0, 0, 0, 0);
+    return Math.round((getDueDateTime(agreement) - start.getTime()) / 86400000);
+}
+
+function isOverdue(agreement, today = new Date()) {
+    return !agreement.pago && getDueDiffDays(agreement, today) < 0;
+}
+
 function parseCurrency(value) {
     if (typeof value === "number") {
         return normalizeCurrencyValue(value);
@@ -137,6 +153,9 @@ if (typeof module !== "undefined" && module.exports) {
         normalizeOptionalDateTime,
         addDays,
         formatInputDate,
+        getDueDateTime,
+        getDueDiffDays,
+        isOverdue,
         parseCurrency,
         normalizeCurrencyValue,
         currencyToCents,

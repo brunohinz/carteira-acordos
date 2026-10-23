@@ -417,16 +417,6 @@ function getStatusInfo(agreement) {
     };
 }
 
-function isOverdue(agreement) {
-    return !agreement.pago && getDueDiffDays(agreement) < 0;
-}
-
-function getDueDiffDays(agreement) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return Math.round((getDueDateTime(agreement) - today.getTime()) / 86400000);
-}
-
 function wasCreatedThisMonth(agreement) {
     const createdAt = new Date(agreement.criadoEm);
     const today = new Date();
@@ -452,11 +442,6 @@ function compareNumbers(a, b) {
 
 function compareText(a, b) {
     return a.localeCompare(b, "pt-BR", { numeric: true, sensitivity: "base" });
-}
-
-function getDueDateTime(agreement) {
-    const dueDate = new Date(`${agreement.vencimento}T00:00:00`);
-    return Number.isNaN(dueDate.getTime()) ? Number.MAX_SAFE_INTEGER : dueDate.getTime();
 }
 
 function getCreatedTime(agreement) {

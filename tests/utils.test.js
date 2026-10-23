@@ -12,7 +12,10 @@ const {
     escapeHtml,
     formatInputDate,
     addDays,
-    normalizeOptionalDateTime
+    normalizeOptionalDateTime,
+    getDueDateTime,
+    getDueDiffDays,
+    isOverdue
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -76,4 +79,22 @@ test("normalizeContractKey ignora espacos, acentos e caixa", () => {
     assert.equal(normalizeContractKey("CT-2026-001"), normalizeContractKey(" ct - 2026 - 001 "));
     assert.equal(normalizeContractKey("Ação 01"), "acao01");
     assert.notEqual(normalizeContractKey("CT-001"), normalizeContractKey("CT-002"));
+});
+
+test("getDueDiffDays conta dias ate o vencimento a partir de uma data fixa", () => {
+    const today = new Date(2026, 9, 23, 15, 30);
+    assert.equal(getDueDiffDays({ vencimento: "2026-10-23" }, today), 0);
+    assert.equal(getDueDiffDays({ vencimento: "2026-10-30" }, today), 7);
+    assert.equal(getDueDiffDays({ vencimento: "2026-10-20" }, today), -3);
+});
+
+test("isOverdue so considera atrasado o acordo vencido e nao pago", () => {
+    const today = new Date(2026, 9, 23);
+    assert.equal(isOverdue({ vencimento: "2026-10-22", pago: false }, today), true);
+    assert.equal(isOverdue({ vencimento: "2026-10-22", pago: true }, today), false);
+    assert.equal(isOverdue({ vencimento: "2026-10-23", pago: false }, today), false);
+});
+
+test("getDueDateTime joga vencimentos invalidos para o fim da fila", () => {
+    assert.equal(getDueDateTime({ vencimento: "invalido" }), Number.MAX_SAFE_INTEGER);
 });
