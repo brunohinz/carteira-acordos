@@ -49,6 +49,7 @@ Ou abra o arquivo `index.html` localmente no navegador.
 
 ```text
 index.html                 Estrutura da aplicação
+favicon.svg                Ícone da aba do navegador
 style.css                  Estilos e responsividade
 script.js                  Estado, renderização e interações (DOM)
 utils.js                   Funções puras: moeda, datas, busca e textos
