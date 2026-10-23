@@ -31,6 +31,8 @@ function cacheElements() {
     elements.sortOrder = document.querySelector("#sortOrder");
     elements.table = document.querySelector("#agreementTable");
     elements.emptyState = document.querySelector("#emptyState");
+    elements.emptyStateText = document.querySelector("#emptyStateText");
+    elements.clearFiltersButton = document.querySelector("#clearFiltersButton");
     elements.listSummary = document.querySelector("#listSummary");
     elements.monthGeneratedValue = document.querySelector("#monthGeneratedValue");
     elements.monthGeneratedCount = document.querySelector("#monthGeneratedCount");
@@ -79,6 +81,7 @@ function bindEvents() {
         renderList();
     });
     elements.resetDemoButton.addEventListener("click", resetDemo);
+    elements.clearFiltersButton.addEventListener("click", clearFilters);
     elements.table.addEventListener("click", handleTableAction);
 }
 
@@ -194,7 +197,12 @@ function renderMetrics() {
 function renderList() {
     const visibleAgreements = getVisibleAgreements();
     elements.table.innerHTML = "";
+    const hasFilters = Boolean(state.search) || state.statusFilter !== "all";
     elements.emptyState.classList.toggle("is-visible", visibleAgreements.length === 0);
+    elements.emptyStateText.textContent = hasFilters && state.agreements.length > 0
+        ? "Nenhum acordo corresponde a busca ou ao filtro atual."
+        : "Nenhum acordo encontrado.";
+    elements.clearFiltersButton.hidden = !(hasFilters && state.agreements.length > 0);
     elements.listSummary.textContent = `${pluralize(visibleAgreements.length, "acordo encontrado", "acordos encontrados")} de ${state.agreements.length}`;
 
     visibleAgreements.forEach((agreement) => {
@@ -332,6 +340,16 @@ function handleTableAction(event) {
     saveDemoState();
     renderMetrics();
     renderList();
+}
+
+function clearFilters() {
+    state.search = "";
+    state.statusFilter = "all";
+    elements.searchInput.value = "";
+    elements.statusFilter.value = "all";
+    saveDemoState();
+    renderList();
+    elements.searchInput.focus();
 }
 
 function resetDemo() {

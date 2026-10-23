@@ -491,6 +491,18 @@ td small {
     display: block;
 }
 
+.empty-state p {
+    margin: 0;
+}
+
+.empty-state .ghost-button {
+    margin-top: 12px;
+}
+
+.empty-state .ghost-button[hidden] {
+    display: none;
+}
+
 .page-footer {
     margin-top: 18px;
     color: var(--muted);
