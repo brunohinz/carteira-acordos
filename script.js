@@ -493,9 +493,18 @@ function formatDateTime(value) {
     }).format(value);
 }
 
+let messageTimer = null;
+
 function showMessage(message, isError = false) {
+    window.clearTimeout(messageTimer);
     elements.formMessage.textContent = message;
     elements.formMessage.classList.toggle("error", isError);
+
+    // Sucesso some rapido; erro fica mais tempo para dar tempo de ler.
+    messageTimer = window.setTimeout(() => {
+        elements.formMessage.textContent = "";
+        elements.formMessage.classList.remove("error");
+    }, isError ? 8000 : 4000);
 }
 
 function createId() {
