@@ -6,6 +6,7 @@ const {
     formatCurrency,
     formatCurrencyInput,
     normalizeSearchText,
+    normalizeContractKey,
     pluralize,
     isValidDueDate,
     escapeHtml,
@@ -69,4 +70,10 @@ test("normalizeOptionalDateTime aceita datas validas e descarta lixo", () => {
     assert.equal(normalizeOptionalDateTime(""), null);
     assert.equal(normalizeOptionalDateTime(null), null);
     assert.equal(normalizeOptionalDateTime(undefined), null);
+});
+
+test("normalizeContractKey ignora espacos, acentos e caixa", () => {
+    assert.equal(normalizeContractKey("CT-2026-001"), normalizeContractKey(" ct - 2026 - 001 "));
+    assert.equal(normalizeContractKey("Ação 01"), "acao01");
+    assert.notEqual(normalizeContractKey("CT-001"), normalizeContractKey("CT-002"));
 });

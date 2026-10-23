@@ -284,8 +284,9 @@ function handleAddAgreement(event) {
         return;
     }
 
+    const contractKey = normalizeContractKey(numero);
     const exists = state.agreements.some((agreement) => (
-        agreement.numero.toLowerCase() === numero.toLowerCase()
+        normalizeContractKey(agreement.numero) === contractKey
     ));
 
     if (exists) {

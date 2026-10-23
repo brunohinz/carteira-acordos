@@ -7,6 +7,10 @@ function normalizeSearchText(value) {
         .toLowerCase();
 }
 
+function normalizeContractKey(value) {
+    return normalizeSearchText(value).replace(/\s+/g, "");
+}
+
 function isValidDueDate(value) {
     const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value));
 
@@ -128,6 +132,7 @@ function escapeHtml(value) {
 if (typeof module !== "undefined" && module.exports) {
     module.exports = {
         normalizeSearchText,
+        normalizeContractKey,
         isValidDueDate,
         normalizeOptionalDateTime,
         addDays,
