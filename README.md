@@ -1,5 +1,7 @@
 # Carteira de Acordos
 
+[![CI](https://github.com/brunohinz/carteira-acordos/actions/workflows/ci.yml/badge.svg)](https://github.com/brunohinz/carteira-acordos/actions/workflows/ci.yml)
+
 ![Tela principal do dashboard](assets/dashboard.png)
 
 Dashboard front-end para acompanhamento de acordos financeiros, criado como projeto de portfolio com HTML, CSS e JavaScript puro.
