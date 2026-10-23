@@ -66,6 +66,30 @@ function isOverdue(agreement, today = new Date()) {
     return !agreement.pago && getDueDiffDays(agreement, today) < 0;
 }
 
+function matchesSearchTerm(agreement, term) {
+    if (!term) {
+        return true;
+    }
+
+    return normalizeSearchText(`${agreement.numero} ${agreement.cliente}`).includes(normalizeSearchText(term));
+}
+
+function matchesStatus(agreement, filter, today = new Date()) {
+    if (filter === "paid") {
+        return agreement.pago;
+    }
+
+    if (filter === "open") {
+        return !agreement.pago;
+    }
+
+    if (filter === "overdue") {
+        return isOverdue(agreement, today);
+    }
+
+    return true;
+}
+
 function parseCurrency(value) {
     if (typeof value === "number") {
         return normalizeCurrencyValue(value);
@@ -156,6 +180,8 @@ if (typeof module !== "undefined" && module.exports) {
         getDueDateTime,
         getDueDiffDays,
         isOverdue,
+        matchesSearchTerm,
+        matchesStatus,
         parseCurrency,
         normalizeCurrencyValue,
         currencyToCents,

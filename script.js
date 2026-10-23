@@ -210,27 +210,11 @@ function getVisibleAgreements() {
 }
 
 function matchesSearch(agreement) {
-    if (!state.search) {
-        return true;
-    }
-
-    return normalizeSearchText(`${agreement.numero} ${agreement.cliente}`).includes(normalizeSearchText(state.search));
+    return matchesSearchTerm(agreement, state.search);
 }
 
 function matchesStatusFilter(agreement) {
-    if (state.statusFilter === "paid") {
-        return agreement.pago;
-    }
-
-    if (state.statusFilter === "open") {
-        return !agreement.pago;
-    }
-
-    if (state.statusFilter === "overdue") {
-        return isOverdue(agreement);
-    }
-
-    return true;
+    return matchesStatus(agreement, state.statusFilter);
 }
 
 function createAgreementRow(agreement) {

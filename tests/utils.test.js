@@ -15,7 +15,9 @@ const {
     normalizeOptionalDateTime,
     getDueDateTime,
     getDueDiffDays,
-    isOverdue
+    isOverdue,
+    matchesSearchTerm,
+    matchesStatus
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -97,4 +99,23 @@ test("isOverdue so considera atrasado o acordo vencido e nao pago", () => {
 
 test("getDueDateTime joga vencimentos invalidos para o fim da fila", () => {
     assert.equal(getDueDateTime({ vencimento: "invalido" }), Number.MAX_SAFE_INTEGER);
+});
+
+test("matchesSearchTerm busca por contrato ou cliente sem acento e caixa", () => {
+    const agreement = { numero: "CT-2026-007", cliente: "Colégio São Lucas" };
+    assert.equal(matchesSearchTerm(agreement, ""), true);
+    assert.equal(matchesSearchTerm(agreement, "sao lucas"), true);
+    assert.equal(matchesSearchTerm(agreement, "ct-2026-007"), true);
+    assert.equal(matchesSearchTerm(agreement, "Unidade Sul"), false);
+});
+
+test("matchesStatus aplica os filtros todos, em aberto, pagos e atrasados", () => {
+    const today = new Date(2026, 9, 23);
+    const paid = { vencimento: "2026-10-01", pago: true };
+    const late = { vencimento: "2026-10-01", pago: false };
+    const open = { vencimento: "2026-11-01", pago: false };
+    assert.deepEqual([paid, late, open].map((a) => matchesStatus(a, "all", today)), [true, true, true]);
+    assert.deepEqual([paid, late, open].map((a) => matchesStatus(a, "paid", today)), [true, false, false]);
+    assert.deepEqual([paid, late, open].map((a) => matchesStatus(a, "open", today)), [false, true, true]);
+    assert.deepEqual([paid, late, open].map((a) => matchesStatus(a, "overdue", today)), [false, true, false]);
 });
