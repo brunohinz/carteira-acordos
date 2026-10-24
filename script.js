@@ -5,7 +5,8 @@ const state = {
     agreements: [],
     sortOrder: "due-soon",
     statusFilter: "all",
-    search: ""
+    search: "",
+    goal: DEFAULT_GOAL
 };
 
 const elements = {};
@@ -46,6 +47,7 @@ function cacheElements() {
     elements.goalProgress = document.querySelector("#goalProgress");
     elements.goalProgressBar = document.querySelector("#goalProgressBar");
     elements.goalHint = document.querySelector("#goalHint");
+    elements.editGoalButton = document.querySelector("#editGoalButton");
 }
 
 function bindEvents() {
@@ -83,6 +85,7 @@ function bindEvents() {
     });
     elements.resetDemoButton.addEventListener("click", resetDemo);
     elements.exportCsvButton.addEventListener("click", exportCsv);
+    elements.editGoalButton.addEventListener("click", editGoal);
     elements.clearFiltersButton.addEventListener("click", clearFilters);
     elements.table.addEventListener("click", handleTableAction);
 }
@@ -96,6 +99,7 @@ function loadDemoState() {
             state.sortOrder = normalizeSortOrder(saved.sortOrder);
             state.statusFilter = normalizeStatusFilter(saved.statusFilter);
             state.search = typeof saved.search === "string" ? saved.search.trim().slice(0, 100) : "";
+            state.goal = normalizeCurrencyValue(saved.goal) || DEFAULT_GOAL;
             return;
         }
     } catch (error) {
@@ -112,7 +116,8 @@ function saveDemoState() {
             agreements: state.agreements,
             sortOrder: state.sortOrder,
             statusFilter: state.statusFilter,
-            search: state.search
+            search: state.search,
+            goal: state.goal
         }));
         return true;
     } catch (error) {
@@ -164,7 +169,7 @@ function renderMetrics() {
     const open = state.agreements.filter((agreement) => !agreement.pago);
     const overdue = state.agreements.filter((agreement) => isOverdue(agreement));
     const paidValue = centsToCurrency(sumCurrency(paid));
-    const progress = Math.min(Math.round((paidValue / DEFAULT_GOAL) * 100), 100);
+    const progress = Math.min(Math.round((paidValue / state.goal) * 100), 100);
 
     elements.monthGeneratedValue.textContent = formatCurrency(centsToCurrency(sumCurrency(monthGenerated)));
     elements.monthGeneratedCount.textContent = pluralize(monthGenerated.length, "acordo gerado", "acordos gerados");
@@ -176,7 +181,7 @@ function renderMetrics() {
     elements.overdueCount.textContent = pluralize(overdue.length, "acordo atrasado", "acordos atrasados");
     elements.goalProgress.textContent = `${progress}%`;
     elements.goalProgressBar.style.width = `${progress}%`;
-    elements.goalHint.textContent = `${formatCurrency(paidValue)} de ${formatCurrency(DEFAULT_GOAL)}`;
+    elements.goalHint.textContent = `${formatCurrency(paidValue)} de ${formatCurrency(state.goal)}`;
 }
 
 function renderList() {
@@ -354,6 +359,26 @@ function clearFilters() {
     elements.searchInput.focus();
 }
 
+function editGoal() {
+    const answer = window.prompt("Nova meta mensal (R$):", formatCurrencyInput(state.goal));
+
+    if (answer === null) {
+        return;
+    }
+
+    const goal = parseCurrency(answer);
+
+    if (goal <= 0) {
+        showMessage("Informe uma meta maior que zero, por exemplo 50.000,00.", true);
+        return;
+    }
+
+    state.goal = goal;
+    saveDemoState();
+    renderMetrics();
+    showMessage(`Meta mensal atualizada para ${formatCurrency(goal)}.`);
+}
+
 function exportCsv() {
     const visibleAgreements = getVisibleAgreements();
 
@@ -387,6 +412,7 @@ function resetDemo() {
     state.sortOrder = "due-soon";
     state.statusFilter = "all";
     state.search = "";
+    state.goal = DEFAULT_GOAL;
     showMessage("Base ficticia restaurada.");
     saveDemoState();
     render();
