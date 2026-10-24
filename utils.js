@@ -165,6 +165,15 @@ function matchesStatus(agreement, filter, today = new Date()) {
         return isOverdue(agreement, today);
     }
 
+    if (filter === "due-today") {
+        return !agreement.pago && getDueDiffDays(agreement, today) === 0;
+    }
+
+    if (filter === "next-7") {
+        const diffDays = getDueDiffDays(agreement, today);
+        return !agreement.pago && diffDays >= 0 && diffDays <= 7;
+    }
+
     return true;
 }
 

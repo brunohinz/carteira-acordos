@@ -210,3 +210,15 @@ test("getStatusInfo classifica pago, atrasado, vence hoje e em aberto", () => {
     assert.equal(open.className, "status-open");
     assert.equal(open.detail, "Vence em 5 dias");
 });
+
+test("matchesStatus filtra vence hoje e proximos 7 dias so entre os nao pagos", () => {
+    const today = new Date(2026, 9, 23);
+    const dueToday = { vencimento: "2026-10-23", pago: false };
+    const inWeek = { vencimento: "2026-10-30", pago: false };
+    const later = { vencimento: "2026-10-31", pago: false };
+    const late = { vencimento: "2026-10-22", pago: false };
+    const paidToday = { vencimento: "2026-10-23", pago: true };
+    const all = [dueToday, inWeek, later, late, paidToday];
+    assert.deepEqual(all.map((a) => matchesStatus(a, "due-today", today)), [true, false, false, false, false]);
+    assert.deepEqual(all.map((a) => matchesStatus(a, "next-7", today)), [true, true, false, false, false]);
+});

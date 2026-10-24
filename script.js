@@ -370,7 +370,7 @@ function normalizeSortOrder(value) {
 }
 
 function normalizeStatusFilter(value) {
-    const validOptions = ["all", "open", "paid", "overdue"];
+    const validOptions = ["all", "open", "paid", "overdue", "due-today", "next-7"];
     return validOptions.includes(value) ? value : "all";
 }
 
