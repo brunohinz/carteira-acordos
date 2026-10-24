@@ -277,6 +277,35 @@ function formatCurrencyInput(value) {
     });
 }
 
+function escapeCsvField(value) {
+    let text = String(value ?? "");
+
+    // Evita que planilhas interpretem o campo como formula (CSV injection).
+    if (/^[=+\-@\t\r]/.test(text)) {
+        text = `'${text}`;
+    }
+
+    return /[";\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+// CSV com ";" e virgula decimal, que o Excel em pt-BR abre direto.
+function buildAgreementsCsv(agreements, today = new Date()) {
+    const header = ["Contrato", "Cliente", "Valor", "Vencimento", "Status", "Gerado em", "Pago em"];
+    const rows = agreements.map((agreement) => [
+        agreement.numero,
+        agreement.cliente,
+        normalizeCurrencyValue(agreement.valor).toFixed(2).replace(".", ","),
+        formatDate(agreement.vencimento),
+        getStatusInfo(agreement, today).label,
+        formatDate(agreement.criadoEm),
+        agreement.pagoEm ? formatDate(agreement.pagoEm) : ""
+    ]);
+
+    return [header, ...rows]
+        .map((row) => row.map(escapeCsvField).join(";"))
+        .join("\r\n");
+}
+
 function escapeHtml(value) {
     return String(value)
         .replace(/&/g, "&amp;")
@@ -315,6 +344,8 @@ if (typeof module !== "undefined" && module.exports) {
         pluralize,
         formatCurrency,
         formatCurrencyInput,
-        escapeHtml
+        escapeHtml,
+        escapeCsvField,
+        buildAgreementsCsv
     };
 }

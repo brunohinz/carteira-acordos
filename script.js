@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function cacheElements() {
     elements.lastUpdated = document.querySelector("#lastUpdated");
     elements.resetDemoButton = document.querySelector("#resetDemoButton");
+    elements.exportCsvButton = document.querySelector("#exportCsvButton");
     elements.form = document.querySelector("#agreementForm");
     elements.client = document.querySelector("#agreementClient");
     elements.number = document.querySelector("#agreementNumber");
@@ -81,6 +82,7 @@ function bindEvents() {
         renderList();
     });
     elements.resetDemoButton.addEventListener("click", resetDemo);
+    elements.exportCsvButton.addEventListener("click", exportCsv);
     elements.clearFiltersButton.addEventListener("click", clearFilters);
     elements.table.addEventListener("click", handleTableAction);
 }
@@ -333,6 +335,28 @@ function clearFilters() {
     saveDemoState();
     renderList();
     elements.searchInput.focus();
+}
+
+function exportCsv() {
+    const visibleAgreements = getVisibleAgreements();
+
+    if (visibleAgreements.length === 0) {
+        showMessage("Nenhum acordo na lista para exportar.", true);
+        return;
+    }
+
+    // BOM para o Excel reconhecer UTF-8 (acentos).
+    const csv = `\uFEFF${buildAgreementsCsv(visibleAgreements)}`;
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `carteira-acordos-${formatInputDate(new Date())}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    showMessage(`${pluralize(visibleAgreements.length, "acordo exportado", "acordos exportados")} em CSV.`);
 }
 
 function resetDemo() {

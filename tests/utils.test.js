@@ -24,7 +24,9 @@ const {
     normalizeAgreement,
     createId,
     formatDate,
-    getStatusInfo
+    getStatusInfo,
+    escapeCsvField,
+    buildAgreementsCsv
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -221,4 +223,21 @@ test("matchesStatus filtra vence hoje e proximos 7 dias so entre os nao pagos", 
     const all = [dueToday, inWeek, later, late, paidToday];
     assert.deepEqual(all.map((a) => matchesStatus(a, "due-today", today)), [true, false, false, false, false]);
     assert.deepEqual(all.map((a) => matchesStatus(a, "next-7", today)), [true, true, false, false, false]);
+});
+
+test("escapeCsvField protege aspas, separador e formulas", () => {
+    assert.equal(escapeCsvField("simples"), "simples");
+    assert.equal(escapeCsvField('a;b "c"'), '"a;b ""c"""');
+    assert.equal(escapeCsvField("=SOMA(A1)"), "'=SOMA(A1)");
+    assert.equal(escapeCsvField(null), "");
+});
+
+test("buildAgreementsCsv gera cabecalho e linhas no padrao pt-BR", () => {
+    const today = new Date(2026, 9, 23);
+    const csv = buildAgreementsCsv([
+        { numero: "CT-1", cliente: "Unidade; Centro", valor: 1234.5, vencimento: "2026-10-20", criadoEm: "2026-10-01T12:00:00", pago: false, pagoEm: null }
+    ], today);
+    const [header, line] = csv.split("\r\n");
+    assert.equal(header, "Contrato;Cliente;Valor;Vencimento;Status;Gerado em;Pago em");
+    assert.equal(line, 'CT-1;"Unidade; Centro";1234,50;20/10/2026;Atrasado;01/10/2026;');
 });
