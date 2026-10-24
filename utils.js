@@ -99,6 +99,51 @@ function isOverdue(agreement, today = new Date()) {
     return !agreement.pago && getDueDiffDays(agreement, today) < 0;
 }
 
+function formatDate(value) {
+    const date = new Date(String(value).includes("T") ? value : `${value}T00:00:00`);
+
+    if (Number.isNaN(date.getTime())) {
+        return "--/--/----";
+    }
+
+    return new Intl.DateTimeFormat("pt-BR").format(date);
+}
+
+function getStatusInfo(agreement, today = new Date()) {
+    if (agreement.pago) {
+        return {
+            label: "Pago",
+            detail: agreement.pagoEm ? `Pago em ${formatDate(agreement.pagoEm)}` : "Pagamento registrado",
+            className: "status-paid"
+        };
+    }
+
+    const diffDays = getDueDiffDays(agreement, today);
+
+    if (diffDays < 0) {
+        const days = Math.abs(diffDays);
+        return {
+            label: "Atrasado",
+            detail: `${pluralize(days, "dia", "dias")} em atraso`,
+            className: "status-overdue"
+        };
+    }
+
+    if (diffDays === 0) {
+        return {
+            label: "Vence hoje",
+            detail: "Prioridade do dia",
+            className: "status-due"
+        };
+    }
+
+    return {
+        label: "Em aberto",
+        detail: `Vence em ${pluralize(diffDays, "dia", "dias")}`,
+        className: "status-open"
+    };
+}
+
 function matchesSearchTerm(agreement, term) {
     if (!term) {
         return true;
@@ -246,6 +291,8 @@ if (typeof module !== "undefined" && module.exports) {
         getDueDateTime,
         getDueDiffDays,
         isOverdue,
+        formatDate,
+        getStatusInfo,
         matchesSearchTerm,
         matchesStatus,
         compareNumbers,

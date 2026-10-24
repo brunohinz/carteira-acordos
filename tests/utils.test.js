@@ -22,7 +22,9 @@ const {
     getCreatedTime,
     compareAgreementsBy,
     normalizeAgreement,
-    createId
+    createId,
+    formatDate,
+    getStatusInfo
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -186,4 +188,25 @@ test("normalizeAgreement gera id e criadoEm quando faltam", () => {
 
 test("createId gera ids diferentes", () => {
     assert.notEqual(createId(), createId());
+});
+
+test("formatDate formata datas e mostra placeholder para lixo", () => {
+    assert.equal(formatDate("2026-10-05"), "05/10/2026");
+    assert.equal(formatDate("invalido"), "--/--/----");
+});
+
+test("getStatusInfo classifica pago, atrasado, vence hoje e em aberto", () => {
+    const today = new Date(2026, 9, 23);
+    assert.equal(getStatusInfo({ pago: true, pagoEm: null, vencimento: "2026-10-01" }, today).detail, "Pagamento registrado");
+    assert.equal(getStatusInfo({ pago: true, pagoEm: "2026-10-02T12:00:00", vencimento: "2026-10-01" }, today).detail, "Pago em 02/10/2026");
+
+    const late = getStatusInfo({ pago: false, vencimento: "2026-10-22" }, today);
+    assert.equal(late.className, "status-overdue");
+    assert.equal(late.detail, "1 dia em atraso");
+
+    assert.equal(getStatusInfo({ pago: false, vencimento: "2026-10-23" }, today).label, "Vence hoje");
+
+    const open = getStatusInfo({ pago: false, vencimento: "2026-10-28" }, today);
+    assert.equal(open.className, "status-open");
+    assert.equal(open.detail, "Vence em 5 dias");
 });

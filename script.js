@@ -355,41 +355,6 @@ function compareAgreements(a, b) {
     return compareAgreementsBy(state.sortOrder, a, b);
 }
 
-function getStatusInfo(agreement) {
-    if (agreement.pago) {
-        return {
-            label: "Pago",
-            detail: agreement.pagoEm ? `Pago em ${formatDate(agreement.pagoEm)}` : "Pagamento registrado",
-            className: "status-paid"
-        };
-    }
-
-    const diffDays = getDueDiffDays(agreement);
-
-    if (diffDays < 0) {
-        const days = Math.abs(diffDays);
-        return {
-            label: "Atrasado",
-            detail: `${pluralize(days, "dia", "dias")} em atraso`,
-            className: "status-overdue"
-        };
-    }
-
-    if (diffDays === 0) {
-        return {
-            label: "Vence hoje",
-            detail: "Prioridade do dia",
-            className: "status-due"
-        };
-    }
-
-    return {
-        label: "Em aberto",
-        detail: `Vence em ${pluralize(diffDays, "dia", "dias")}`,
-        className: "status-open"
-    };
-}
-
 function wasCreatedThisMonth(agreement) {
     const createdAt = new Date(agreement.criadoEm);
     const today = new Date();
@@ -411,16 +376,6 @@ function normalizeStatusFilter(value) {
 
 function sumCurrency(agreements) {
     return agreements.reduce((total, agreement) => total + currencyToCents(agreement.valor), 0);
-}
-
-function formatDate(value) {
-    const date = new Date(String(value).includes("T") ? value : `${value}T00:00:00`);
-
-    if (Number.isNaN(date.getTime())) {
-        return "--/--/----";
-    }
-
-    return new Intl.DateTimeFormat("pt-BR").format(date);
 }
 
 function formatDateTime(value) {
