@@ -563,3 +563,25 @@ td small {
     white-space: nowrap;
     border: 0;
 }
+
+tbody tr.is-new td {
+    animation: row-highlight 3s ease-out;
+}
+
+@keyframes row-highlight {
+    0%,
+    40% {
+        background: rgba(45, 108, 223, .14);
+    }
+
+    100% {
+        background: transparent;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    tbody tr.is-new td {
+        animation: none;
+        background: rgba(45, 108, 223, .14);
+    }
+}

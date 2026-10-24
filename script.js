@@ -212,6 +212,7 @@ function matchesStatusFilter(agreement) {
 
 function createAgreementRow(agreement) {
     const row = document.createElement("tr");
+    row.dataset.id = agreement.id;
     const status = getStatusInfo(agreement);
     const safeId = escapeHtml(agreement.id);
     const safeNumber = escapeHtml(agreement.numero);
@@ -271,8 +272,10 @@ function handleAddAgreement(event) {
         return;
     }
 
+    const id = createId();
+
     state.agreements.push({
-        id: createId(),
+        id,
         numero,
         cliente,
         vencimento,
@@ -288,6 +291,20 @@ function handleAddAgreement(event) {
     saveDemoState();
     renderMetrics();
     renderList();
+    highlightRow(id);
+}
+
+// Destaca por alguns segundos a linha do acordo recem-adicionado (se estiver visivel).
+function highlightRow(id) {
+    const row = Array.from(elements.table.rows).find((item) => item.dataset.id === id);
+
+    if (!row) {
+        return;
+    }
+
+    row.classList.add("is-new");
+    row.scrollIntoView({ block: "nearest" });
+    window.setTimeout(() => row.classList.remove("is-new"), 3000);
 }
 
 function handleTableAction(event) {
