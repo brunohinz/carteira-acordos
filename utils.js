@@ -90,6 +90,36 @@ function matchesStatus(agreement, filter, today = new Date()) {
     return true;
 }
 
+function compareNumbers(a, b) {
+    return a - b;
+}
+
+function compareText(a, b) {
+    return String(a).localeCompare(String(b), "pt-BR", { numeric: true, sensitivity: "base" });
+}
+
+function getCreatedTime(agreement) {
+    const createdAt = new Date(agreement.criadoEm);
+    return Number.isNaN(createdAt.getTime()) ? 0 : createdAt.getTime();
+}
+
+// Ordenacao pura: recebe o criterio em vez de ler o estado global.
+function compareAgreementsBy(sortOrder, a, b) {
+    if (sortOrder === "due-late") {
+        return compareNumbers(getDueDateTime(b), getDueDateTime(a)) || compareText(a.numero, b.numero);
+    }
+
+    if (sortOrder === "created-new") {
+        return compareNumbers(getCreatedTime(b), getCreatedTime(a)) || compareText(a.numero, b.numero);
+    }
+
+    if (sortOrder === "created-old") {
+        return compareNumbers(getCreatedTime(a), getCreatedTime(b)) || compareText(a.numero, b.numero);
+    }
+
+    return compareNumbers(getDueDateTime(a), getDueDateTime(b)) || compareText(a.numero, b.numero);
+}
+
 function parseCurrency(value) {
     if (typeof value === "number") {
         return normalizeCurrencyValue(value);
@@ -182,6 +212,10 @@ if (typeof module !== "undefined" && module.exports) {
         isOverdue,
         matchesSearchTerm,
         matchesStatus,
+        compareNumbers,
+        compareText,
+        getCreatedTime,
+        compareAgreementsBy,
         parseCurrency,
         normalizeCurrencyValue,
         currencyToCents,

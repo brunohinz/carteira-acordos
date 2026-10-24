@@ -17,7 +17,10 @@ const {
     getDueDiffDays,
     isOverdue,
     matchesSearchTerm,
-    matchesStatus
+    matchesStatus,
+    compareText,
+    getCreatedTime,
+    compareAgreementsBy
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -118,4 +121,26 @@ test("matchesStatus aplica os filtros todos, em aberto, pagos e atrasados", () =
     assert.deepEqual([paid, late, open].map((a) => matchesStatus(a, "paid", today)), [true, false, false]);
     assert.deepEqual([paid, late, open].map((a) => matchesStatus(a, "open", today)), [false, true, true]);
     assert.deepEqual([paid, late, open].map((a) => matchesStatus(a, "overdue", today)), [false, true, false]);
+});
+
+test("compareText ordena contratos com numeros de forma natural", () => {
+    assert.ok(compareText("CT-2", "CT-10") < 0);
+    assert.equal(compareText("ct-1", "CT-1"), 0);
+});
+
+test("getCreatedTime trata criadoEm invalido como zero", () => {
+    assert.equal(getCreatedTime({ criadoEm: "lixo" }), 0);
+    assert.equal(getCreatedTime({ criadoEm: "2026-10-01T00:00:00.000Z" }), Date.parse("2026-10-01T00:00:00.000Z"));
+});
+
+test("compareAgreementsBy ordena por vencimento e por data de criacao", () => {
+    const a = { numero: "CT-1", vencimento: "2026-10-10", criadoEm: "2026-09-01T00:00:00.000Z" };
+    const b = { numero: "CT-2", vencimento: "2026-10-05", criadoEm: "2026-09-20T00:00:00.000Z" };
+    const c = { numero: "CT-3", vencimento: "2026-10-05", criadoEm: "2026-08-15T00:00:00.000Z" };
+    const order = (sort) => [a, b, c].sort((x, y) => compareAgreementsBy(sort, x, y)).map((x) => x.numero);
+    assert.deepEqual(order("due-soon"), ["CT-2", "CT-3", "CT-1"]);
+    assert.deepEqual(order("due-late"), ["CT-1", "CT-2", "CT-3"]);
+    assert.deepEqual(order("created-new"), ["CT-2", "CT-1", "CT-3"]);
+    assert.deepEqual(order("created-old"), ["CT-3", "CT-1", "CT-2"]);
+    assert.deepEqual(order("desconhecido"), order("due-soon"));
 });

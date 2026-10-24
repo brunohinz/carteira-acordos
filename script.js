@@ -369,19 +369,7 @@ function resetDemo() {
 }
 
 function compareAgreements(a, b) {
-    if (state.sortOrder === "due-late") {
-        return compareNumbers(getDueDateTime(b), getDueDateTime(a)) || compareText(a.numero, b.numero);
-    }
-
-    if (state.sortOrder === "created-new") {
-        return compareNumbers(getCreatedTime(b), getCreatedTime(a)) || compareText(a.numero, b.numero);
-    }
-
-    if (state.sortOrder === "created-old") {
-        return compareNumbers(getCreatedTime(a), getCreatedTime(b)) || compareText(a.numero, b.numero);
-    }
-
-    return compareNumbers(getDueDateTime(a), getDueDateTime(b)) || compareText(a.numero, b.numero);
+    return compareAgreementsBy(state.sortOrder, a, b);
 }
 
 function getStatusInfo(agreement) {
@@ -436,19 +424,6 @@ function normalizeSortOrder(value) {
 function normalizeStatusFilter(value) {
     const validOptions = ["all", "open", "paid", "overdue"];
     return validOptions.includes(value) ? value : "all";
-}
-
-function compareNumbers(a, b) {
-    return a - b;
-}
-
-function compareText(a, b) {
-    return a.localeCompare(b, "pt-BR", { numeric: true, sensitivity: "base" });
-}
-
-function getCreatedTime(agreement) {
-    const createdAt = new Date(agreement.criadoEm);
-    return Number.isNaN(createdAt.getTime()) ? 0 : createdAt.getTime();
 }
 
 function normalizeDateTime(value) {
