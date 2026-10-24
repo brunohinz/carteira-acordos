@@ -26,7 +26,8 @@ const {
     formatDate,
     getStatusInfo,
     escapeCsvField,
-    buildAgreementsCsv
+    buildAgreementsCsv,
+    buildListSummary
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -240,4 +241,9 @@ test("buildAgreementsCsv gera cabecalho e linhas no padrao pt-BR", () => {
     const [header, line] = csv.split("\r\n");
     assert.equal(header, "Contrato;Cliente;Valor;Vencimento;Status;Gerado em;Pago em");
     assert.equal(line, 'CT-1;"Unidade; Centro";1234,50;20/10/2026;Atrasado;01/10/2026;');
+});
+
+test("buildListSummary mostra o termo buscado quando houver", () => {
+    assert.equal(buildListSummary(7, 7), "7 acordos encontrados de 7");
+    assert.equal(buildListSummary(1, 7, "sao"), '1 acordo encontrado de 7 para "sao"');
 });

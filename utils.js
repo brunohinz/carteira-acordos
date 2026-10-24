@@ -277,6 +277,11 @@ function formatCurrencyInput(value) {
     });
 }
 
+function buildListSummary(visibleCount, totalCount, search = "") {
+    const summary = `${pluralize(visibleCount, "acordo encontrado", "acordos encontrados")} de ${totalCount}`;
+    return search ? `${summary} para "${search}"` : summary;
+}
+
 function escapeCsvField(value) {
     let text = String(value ?? "");
 
@@ -345,6 +350,7 @@ if (typeof module !== "undefined" && module.exports) {
         formatCurrency,
         formatCurrencyInput,
         escapeHtml,
+        buildListSummary,
         escapeCsvField,
         buildAgreementsCsv
     };
