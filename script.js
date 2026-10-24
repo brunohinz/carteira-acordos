@@ -147,23 +147,6 @@ function createDemoAgreement(numero, cliente, valor, dueOffset, createdOffset, p
     };
 }
 
-function normalizeAgreement(agreement) {
-    if (!agreement || !agreement.numero || !agreement.cliente || !agreement.vencimento) {
-        return null;
-    }
-
-    return {
-        id: agreement.id || createId(),
-        numero: String(agreement.numero),
-        cliente: String(agreement.cliente),
-        valor: normalizeCurrencyValue(agreement.valor),
-        vencimento: String(agreement.vencimento).slice(0, 10),
-        criadoEm: normalizeDateTime(agreement.criadoEm),
-        pago: Boolean(agreement.pago),
-        pagoEm: agreement.pago ? normalizeOptionalDateTime(agreement.pagoEm) : null
-    };
-}
-
 function render() {
     elements.searchInput.value = state.search;
     elements.statusFilter.value = state.statusFilter;
@@ -426,11 +409,6 @@ function normalizeStatusFilter(value) {
     return validOptions.includes(value) ? value : "all";
 }
 
-function normalizeDateTime(value) {
-    const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
-}
-
 function sumCurrency(agreements) {
     return agreements.reduce((total, agreement) => total + currencyToCents(agreement.valor), 0);
 }
@@ -467,14 +445,4 @@ function showMessage(message, isError = false) {
         elements.formMessage.textContent = "";
         elements.formMessage.classList.remove("error");
     }, isError ? 8000 : 4000);
-}
-
-function createId() {
-    const cryptoApi = globalThis.crypto;
-
-    if (cryptoApi && typeof cryptoApi.randomUUID === "function") {
-        return cryptoApi.randomUUID();
-    }
-
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }

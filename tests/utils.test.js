@@ -20,7 +20,9 @@ const {
     matchesStatus,
     compareText,
     getCreatedTime,
-    compareAgreementsBy
+    compareAgreementsBy,
+    normalizeAgreement,
+    createId
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -143,4 +145,45 @@ test("compareAgreementsBy ordena por vencimento e por data de criacao", () => {
     assert.deepEqual(order("created-new"), ["CT-2", "CT-1", "CT-3"]);
     assert.deepEqual(order("created-old"), ["CT-3", "CT-1", "CT-2"]);
     assert.deepEqual(order("desconhecido"), order("due-soon"));
+});
+
+test("normalizeAgreement descarta registros sem dados essenciais", () => {
+    assert.equal(normalizeAgreement(null), null);
+    assert.equal(normalizeAgreement({ numero: "CT-1", cliente: "X" }), null);
+    assert.equal(normalizeAgreement({ numero: "", cliente: "X", vencimento: "2026-10-01" }), null);
+});
+
+test("normalizeAgreement corrige tipos e campos invalidos", () => {
+    const result = normalizeAgreement({
+        id: "abc",
+        numero: 123,
+        cliente: "Unidade Centro",
+        valor: "-10",
+        vencimento: "2026-10-01T12:00:00",
+        criadoEm: "2026-09-01T00:00:00.000Z",
+        pago: 0,
+        pagoEm: "2026-09-05T00:00:00.000Z"
+    });
+    assert.deepEqual(result, {
+        id: "abc",
+        numero: "123",
+        cliente: "Unidade Centro",
+        valor: 0,
+        vencimento: "2026-10-01",
+        criadoEm: "2026-09-01T00:00:00.000Z",
+        pago: false,
+        pagoEm: null
+    });
+});
+
+test("normalizeAgreement gera id e criadoEm quando faltam", () => {
+    const result = normalizeAgreement({ numero: "CT-1", cliente: "X", vencimento: "2026-10-01", valor: 10, pago: true, pagoEm: "lixo" });
+    assert.ok(result.id);
+    assert.ok(!Number.isNaN(Date.parse(result.criadoEm)));
+    assert.equal(result.pago, true);
+    assert.equal(result.pagoEm, null);
+});
+
+test("createId gera ids diferentes", () => {
+    assert.notEqual(createId(), createId());
 });

@@ -37,6 +37,39 @@ function normalizeOptionalDateTime(value) {
     return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 }
 
+function normalizeDateTime(value) {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+}
+
+function createId() {
+    const cryptoApi = globalThis.crypto;
+
+    if (cryptoApi && typeof cryptoApi.randomUUID === "function") {
+        return cryptoApi.randomUUID();
+    }
+
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+// Valida e limpa um acordo vindo do localStorage; devolve null se faltar dado essencial.
+function normalizeAgreement(agreement) {
+    if (!agreement || !agreement.numero || !agreement.cliente || !agreement.vencimento) {
+        return null;
+    }
+
+    return {
+        id: agreement.id || createId(),
+        numero: String(agreement.numero),
+        cliente: String(agreement.cliente),
+        valor: normalizeCurrencyValue(agreement.valor),
+        vencimento: String(agreement.vencimento).slice(0, 10),
+        criadoEm: normalizeDateTime(agreement.criadoEm),
+        pago: Boolean(agreement.pago),
+        pagoEm: agreement.pago ? normalizeOptionalDateTime(agreement.pagoEm) : null
+    };
+}
+
 function addDays(date, days) {
     const result = new Date(date);
     result.setDate(result.getDate() + days);
@@ -205,6 +238,9 @@ if (typeof module !== "undefined" && module.exports) {
         normalizeContractKey,
         isValidDueDate,
         normalizeOptionalDateTime,
+        normalizeDateTime,
+        createId,
+        normalizeAgreement,
         addDays,
         formatInputDate,
         getDueDateTime,
