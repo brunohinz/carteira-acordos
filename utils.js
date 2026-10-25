@@ -277,6 +277,21 @@ function formatCurrencyInput(value) {
     });
 }
 
+// Texto de apoio exibido abaixo do campo Valor enquanto o usuario digita.
+function describeValueInput(rawValue) {
+    if (!String(rawValue || "").trim()) {
+        return { text: "", isError: false };
+    }
+
+    const value = parseCurrency(rawValue);
+
+    if (value <= 0) {
+        return { text: "Informe um valor maior que zero, por exemplo 1.250,00.", isError: true };
+    }
+
+    return { text: `Sera salvo como ${formatCurrency(value)}`, isError: false };
+}
+
 function buildListSummary(visibleCount, totalCount, search = "") {
     const summary = `${pluralize(visibleCount, "acordo encontrado", "acordos encontrados")} de ${totalCount}`;
     return search ? `${summary} para "${search}"` : summary;
@@ -349,6 +364,7 @@ if (typeof module !== "undefined" && module.exports) {
         pluralize,
         formatCurrency,
         formatCurrencyInput,
+        describeValueInput,
         escapeHtml,
         buildListSummary,
         escapeCsvField,

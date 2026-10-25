@@ -91,7 +91,8 @@
                     <input id="agreementDueDate" type="date" min="2000-01-01" max="2100-12-31" required>
 
                     <label for="agreementValue">Valor</label>
-                    <input id="agreementValue" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" required>
+                    <input id="agreementValue" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" aria-describedby="valuePreview" required>
+                    <p class="field-hint" id="valuePreview" aria-live="polite"></p>
 
                     <button type="submit" class="primary-button">Adicionar acordo</button>
                     <p class="form-message" id="formMessage" aria-live="polite"></p>

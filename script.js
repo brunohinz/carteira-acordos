@@ -28,6 +28,7 @@ function cacheElements() {
     elements.dueDate = document.querySelector("#agreementDueDate");
     elements.value = document.querySelector("#agreementValue");
     elements.formMessage = document.querySelector("#formMessage");
+    elements.valuePreview = document.querySelector("#valuePreview");
     elements.searchInput = document.querySelector("#searchInput");
     elements.statusFilter = document.querySelector("#statusFilter");
     elements.sortOrder = document.querySelector("#sortOrder");
@@ -52,6 +53,7 @@ function cacheElements() {
 
 function bindEvents() {
     elements.form.addEventListener("submit", handleAddAgreement);
+    elements.value.addEventListener("input", renderValuePreview);
     elements.value.addEventListener("blur", () => {
         const value = parseCurrency(elements.value.value);
 
@@ -256,6 +258,12 @@ function handleAddAgreement(event) {
     const vencimento = elements.dueDate.value;
     const valor = parseCurrency(elements.value.value);
 
+    if (cliente && numero && vencimento && elements.value.value.trim() && valor <= 0) {
+        showMessage("O valor precisa ser maior que zero.", true);
+        elements.value.focus();
+        return;
+    }
+
     if (!cliente || !numero || !vencimento || valor <= 0) {
         showMessage("Preencha cliente, contrato, vencimento e valor.", true);
         return;
@@ -291,6 +299,7 @@ function handleAddAgreement(event) {
     });
 
     elements.form.reset();
+    renderValuePreview();
     elements.client.focus();
     showMessage("Acordo adicionado na carteira demo.");
     saveDemoState();
@@ -300,6 +309,13 @@ function handleAddAgreement(event) {
 }
 
 // Destaca por alguns segundos a linha do acordo recem-adicionado (se estiver visivel).
+function renderValuePreview() {
+    const preview = describeValueInput(elements.value.value);
+    elements.valuePreview.textContent = preview.text;
+    elements.valuePreview.classList.toggle("error", preview.isError);
+    elements.value.setAttribute("aria-invalid", String(preview.isError));
+}
+
 function highlightRow(id) {
     const row = Array.from(elements.table.rows).find((item) => item.dataset.id === id);
 

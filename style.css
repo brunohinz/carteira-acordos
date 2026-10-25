@@ -340,6 +340,17 @@ select {
     cursor: pointer;
 }
 
+.field-hint {
+    min-height: 18px;
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: .8rem;
+}
+
+.field-hint.error {
+    color: var(--red);
+}
+
 .form-message {
     min-height: 20px;
     margin: 12px 0 0;

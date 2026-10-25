@@ -247,3 +247,14 @@ test("buildListSummary mostra o termo buscado quando houver", () => {
     assert.equal(buildListSummary(7, 7), "7 acordos encontrados de 7");
     assert.equal(buildListSummary(1, 7, "sao"), '1 acordo encontrado de 7 para "sao"');
 });
+
+test("describeValueInput mostra preview formatado ou erro para valor invalido", () => {
+    const { describeValueInput } = require("../utils.js");
+    assert.deepEqual(describeValueInput(""), { text: "", isError: false });
+    assert.deepEqual(describeValueInput("   "), { text: "", isError: false });
+    assert.equal(describeValueInput("0").isError, true);
+    assert.equal(describeValueInput("abc").isError, true);
+    const ok = describeValueInput("1.250,5");
+    assert.equal(ok.isError, false);
+    assert.match(ok.text, /1\.250,50/);
+});
