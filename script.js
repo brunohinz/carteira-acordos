@@ -242,6 +242,7 @@ function createAgreementRow(agreement) {
         <td>
             <div class="row-actions">
                 ${primaryAction}
+                <button type="button" class="row-button edit" data-action="edit" data-id="${safeId}" aria-label="Editar valor e vencimento do acordo ${safeNumber}">Editar</button>
                 <button type="button" class="row-button remove" data-action="remove" data-id="${safeId}" aria-label="Remover acordo ${safeNumber}">Remover</button>
             </div>
         </td>
@@ -349,6 +350,10 @@ function handleTableAction(event) {
         showMessage(agreement.pago ? "Acordo marcado como pago." : "Acordo reaberto.");
     }
 
+    if (button.dataset.action === "edit" && !editAgreement(agreement)) {
+        return;
+    }
+
     if (button.dataset.action === "remove") {
         const confirmed = window.confirm(`Remover o acordo ${agreement.numero} (${agreement.cliente})? Essa acao nao pode ser desfeita.`);
 
@@ -363,6 +368,45 @@ function handleTableAction(event) {
     saveDemoState();
     renderMetrics();
     renderList();
+}
+
+// Edita valor e vencimento via prompt; retorna true se algo mudou.
+function editAgreement(agreement) {
+    const valueAnswer = window.prompt(`Novo valor do acordo ${agreement.numero} (R$):`, formatCurrencyInput(agreement.valor));
+
+    if (valueAnswer === null) {
+        return false;
+    }
+
+    const valor = parseCurrency(valueAnswer);
+
+    if (valor <= 0) {
+        showMessage("Informe um valor maior que zero, por exemplo 1.250,00.", true);
+        return false;
+    }
+
+    const dueAnswer = window.prompt("Novo vencimento (AAAA-MM-DD):", agreement.vencimento);
+
+    if (dueAnswer === null) {
+        return false;
+    }
+
+    const vencimento = dueAnswer.trim();
+
+    if (!isValidDueDate(vencimento)) {
+        showMessage("Informe um vencimento valido entre 2000 e 2100 no formato AAAA-MM-DD.", true);
+        return false;
+    }
+
+    if (valor === agreement.valor && vencimento === agreement.vencimento) {
+        showMessage("Nada foi alterado.");
+        return false;
+    }
+
+    agreement.valor = valor;
+    agreement.vencimento = vencimento;
+    showMessage(`Acordo ${agreement.numero} atualizado.`);
+    return true;
 }
 
 function clearFilters() {
