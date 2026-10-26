@@ -65,14 +65,7 @@ tests/utils.test.js        Unit tests for the pure functions
 
 ## Screenshots
 
-<!-- TODO: take these screenshots and save them in assets/ -->
-- [x] `assets/dashboard.png`: main dashboard (already in the repo)
-- [ ] `assets/new-agreement.png`: the create form showing the value preview and a due-date validation message
-- [ ] `assets/filters.png`: the list filtered by "Atrasados" (overdue) with a search term typed in
-- [ ] `assets/goal.png`: the "Alterar meta" dialog and the monthly goal indicator
-- [ ] `assets/undo-delete.png`: the undo prompt after deleting an agreement
-- [ ] `assets/export.png`: the exported CSV opened in Excel or LibreOffice
-- [ ] `assets/mobile.png`: the mobile layout (DevTools device mode, about 390 px wide)
+![Main dashboard](assets/dashboard.png)
 
 ## What this project demonstrates
 
