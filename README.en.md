@@ -65,7 +65,17 @@ tests/utils.test.js        Unit tests for the pure functions
 
 ## Screenshots
 
-![Main dashboard](assets/dashboard.png)
+| New agreement | "Atrasados" (overdue) filter + search |
+|---|---|
+| ![New agreement form](assets/new-agreement.png) | ![Filter and search](assets/filters.png) |
+
+| Change goal | Undo delete |
+|---|---|
+| ![Change goal](assets/goal.png) | ![Undo delete](assets/undo-delete.png) |
+
+Mobile layout (about 390 px):
+
+<img src="assets/mobile.png" alt="Mobile layout" width="260">
 
 ## What this project demonstrates
 

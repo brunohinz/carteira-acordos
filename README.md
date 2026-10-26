@@ -25,6 +25,20 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 - Persistência local com `localStorage` (acordos, filtros, busca e meta).
 - Layout responsivo para desktop e celular.
 
+## Capturas de tela
+
+| Novo acordo | Filtro "Atrasados" + busca |
+|---|---|
+| ![Formulário de novo acordo](assets/new-agreement.png) | ![Filtro e busca](assets/filters.png) |
+
+| Alterar meta | Desfazer exclusão |
+|---|---|
+| ![Alterar meta](assets/goal.png) | ![Desfazer exclusão](assets/undo-delete.png) |
+
+Versão mobile (cerca de 390 px):
+
+<img src="assets/mobile.png" alt="Layout mobile" width="260">
+
 ## O que este projeto demonstra
 
 - Manipulação de DOM com JavaScript puro.
