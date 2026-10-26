@@ -31,7 +31,9 @@ const {
     buildListSummary,
     buildBackup,
     BACKUP_FORMAT,
-    parseBackup
+    parseBackup,
+    readSavedState,
+    writeSavedState
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -311,4 +313,50 @@ test("parseBackup aceita lista simples e rejeita arquivos invalidos", () => {
     assert.throws(() => parseBackup("{nao e json"), /JSON valido/);
     assert.throws(() => parseBackup(JSON.stringify({ foo: 1 })), /lista de acordos/);
     assert.throws(() => parseBackup(JSON.stringify({ formato: "outro", acordos: [] })), /desconhecido/);
+});
+
+function createMemoryStorage(initial = {}) {
+    const data = { ...initial };
+    return {
+        getItem: (key) => (key in data ? data[key] : null),
+        setItem: (key, value) => { data[key] = String(value); },
+        data
+    };
+}
+
+test("writeSavedState e readSavedState fazem ida e volta com normalizacao", () => {
+    const storage = createMemoryStorage();
+    const ok = writeSavedState(storage, "k", {
+        agreements: [{ id: "a", numero: "CT-1", cliente: "U", valor: 10, vencimento: "2026-11-01", criadoEm: "2026-10-01T00:00:00.000Z", pago: false, pagoEm: "x" }],
+        sortOrder: "created-new",
+        statusFilter: "next-7",
+        search: "  sao  ",
+        goal: 50000,
+        extra: "nao deve ser salvo"
+    });
+
+    assert.equal(ok, true);
+    assert.equal(JSON.parse(storage.data.k).extra, undefined);
+
+    const saved = readSavedState(storage, "k", 42000);
+    assert.equal(saved.agreements.length, 1);
+    assert.equal(saved.agreements[0].pagoEm, null);
+    assert.equal(saved.sortOrder, "created-new");
+    assert.equal(saved.statusFilter, "next-7");
+    assert.equal(saved.search, "sao");
+    assert.equal(saved.goal, 50000);
+});
+
+test("readSavedState devolve null para vazio/corrompido e usa defaults invalidos", () => {
+    assert.equal(readSavedState(createMemoryStorage(), "k", 42000), null);
+    assert.equal(readSavedState(createMemoryStorage({ k: "{quebrado" }), "k", 42000), null);
+    assert.equal(readSavedState(createMemoryStorage({ k: JSON.stringify({ foo: 1 }) }), "k", 42000), null);
+
+    const saved = readSavedState(createMemoryStorage({ k: JSON.stringify({ agreements: [], sortOrder: "x", statusFilter: "y", search: 5, goal: -1 }) }), "k", 42000);
+    assert.deepEqual(saved, { agreements: [], sortOrder: "due-soon", statusFilter: "all", search: "", goal: 42000 });
+});
+
+test("writeSavedState devolve false quando o armazenamento recusa", () => {
+    const storage = { setItem: () => { throw new Error("QuotaExceededError"); } };
+    assert.equal(writeSavedState(storage, "k", { agreements: [] }), false);
 });

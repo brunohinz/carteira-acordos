@@ -339,6 +339,57 @@ function buildAgreementsCsv(agreements, today = new Date()) {
         .join("\r\n");
 }
 
+const SORT_OPTIONS = ["due-soon", "due-late", "created-new", "created-old"];
+const STATUS_FILTER_OPTIONS = ["all", "open", "paid", "overdue", "due-today", "next-7"];
+
+function normalizeSortOrder(value) {
+    return SORT_OPTIONS.includes(value) ? value : "due-soon";
+}
+
+function normalizeStatusFilter(value) {
+    return STATUS_FILTER_OPTIONS.includes(value) ? value : "all";
+}
+
+// Le o estado salvo; "storage" segue a interface do localStorage (injetavel nos testes).
+// Devolve null quando nao ha nada salvo ou o conteudo esta corrompido.
+function readSavedState(storage, key, defaultGoal) {
+    let saved;
+
+    try {
+        saved = JSON.parse(storage.getItem(key) || "null");
+    } catch (error) {
+        return null;
+    }
+
+    if (!saved || !Array.isArray(saved.agreements)) {
+        return null;
+    }
+
+    return {
+        agreements: saved.agreements.map(normalizeAgreement).filter(Boolean),
+        sortOrder: normalizeSortOrder(saved.sortOrder),
+        statusFilter: normalizeStatusFilter(saved.statusFilter),
+        search: typeof saved.search === "string" ? saved.search.trim().slice(0, 100) : "",
+        goal: normalizeCurrencyValue(saved.goal) || defaultGoal
+    };
+}
+
+// Grava o estado; devolve false se o navegador recusar (cheio ou bloqueado).
+function writeSavedState(storage, key, data) {
+    try {
+        storage.setItem(key, JSON.stringify({
+            agreements: data.agreements,
+            sortOrder: data.sortOrder,
+            statusFilter: data.statusFilter,
+            search: data.search,
+            goal: data.goal
+        }));
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 const BACKUP_FORMAT = "carteira-acordos-backup";
 const BACKUP_VERSION = 1;
 
@@ -437,6 +488,10 @@ if (typeof module !== "undefined" && module.exports) {
         buildListSummary,
         escapeCsvField,
         buildAgreementsCsv,
+        normalizeSortOrder,
+        normalizeStatusFilter,
+        readSavedState,
+        writeSavedState,
         BACKUP_FORMAT,
         BACKUP_VERSION,
         buildBackup,

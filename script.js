@@ -104,19 +104,18 @@ function bindEvents() {
 }
 
 function loadDemoState() {
-    try {
-        const saved = JSON.parse(localStorage.getItem(DEMO_STORAGE_KEY) || "null");
+    let saved = null;
 
-        if (saved && Array.isArray(saved.agreements)) {
-            state.agreements = saved.agreements.map(normalizeAgreement).filter(Boolean);
-            state.sortOrder = normalizeSortOrder(saved.sortOrder);
-            state.statusFilter = normalizeStatusFilter(saved.statusFilter);
-            state.search = typeof saved.search === "string" ? saved.search.trim().slice(0, 100) : "";
-            state.goal = normalizeCurrencyValue(saved.goal) || DEFAULT_GOAL;
-            return;
-        }
+    try {
+        saved = readSavedState(localStorage, DEMO_STORAGE_KEY, DEFAULT_GOAL);
     } catch (error) {
-        state.agreements = [];
+        // localStorage pode nem estar acessivel (modo privado/bloqueado).
+        saved = null;
+    }
+
+    if (saved) {
+        Object.assign(state, saved);
+        return;
     }
 
     state.agreements = createDemoAgreements();
@@ -124,19 +123,19 @@ function loadDemoState() {
 }
 
 function saveDemoState() {
+    let saved = false;
+
     try {
-        localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({
-            agreements: state.agreements,
-            sortOrder: state.sortOrder,
-            statusFilter: state.statusFilter,
-            search: state.search,
-            goal: state.goal
-        }));
-        return true;
+        saved = writeSavedState(localStorage, DEMO_STORAGE_KEY, state);
     } catch (error) {
-        showMessage("Nao foi possivel salvar no navegador (armazenamento cheio ou bloqueado). As alteracoes valem so ate recarregar a pagina.", true);
-        return false;
+        saved = false;
     }
+
+    if (!saved) {
+        showMessage("Nao foi possivel salvar no navegador (armazenamento cheio ou bloqueado). As alteracoes valem so ate recarregar a pagina.", true);
+    }
+
+    return saved;
 }
 
 function createDemoAgreements() {
@@ -594,16 +593,6 @@ function wasCreatedThisMonth(agreement) {
     return !Number.isNaN(createdAt.getTime())
         && createdAt.getFullYear() === today.getFullYear()
         && createdAt.getMonth() === today.getMonth();
-}
-
-function normalizeSortOrder(value) {
-    const validOptions = ["due-soon", "due-late", "created-new", "created-old"];
-    return validOptions.includes(value) ? value : "due-soon";
-}
-
-function normalizeStatusFilter(value) {
-    const validOptions = ["all", "open", "paid", "overdue", "due-today", "next-7"];
-    return validOptions.includes(value) ? value : "all";
 }
 
 function sumCurrency(agreements) {
