@@ -46,6 +46,7 @@ function cacheElements() {
     elements.overdueValue = document.querySelector("#overdueValue");
     elements.overdueCount = document.querySelector("#overdueCount");
     elements.goalProgress = document.querySelector("#goalProgress");
+    elements.goalProgressTrack = document.querySelector("#goalProgressTrack");
     elements.goalProgressBar = document.querySelector("#goalProgressBar");
     elements.goalHint = document.querySelector("#goalHint");
     elements.editGoalButton = document.querySelector("#editGoalButton");
@@ -185,6 +186,8 @@ function renderMetrics() {
     elements.overdueCount.textContent = pluralize(overdue.length, "acordo atrasado", "acordos atrasados");
     elements.goalProgress.textContent = `${progress}%`;
     elements.goalProgressBar.style.width = `${progress}%`;
+    elements.goalProgressTrack.setAttribute("aria-valuenow", String(progress));
+    elements.goalProgressTrack.setAttribute("aria-valuetext", `${progress}% da meta: ${formatCurrency(paidThisMonthValue)} de ${formatCurrency(state.goal)}`);
     elements.goalHint.textContent = `${formatCurrency(paidThisMonthValue)} pagos no mes de ${formatCurrency(state.goal)}`;
 }
 
