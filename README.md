@@ -8,15 +8,19 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 
 ## Funcionalidades
 
-- Indicadores de valor gerado no mês, valor pago, valor em aberto, atrasos e progresso de meta.
+- Indicadores de valor gerado no mês, valor pago, valor em aberto e atrasos.
+- Meta mensal configurável (botão "Alterar meta"), calculada só com os acordos pagos no mês corrente.
 - Base inicial com acordos demonstrativos.
-- Cadastro de novos acordos.
-- Busca por contrato ou cliente.
-- Filtro por status: todos, em aberto, pagos e atrasados.
+- Cadastro de novos acordos, com prévia do valor formatado e validação de vencimento.
+- Edição de valor e vencimento de um acordo existente.
+- Busca por contrato ou cliente, sem diferenciar acentos e maiúsculas (Esc limpa a busca).
+- Filtro por status: todos, em aberto, pagos, atrasados, vence hoje e próximos 7 dias.
 - Ordenação por vencimento ou por data de geração.
-- Marcação de acordos como pagos, reabertura e remoção.
+- Marcação de acordos como pagos, reabertura e remoção com opção de desfazer.
+- Exportação da lista atual em CSV (respeita busca e filtros, abre direto no Excel em pt-BR).
+- Backup completo em JSON e importação de um backup (valida os dados e ignora contratos duplicados).
 - Restauração da base demonstrativa.
-- Persistência local com `localStorage`.
+- Persistência local com `localStorage` (acordos, filtros, busca e meta).
 - Layout responsivo para desktop e celular.
 
 ## O que este projeto demonstra
@@ -27,7 +31,7 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 - Cálculo e atualização de indicadores financeiros.
 - Persistência de dados no navegador com localStorage.
 - Layout responsivo com CSS Grid e Flexbox.
-- Testes automatizados das regras de moeda e datas com `node --test` e CI no GitHub Actions.
+- Testes automatizados das regras de moeda, datas, filtros, backup e armazenamento com `node --test` e CI no GitHub Actions.
 - Organização de uma interface administrativa em formato de dashboard.
 
 ## Tecnologias
@@ -52,7 +56,7 @@ index.html                 Estrutura da aplicação
 favicon.svg                Ícone da aba do navegador
 style.css                  Estilos e responsividade
 script.js                  Estado, renderização e interações (DOM)
-utils.js                   Funções puras: moeda, datas, busca e textos
+utils.js                   Funções puras: moeda, datas, filtros, CSV, backup e armazenamento
 tests/utils.test.js        Testes das funções puras
 .github/workflows/ci.yml   Check e testes automáticos a cada push
 ```
