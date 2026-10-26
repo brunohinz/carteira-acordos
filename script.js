@@ -53,6 +53,9 @@ function cacheElements() {
     elements.goalProgressBar = document.querySelector("#goalProgressBar");
     elements.goalHint = document.querySelector("#goalHint");
     elements.editGoalButton = document.querySelector("#editGoalButton");
+    elements.undoToast = document.querySelector("#undoToast");
+    elements.undoText = document.querySelector("#undoText");
+    elements.undoButton = document.querySelector("#undoButton");
 }
 
 function bindEvents() {
@@ -97,6 +100,7 @@ function bindEvents() {
     elements.editGoalButton.addEventListener("click", editGoal);
     elements.clearFiltersButton.addEventListener("click", clearFilters);
     elements.table.addEventListener("click", handleTableAction);
+    elements.undoButton.addEventListener("click", undoRemove);
 }
 
 function loadDemoState() {
@@ -366,14 +370,9 @@ function handleTableAction(event) {
     }
 
     if (button.dataset.action === "remove") {
-        const confirmed = window.confirm(`Remover o acordo ${agreement.numero} (${agreement.cliente})? Essa acao nao pode ser desfeita.`);
-
-        if (!confirmed) {
-            return;
-        }
-
-        state.agreements = state.agreements.filter((item) => item.id !== agreement.id);
-        showMessage("Acordo removido da demo.");
+        const index = state.agreements.indexOf(agreement);
+        state.agreements.splice(index, 1);
+        showUndoToast(agreement, index);
     }
 
     saveDemoState();
@@ -418,6 +417,45 @@ function editAgreement(agreement) {
     agreement.vencimento = vencimento;
     showMessage(`Acordo ${agreement.numero} atualizado.`);
     return true;
+}
+
+// Em vez de pedir confirmacao, remove na hora e oferece "Desfazer" por alguns segundos.
+const UNDO_TIMEOUT_MS = 8000;
+let pendingUndo = null;
+let undoTimer = null;
+
+function showUndoToast(agreement, index) {
+    window.clearTimeout(undoTimer);
+    pendingUndo = { agreement, index };
+    elements.undoText.textContent = `Acordo ${agreement.numero} removido.`;
+    elements.undoToast.hidden = false;
+    undoTimer = window.setTimeout(hideUndoToast, UNDO_TIMEOUT_MS);
+}
+
+function hideUndoToast() {
+    window.clearTimeout(undoTimer);
+    pendingUndo = null;
+    elements.undoToast.hidden = true;
+}
+
+function undoRemove() {
+    if (!pendingUndo) {
+        return;
+    }
+
+    const { agreement, index } = pendingUndo;
+    hideUndoToast();
+
+    if (state.agreements.some((item) => item.id === agreement.id)) {
+        return;
+    }
+
+    state.agreements.splice(Math.min(index, state.agreements.length), 0, agreement);
+    showMessage(`Acordo ${agreement.numero} restaurado.`);
+    saveDemoState();
+    renderMetrics();
+    renderList();
+    highlightRow(agreement.id);
 }
 
 function clearFilters() {
@@ -500,6 +538,7 @@ async function importBackup() {
         return;
     }
 
+    hideUndoToast();
     state.agreements = backup.agreements;
 
     if (backup.goal > 0) {
@@ -533,6 +572,7 @@ function resetDemo() {
         return;
     }
 
+    hideUndoToast();
     state.agreements = createDemoAgreements();
     state.sortOrder = "due-soon";
     state.statusFilter = "all";
