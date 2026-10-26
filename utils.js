@@ -339,6 +339,20 @@ function buildAgreementsCsv(agreements, today = new Date()) {
         .join("\r\n");
 }
 
+const BACKUP_FORMAT = "carteira-acordos-backup";
+const BACKUP_VERSION = 1;
+
+// Backup completo (todos os acordos + meta) para salvar ou levar a outro navegador.
+function buildBackup(agreements, goal, now = new Date()) {
+    return {
+        formato: BACKUP_FORMAT,
+        versao: BACKUP_VERSION,
+        exportadoEm: now.toISOString(),
+        meta: normalizeCurrencyValue(goal),
+        acordos: agreements.map(normalizeAgreement).filter(Boolean)
+    };
+}
+
 function escapeHtml(value) {
     return String(value)
         .replace(/&/g, "&amp;")
@@ -382,6 +396,9 @@ if (typeof module !== "undefined" && module.exports) {
         escapeHtml,
         buildListSummary,
         escapeCsvField,
-        buildAgreementsCsv
+        buildAgreementsCsv,
+        BACKUP_FORMAT,
+        BACKUP_VERSION,
+        buildBackup
     };
 }

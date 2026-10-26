@@ -28,7 +28,9 @@ const {
     getStatusInfo,
     escapeCsvField,
     buildAgreementsCsv,
-    buildListSummary
+    buildListSummary,
+    buildBackup,
+    BACKUP_FORMAT
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -268,4 +270,20 @@ test("wasPaidInMonth so considera pagamentos no mes de referencia", () => {
     assert.equal(wasPaidInMonth({ pago: true, pagoEm: null }, today), false);
     assert.equal(wasPaidInMonth({ pago: false, pagoEm: new Date(2026, 9, 2).toISOString() }, today), false);
     assert.equal(wasPaidInMonth({ pago: true, pagoEm: "invalida" }, today), false);
+});
+
+test("buildBackup inclui formato, meta e apenas acordos validos", () => {
+    const now = new Date("2026-10-26T13:00:00.000Z");
+    const backup = buildBackup([
+        { id: "a", numero: "CT-1", cliente: "Unidade", valor: 10.005, vencimento: "2026-11-01", criadoEm: "2026-10-01T00:00:00.000Z", pago: false },
+        { numero: "", cliente: "Sem contrato", vencimento: "2026-11-01" }
+    ], 42000, now);
+
+    assert.equal(backup.formato, BACKUP_FORMAT);
+    assert.equal(backup.versao, 1);
+    assert.equal(backup.exportadoEm, "2026-10-26T13:00:00.000Z");
+    assert.equal(backup.meta, 42000);
+    assert.equal(backup.acordos.length, 1);
+    assert.equal(backup.acordos[0].numero, "CT-1");
+    assert.equal(backup.acordos[0].pagoEm, null);
 });

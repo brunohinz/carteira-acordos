@@ -22,6 +22,7 @@ function cacheElements() {
     elements.lastUpdated = document.querySelector("#lastUpdated");
     elements.resetDemoButton = document.querySelector("#resetDemoButton");
     elements.exportCsvButton = document.querySelector("#exportCsvButton");
+    elements.exportBackupButton = document.querySelector("#exportBackupButton");
     elements.form = document.querySelector("#agreementForm");
     elements.client = document.querySelector("#agreementClient");
     elements.number = document.querySelector("#agreementNumber");
@@ -88,6 +89,7 @@ function bindEvents() {
     });
     elements.resetDemoButton.addEventListener("click", resetDemo);
     elements.exportCsvButton.addEventListener("click", exportCsv);
+    elements.exportBackupButton.addEventListener("click", exportBackup);
     elements.editGoalButton.addEventListener("click", editGoal);
     elements.clearFiltersButton.addEventListener("click", clearFilters);
     elements.table.addEventListener("click", handleTableAction);
@@ -454,16 +456,27 @@ function exportCsv() {
 
     // BOM para o Excel reconhecer UTF-8 (acentos).
     const csv = `\uFEFF${buildAgreementsCsv(visibleAgreements)}`;
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    downloadFile(csv, `carteira-acordos-${formatInputDate(new Date())}.csv`, "text/csv;charset=utf-8");
+    showMessage(`${pluralize(visibleAgreements.length, "acordo exportado", "acordos exportados")} em CSV.`);
+}
+
+// Backup ignora busca e filtros: leva a carteira inteira e a meta.
+function exportBackup() {
+    const backup = buildBackup(state.agreements, state.goal);
+    downloadFile(JSON.stringify(backup, null, 2), `carteira-acordos-backup-${formatInputDate(new Date())}.json`, "application/json");
+    showMessage(`Backup salvo com ${pluralize(backup.acordos.length, "acordo", "acordos")}.`);
+}
+
+function downloadFile(content, fileName, type) {
+    const blob = new Blob([content], { type });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `carteira-acordos-${formatInputDate(new Date())}.csv`;
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
-    showMessage(`${pluralize(visibleAgreements.length, "acordo exportado", "acordos exportados")} em CSV.`);
 }
 
 function resetDemo() {
