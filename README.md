@@ -1,6 +1,8 @@
 # Carteira de Acordos
 
 [![CI](https://github.com/brunohinz/carteira-acordos/actions/workflows/ci.yml/badge.svg)](https://github.com/brunohinz/carteira-acordos/actions/workflows/ci.yml)
+🇬🇧 [English version](README.en.md)
+
 
 ![Tela principal do dashboard](assets/dashboard.png)
 
