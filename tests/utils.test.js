@@ -30,7 +30,8 @@ const {
     buildAgreementsCsv,
     buildListSummary,
     buildBackup,
-    BACKUP_FORMAT
+    BACKUP_FORMAT,
+    parseBackup
 } = require("../utils.js");
 
 test("parseCurrency entende formatos brasileiros e internacionais", () => {
@@ -286,4 +287,28 @@ test("buildBackup inclui formato, meta e apenas acordos validos", () => {
     assert.equal(backup.acordos.length, 1);
     assert.equal(backup.acordos[0].numero, "CT-1");
     assert.equal(backup.acordos[0].pagoEm, null);
+});
+
+test("parseBackup aceita o proprio backup e descarta invalidos e duplicados", () => {
+    const backup = buildBackup([
+        { id: "a", numero: "CT-1", cliente: "Unidade", valor: 100, vencimento: "2026-11-01", criadoEm: "2026-10-01T00:00:00.000Z" },
+        { id: "b", numero: " ct - 1", cliente: "Duplicado", valor: 50, vencimento: "2026-11-02", criadoEm: "2026-10-01T00:00:00.000Z" },
+        { id: "c", numero: "CT-2", cliente: "Sem valor", valor: 0, vencimento: "2026-11-02" },
+        { id: "d", numero: "CT-3", cliente: "Data ruim", valor: 10, vencimento: "2026-02-31" }
+    ], 50000);
+    const result = parseBackup(`\uFEFF${JSON.stringify(backup)}`);
+
+    assert.deepEqual(result.agreements.map((item) => item.numero), ["CT-1"]);
+    assert.equal(result.goal, 50000);
+    assert.equal(result.skipped, 3);
+});
+
+test("parseBackup aceita lista simples e rejeita arquivos invalidos", () => {
+    const result = parseBackup(JSON.stringify([{ numero: "CT-9", cliente: "X", valor: 1, vencimento: "2026-12-01" }]));
+    assert.equal(result.agreements.length, 1);
+    assert.equal(result.goal, 0);
+
+    assert.throws(() => parseBackup("{nao e json"), /JSON valido/);
+    assert.throws(() => parseBackup(JSON.stringify({ foo: 1 })), /lista de acordos/);
+    assert.throws(() => parseBackup(JSON.stringify({ formato: "outro", acordos: [] })), /desconhecido/);
 });

@@ -23,6 +23,8 @@ function cacheElements() {
     elements.resetDemoButton = document.querySelector("#resetDemoButton");
     elements.exportCsvButton = document.querySelector("#exportCsvButton");
     elements.exportBackupButton = document.querySelector("#exportBackupButton");
+    elements.importBackupButton = document.querySelector("#importBackupButton");
+    elements.importBackupInput = document.querySelector("#importBackupInput");
     elements.form = document.querySelector("#agreementForm");
     elements.client = document.querySelector("#agreementClient");
     elements.number = document.querySelector("#agreementNumber");
@@ -90,6 +92,8 @@ function bindEvents() {
     elements.resetDemoButton.addEventListener("click", resetDemo);
     elements.exportCsvButton.addEventListener("click", exportCsv);
     elements.exportBackupButton.addEventListener("click", exportBackup);
+    elements.importBackupButton.addEventListener("click", () => elements.importBackupInput.click());
+    elements.importBackupInput.addEventListener("change", importBackup);
     elements.editGoalButton.addEventListener("click", editGoal);
     elements.clearFiltersButton.addEventListener("click", clearFilters);
     elements.table.addEventListener("click", handleTableAction);
@@ -465,6 +469,49 @@ function exportBackup() {
     const backup = buildBackup(state.agreements, state.goal);
     downloadFile(JSON.stringify(backup, null, 2), `carteira-acordos-backup-${formatInputDate(new Date())}.json`, "application/json");
     showMessage(`Backup salvo com ${pluralize(backup.acordos.length, "acordo", "acordos")}.`);
+}
+
+async function importBackup() {
+    const file = elements.importBackupInput.files[0];
+    // Limpa o input para permitir escolher o mesmo arquivo de novo.
+    elements.importBackupInput.value = "";
+
+    if (!file) {
+        return;
+    }
+
+    let backup;
+
+    try {
+        backup = parseBackup(await file.text());
+    } catch (error) {
+        showMessage(`Nao foi possivel importar: ${error.message}`, true);
+        return;
+    }
+
+    if (backup.agreements.length === 0) {
+        showMessage("Nenhum acordo valido encontrado no arquivo.", true);
+        return;
+    }
+
+    const confirmed = window.confirm(`Importar ${pluralize(backup.agreements.length, "acordo", "acordos")} de "${file.name}"? A carteira atual sera substituida.`);
+
+    if (!confirmed) {
+        return;
+    }
+
+    state.agreements = backup.agreements;
+
+    if (backup.goal > 0) {
+        state.goal = backup.goal;
+    }
+
+    const skippedNote = backup.skipped > 0
+        ? ` (${pluralize(backup.skipped, "registro ignorado", "registros ignorados")} por estar incompleto ou duplicado)`
+        : "";
+    showMessage(`${pluralize(backup.agreements.length, "acordo importado", "acordos importados")}${skippedNote}.`);
+    saveDemoState();
+    render();
 }
 
 function downloadFile(content, fileName, type) {

@@ -353,6 +353,46 @@ function buildBackup(agreements, goal, now = new Date()) {
     };
 }
 
+// Le um backup (ou uma lista simples de acordos) e devolve dados validados.
+// Lanca Error com mensagem pronta para o usuario quando o arquivo nao serve.
+function parseBackup(text) {
+    let data;
+
+    try {
+        data = JSON.parse(String(text).replace(/^\uFEFF/, ""));
+    } catch (error) {
+        throw new Error("O arquivo nao e um JSON valido.");
+    }
+
+    const list = Array.isArray(data) ? data : data && data.acordos;
+
+    if (!Array.isArray(list)) {
+        throw new Error("O arquivo nao parece um backup da carteira (falta a lista de acordos).");
+    }
+
+    if (!Array.isArray(data) && data.formato && data.formato !== BACKUP_FORMAT) {
+        throw new Error("Formato de backup desconhecido.");
+    }
+
+    const seen = new Set();
+    const agreements = [];
+
+    list.map(normalizeAgreement).filter(Boolean).forEach((agreement) => {
+        const key = normalizeContractKey(agreement.numero);
+
+        if (!seen.has(key) && agreement.valor > 0 && isValidDueDate(agreement.vencimento)) {
+            seen.add(key);
+            agreements.push(agreement);
+        }
+    });
+
+    return {
+        agreements,
+        goal: Array.isArray(data) ? 0 : normalizeCurrencyValue(data.meta),
+        skipped: list.length - agreements.length
+    };
+}
+
 function escapeHtml(value) {
     return String(value)
         .replace(/&/g, "&amp;")
@@ -399,6 +439,7 @@ if (typeof module !== "undefined" && module.exports) {
         buildAgreementsCsv,
         BACKUP_FORMAT,
         BACKUP_VERSION,
-        buildBackup
+        buildBackup,
+        parseBackup
     };
 }
