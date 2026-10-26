@@ -16,6 +16,7 @@ const {
     getDueDateTime,
     getDueDiffDays,
     isOverdue,
+    wasPaidInMonth,
     matchesSearchTerm,
     matchesStatus,
     compareText,
@@ -257,4 +258,14 @@ test("describeValueInput mostra preview formatado ou erro para valor invalido", 
     const ok = describeValueInput("1.250,5");
     assert.equal(ok.isError, false);
     assert.match(ok.text, /1\.250,50/);
+});
+
+test("wasPaidInMonth so considera pagamentos no mes de referencia", () => {
+    const today = new Date(2026, 9, 26);
+    assert.equal(wasPaidInMonth({ pago: true, pagoEm: new Date(2026, 9, 1, 12).toISOString() }, today), true);
+    assert.equal(wasPaidInMonth({ pago: true, pagoEm: new Date(2026, 8, 30, 12).toISOString() }, today), false);
+    assert.equal(wasPaidInMonth({ pago: true, pagoEm: new Date(2025, 9, 10, 12).toISOString() }, today), false);
+    assert.equal(wasPaidInMonth({ pago: true, pagoEm: null }, today), false);
+    assert.equal(wasPaidInMonth({ pago: false, pagoEm: new Date(2026, 9, 2).toISOString() }, today), false);
+    assert.equal(wasPaidInMonth({ pago: true, pagoEm: "invalida" }, today), false);
 });

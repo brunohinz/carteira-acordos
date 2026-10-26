@@ -171,7 +171,9 @@ function renderMetrics() {
     const open = state.agreements.filter((agreement) => !agreement.pago);
     const overdue = state.agreements.filter((agreement) => isOverdue(agreement));
     const paidValue = centsToCurrency(sumCurrency(paid));
-    const progress = Math.min(Math.round((paidValue / state.goal) * 100), 100);
+    // A meta e mensal: so conta o que foi pago no mes corrente.
+    const paidThisMonthValue = centsToCurrency(sumCurrency(state.agreements.filter((agreement) => wasPaidInMonth(agreement))));
+    const progress = Math.min(Math.round((paidThisMonthValue / state.goal) * 100), 100);
 
     elements.monthGeneratedValue.textContent = formatCurrency(centsToCurrency(sumCurrency(monthGenerated)));
     elements.monthGeneratedCount.textContent = pluralize(monthGenerated.length, "acordo gerado", "acordos gerados");
@@ -183,7 +185,7 @@ function renderMetrics() {
     elements.overdueCount.textContent = pluralize(overdue.length, "acordo atrasado", "acordos atrasados");
     elements.goalProgress.textContent = `${progress}%`;
     elements.goalProgressBar.style.width = `${progress}%`;
-    elements.goalHint.textContent = `${formatCurrency(paidValue)} de ${formatCurrency(state.goal)}`;
+    elements.goalHint.textContent = `${formatCurrency(paidThisMonthValue)} pagos no mes de ${formatCurrency(state.goal)}`;
 }
 
 function renderList() {

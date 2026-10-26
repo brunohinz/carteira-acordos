@@ -99,6 +99,19 @@ function isOverdue(agreement, today = new Date()) {
     return !agreement.pago && getDueDiffDays(agreement, today) < 0;
 }
 
+// Pago dentro do mes/ano de "today" (usado pela meta mensal).
+function wasPaidInMonth(agreement, today = new Date()) {
+    if (!agreement.pago || !agreement.pagoEm) {
+        return false;
+    }
+
+    const paidAt = new Date(agreement.pagoEm);
+
+    return !Number.isNaN(paidAt.getTime())
+        && paidAt.getFullYear() === today.getFullYear()
+        && paidAt.getMonth() === today.getMonth();
+}
+
 function formatDate(value) {
     const date = new Date(String(value).includes("T") ? value : `${value}T00:00:00`);
 
@@ -349,6 +362,7 @@ if (typeof module !== "undefined" && module.exports) {
         getDueDateTime,
         getDueDiffDays,
         isOverdue,
+        wasPaidInMonth,
         formatDate,
         getStatusInfo,
         matchesSearchTerm,
