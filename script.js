@@ -60,6 +60,8 @@ function cacheElements() {
     elements.editDialog = document.querySelector("#editDialog");
     elements.editForm = document.querySelector("#editForm");
     elements.editDialogTitle = document.querySelector("#editDialogTitle");
+    elements.editClient = document.querySelector("#editClient");
+    elements.editNumber = document.querySelector("#editNumber");
     elements.editValue = document.querySelector("#editValue");
     elements.editDueDate = document.querySelector("#editDueDate");
     elements.editMessage = document.querySelector("#editMessage");
@@ -273,7 +275,7 @@ function createAgreementRow(agreement) {
         <td>
             <div class="row-actions">
                 ${primaryAction}
-                <button type="button" class="row-button edit" data-action="edit" data-id="${safeId}" aria-label="Editar valor e vencimento do acordo ${safeNumber}">Editar</button>
+                <button type="button" class="row-button edit" data-action="edit" data-id="${safeId}" aria-label="Editar acordo ${safeNumber}">Editar</button>
                 <button type="button" class="row-button remove" data-action="remove" data-id="${safeId}" aria-label="Remover acordo ${safeNumber}">Remover</button>
             </div>
         </td>
@@ -307,12 +309,7 @@ function handleAddAgreement(event) {
         return;
     }
 
-    const contractKey = normalizeContractKey(numero);
-    const exists = state.agreements.some((agreement) => (
-        normalizeContractKey(agreement.numero) === contractKey
-    ));
-
-    if (exists) {
+    if (isDuplicateContract(numero)) {
         showMessage("Esse contrato já existe na carteira.", true);
         return;
     }
@@ -400,14 +397,25 @@ function handleTableAction(event) {
 
 let editingId = null;
 
+// Contrato repetido ignorando caixa, espacos e acentos; ignoreId deixa o proprio acordo de fora na edicao.
+function isDuplicateContract(numero, ignoreId = null) {
+    const contractKey = normalizeContractKey(numero);
+
+    return state.agreements.some((agreement) => (
+        agreement.id !== ignoreId && normalizeContractKey(agreement.numero) === contractKey
+    ));
+}
+
 function openEditDialog(agreement) {
     editingId = agreement.id;
     elements.editDialogTitle.textContent = `Editar acordo ${agreement.numero}`;
+    elements.editClient.value = agreement.cliente;
+    elements.editNumber.value = agreement.numero;
     elements.editValue.value = formatCurrencyInput(agreement.valor);
     elements.editDueDate.value = agreement.vencimento;
     elements.editMessage.textContent = "";
     elements.editDialog.showModal();
-    elements.editValue.select();
+    elements.editClient.focus();
 }
 
 function showDialogError(messageElement, input, message) {
@@ -425,10 +433,27 @@ function handleEditSubmit(event) {
         return;
     }
 
-    elements.editValue.removeAttribute("aria-invalid");
-    elements.editDueDate.removeAttribute("aria-invalid");
+    [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate]
+        .forEach((input) => input.removeAttribute("aria-invalid"));
+    const cliente = elements.editClient.value.trim();
+    const numero = elements.editNumber.value.trim();
     const valor = parseCurrency(elements.editValue.value);
     const vencimento = elements.editDueDate.value;
+
+    if (!cliente) {
+        showDialogError(elements.editMessage, elements.editClient, "Informe o cliente ou a unidade.");
+        return;
+    }
+
+    if (!numero) {
+        showDialogError(elements.editMessage, elements.editNumber, "Informe o número do contrato.");
+        return;
+    }
+
+    if (isDuplicateContract(numero, agreement.id)) {
+        showDialogError(elements.editMessage, elements.editNumber, "Esse contrato já existe na carteira.");
+        return;
+    }
 
     if (valor <= 0) {
         showDialogError(elements.editMessage, elements.editValue, "Informe um valor maior que zero, por exemplo 1.250,00.");
@@ -442,11 +467,14 @@ function handleEditSubmit(event) {
 
     elements.editDialog.close();
 
-    if (valor === agreement.valor && vencimento === agreement.vencimento) {
+    if (cliente === agreement.cliente && numero === agreement.numero
+        && valor === agreement.valor && vencimento === agreement.vencimento) {
         showMessage("Nada foi alterado.");
         return;
     }
 
+    agreement.cliente = cliente;
+    agreement.numero = numero;
     agreement.valor = valor;
     agreement.vencimento = vencimento;
     showMessage(`Acordo ${agreement.numero} atualizado.`);
