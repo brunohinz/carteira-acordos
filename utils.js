@@ -305,6 +305,31 @@ function describeValueInput(rawValue) {
     return { text: `Será salvo como ${formatCurrency(value)}`, isError: false };
 }
 
+// Quanto falta para a meta mensal e o ritmo diario necessario ate o fim do mes
+// (conta o dia de hoje). "today" e injetavel para os testes.
+function describeGoalPace(paidThisMonth, goal, today = new Date()) {
+    const paidCents = currencyToCents(paidThisMonth);
+    const goalCents = currencyToCents(goal);
+
+    if (goalCents <= 0) {
+        return "";
+    }
+
+    if (paidCents >= goalCents) {
+        return "Meta do mês batida!";
+    }
+
+    const remainingCents = goalCents - paidCents;
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    const daysLeft = lastDay - today.getDate() + 1;
+    const dailyCents = Math.ceil(remainingCents / daysLeft);
+    const remaining = `Faltam ${formatCurrency(centsToCurrency(remainingCents))}`;
+
+    return daysLeft === 1
+        ? `${remaining}, hoje é o último dia do mês`
+        : `${remaining}, cerca de ${formatCurrency(centsToCurrency(dailyCents))} por dia em ${pluralize(daysLeft, "dia", "dias")}`;
+}
+
 function buildListSummary(visibleCount, totalCount, search = "") {
     const summary = `${pluralize(visibleCount, "acordo encontrado", "acordos encontrados")} de ${totalCount}`;
     return search ? `${summary} para "${search}"` : summary;
@@ -486,6 +511,7 @@ if (typeof module !== "undefined" && module.exports) {
         describeValueInput,
         escapeHtml,
         buildListSummary,
+        describeGoalPace,
         escapeCsvField,
         buildAgreementsCsv,
         normalizeSortOrder,

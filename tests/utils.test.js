@@ -1,6 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
+    describeGoalPace,
     parseCurrency,
     normalizeCurrencyValue,
     formatCurrency,
@@ -359,4 +360,12 @@ test("readSavedState devolve null para vazio/corrompido e usa defaults invalidos
 test("writeSavedState devolve false quando o armazenamento recusa", () => {
     const storage = { setItem: () => { throw new Error("QuotaExceededError"); } };
     assert.equal(writeSavedState(storage, "k", { agreements: [] }), false);
+});
+
+test("describeGoalPace mostra quanto falta e o ritmo diario ate o fim do mes", () => {
+    const today = new Date(2026, 9, 27); // 27/10: faltam 5 dias contando hoje
+    assert.equal(describeGoalPace(30000, 40000, today), "Faltam R$\u00a010.000,00, cerca de R$\u00a02.000,00 por dia em 5 dias");
+    assert.equal(describeGoalPace(39000, 40000, new Date(2026, 9, 31)), "Faltam R$\u00a01.000,00, hoje é o último dia do mês");
+    assert.equal(describeGoalPace(40000, 40000, today), "Meta do mês batida!");
+    assert.equal(describeGoalPace(100, 0, today), "");
 });
