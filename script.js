@@ -323,7 +323,7 @@ function handleAddAgreement(event) {
     highlightRow(id);
 }
 
-// Destaca por alguns segundos a linha do acordo recem-adicionado (se estiver visivel).
+// Atualiza o texto de apoio do campo Valor (preview formatado ou erro).
 function renderValuePreview() {
     const preview = describeValueInput(elements.value.value);
     elements.valuePreview.textContent = preview.text;
@@ -331,6 +331,7 @@ function renderValuePreview() {
     elements.value.setAttribute("aria-invalid", String(preview.isError));
 }
 
+// Destaca por alguns segundos a linha do acordo recem-adicionado (se estiver visivel).
 function highlightRow(id) {
     const row = Array.from(elements.table.rows).find((item) => item.dataset.id === id);
 
