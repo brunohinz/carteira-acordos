@@ -302,7 +302,7 @@ function describeValueInput(rawValue) {
         return { text: "Informe um valor maior que zero, por exemplo 1.250,00.", isError: true };
     }
 
-    return { text: `Sera salvo como ${formatCurrency(value)}`, isError: false };
+    return { text: `Será salvo como ${formatCurrency(value)}`, isError: false };
 }
 
 function buildListSummary(visibleCount, totalCount, search = "") {
@@ -412,13 +412,13 @@ function parseBackup(text) {
     try {
         data = JSON.parse(String(text).replace(/^\uFEFF/, ""));
     } catch (error) {
-        throw new Error("O arquivo nao e um JSON valido.");
+        throw new Error("O arquivo não é um JSON válido.");
     }
 
     const list = Array.isArray(data) ? data : data && data.acordos;
 
     if (!Array.isArray(list)) {
-        throw new Error("O arquivo nao parece um backup da carteira (falta a lista de acordos).");
+        throw new Error("O arquivo não parece um backup da carteira (falta a lista de acordos).");
     }
 
     if (!Array.isArray(data) && data.formato && data.formato !== BACKUP_FORMAT) {

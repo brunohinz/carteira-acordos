@@ -132,7 +132,7 @@ function saveDemoState() {
     }
 
     if (!saved) {
-        showMessage("Nao foi possivel salvar no navegador (armazenamento cheio ou bloqueado). As alteracoes valem so ate recarregar a pagina.", true);
+        showMessage("Não foi possível salvar no navegador (armazenamento cheio ou bloqueado). As alterações valem só até recarregar a página.", true);
     }
 
     return saved;
@@ -141,12 +141,12 @@ function saveDemoState() {
 function createDemoAgreements() {
     return [
         createDemoAgreement("CT-2026-001", "Unidade Centro", 8420.5, -4, -19, true),
-        createDemoAgreement("CT-2026-002", "Colegio Horizonte", 5930, 0, -8, false),
+        createDemoAgreement("CT-2026-002", "Colégio Horizonte", 5930, 0, -8, false),
         createDemoAgreement("CT-2026-003", "Unidade Norte", 12780.9, 4, -2, false),
         createDemoAgreement("CT-2026-004", "Centro Educacional Vale", 3760, 12, -5, true),
         createDemoAgreement("CT-2026-005", "Polo Jardim", 9145.75, 20, 0, false),
         createDemoAgreement("CT-2026-006", "Unidade Sul", 2210.35, -11, -32, false),
-        createDemoAgreement("CT-2026-007", "Colegio Sao Lucas", 4680, 7, -1, false)
+        createDemoAgreement("CT-2026-007", "Colégio São Lucas", 4680, 7, -1, false)
     ];
 }
 
@@ -197,7 +197,7 @@ function renderMetrics() {
     elements.goalProgressBar.style.width = `${progress}%`;
     elements.goalProgressTrack.setAttribute("aria-valuenow", String(progress));
     elements.goalProgressTrack.setAttribute("aria-valuetext", `${progress}% da meta: ${formatCurrency(paidThisMonthValue)} de ${formatCurrency(state.goal)}`);
-    elements.goalHint.textContent = `${formatCurrency(paidThisMonthValue)} pagos no mes de ${formatCurrency(state.goal)}`;
+    elements.goalHint.textContent = `${formatCurrency(paidThisMonthValue)} pagos no mês de ${formatCurrency(state.goal)}`;
 }
 
 function renderList() {
@@ -206,7 +206,7 @@ function renderList() {
     const hasFilters = Boolean(state.search) || state.statusFilter !== "all";
     elements.emptyState.classList.toggle("is-visible", visibleAgreements.length === 0);
     elements.emptyStateText.textContent = hasFilters && state.agreements.length > 0
-        ? "Nenhum acordo corresponde a busca ou ao filtro atual."
+        ? "Nenhum acordo corresponde à busca ou ao filtro atual."
         : "Nenhum acordo encontrado.";
     elements.clearFiltersButton.hidden = !(hasFilters && state.agreements.length > 0);
     elements.listSummary.textContent = buildListSummary(visibleAgreements.length, state.agreements.length, state.search);
@@ -285,7 +285,7 @@ function handleAddAgreement(event) {
     }
 
     if (!isValidDueDate(vencimento)) {
-        showMessage("Informe um vencimento valido entre 2000 e 2100.", true);
+        showMessage("Informe um vencimento válido entre 2000 e 2100.", true);
         elements.dueDate.focus();
         return;
     }
@@ -296,7 +296,7 @@ function handleAddAgreement(event) {
     ));
 
     if (exists) {
-        showMessage("Esse contrato ja existe na carteira.", true);
+        showMessage("Esse contrato já existe na carteira.", true);
         return;
     }
 
@@ -404,7 +404,7 @@ function editAgreement(agreement) {
     const vencimento = dueAnswer.trim();
 
     if (!isValidDueDate(vencimento)) {
-        showMessage("Informe um vencimento valido entre 2000 e 2100 no formato AAAA-MM-DD.", true);
+        showMessage("Informe um vencimento válido entre 2000 e 2100 no formato AAAA-MM-DD.", true);
         return false;
     }
 
@@ -523,16 +523,16 @@ async function importBackup() {
     try {
         backup = parseBackup(await file.text());
     } catch (error) {
-        showMessage(`Nao foi possivel importar: ${error.message}`, true);
+        showMessage(`Não foi possível importar: ${error.message}`, true);
         return;
     }
 
     if (backup.agreements.length === 0) {
-        showMessage("Nenhum acordo valido encontrado no arquivo.", true);
+        showMessage("Nenhum acordo válido encontrado no arquivo.", true);
         return;
     }
 
-    const confirmed = window.confirm(`Importar ${pluralize(backup.agreements.length, "acordo", "acordos")} de "${file.name}"? A carteira atual sera substituida.`);
+    const confirmed = window.confirm(`Importar ${pluralize(backup.agreements.length, "acordo", "acordos")} de "${file.name}"? A carteira atual será substituída.`);
 
     if (!confirmed) {
         return;
@@ -566,7 +566,7 @@ function downloadFile(content, fileName, type) {
 }
 
 function resetDemo() {
-    const confirmed = window.confirm("Restaurar a base demonstrativa? Os acordos adicionados ou alterados por voce serao substituidos.");
+    const confirmed = window.confirm("Restaurar a base demonstrativa? Os acordos adicionados ou alterados por você serão substituídos.");
 
     if (!confirmed) {
         return;
@@ -578,7 +578,7 @@ function resetDemo() {
     state.statusFilter = "all";
     state.search = "";
     state.goal = DEFAULT_GOAL;
-    showMessage("Base ficticia restaurada.");
+    showMessage("Base fictícia restaurada.");
     saveDemoState();
     render();
 }

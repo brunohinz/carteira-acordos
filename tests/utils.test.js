@@ -310,7 +310,7 @@ test("parseBackup aceita lista simples e rejeita arquivos invalidos", () => {
     assert.equal(result.agreements.length, 1);
     assert.equal(result.goal, 0);
 
-    assert.throws(() => parseBackup("{nao e json"), /JSON valido/);
+    assert.throws(() => parseBackup("{nao e json"), /JSON válido/);
     assert.throws(() => parseBackup(JSON.stringify({ foo: 1 })), /lista de acordos/);
     assert.throws(() => parseBackup(JSON.stringify({ formato: "outro", acordos: [] })), /desconhecido/);
 });
