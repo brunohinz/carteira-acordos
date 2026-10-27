@@ -74,15 +74,17 @@ style.css                  Estilos e responsividade
 script.js                  Estado, renderização e interações (DOM)
 utils.js                   Funções puras: moeda, datas, filtros, CSV, backup e armazenamento
 tests/utils.test.js        Testes das funções puras
+tests/smoke.test.js        Smoke test de DOM (jsdom): adicionar, filtrar, exportar e editar
 .github/workflows/ci.yml   Check e testes automáticos a cada push
 ```
 
 ## Como rodar os testes
 
-Requer Node.js 18 ou superior (sem dependências externas):
+Requer Node.js 18 ou superior. O app não tem dependências; o `jsdom` é usado só no smoke test de DOM:
 
 ```bash
-npm test        # roda os testes com node --test
+npm install     # instala o jsdom (só para os testes)
+npm test        # testes unitários + smoke test de DOM com node --test
 npm run check   # verifica a sintaxe de utils.js e script.js
 ```
 

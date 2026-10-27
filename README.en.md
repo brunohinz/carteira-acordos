@@ -32,7 +32,7 @@ Carteira de Acordos is a front-end dashboard for tracking financial agreements (
 - CSS (Grid and Flexbox, responsive)
 - Vanilla JavaScript for state, rendering, filters, sorting and financial calculations
 - `localStorage` for persistence
-- `node --test` for unit tests (no external dependencies), with CI on GitHub Actions
+- `node --test` for unit tests plus a jsdom DOM smoke test (the app itself has no dependencies), with CI on GitHub Actions
 
 ## Getting started
 
@@ -47,7 +47,8 @@ cd carteira-acordos
 Tests (Node.js 18+):
 
 ```bash
-npm test        # 36 unit tests for currency, dates, filters, backup and storage
+npm install     # installs jsdom (tests only)
+npm test        # unit tests plus a DOM smoke test (add, filter, export, edit)
 npm run check   # syntax check of utils.js and script.js
 ```
 
