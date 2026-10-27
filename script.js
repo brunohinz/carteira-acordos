@@ -57,6 +57,16 @@ function cacheElements() {
     elements.undoToast = document.querySelector("#undoToast");
     elements.undoText = document.querySelector("#undoText");
     elements.undoButton = document.querySelector("#undoButton");
+    elements.editDialog = document.querySelector("#editDialog");
+    elements.editForm = document.querySelector("#editForm");
+    elements.editDialogTitle = document.querySelector("#editDialogTitle");
+    elements.editValue = document.querySelector("#editValue");
+    elements.editDueDate = document.querySelector("#editDueDate");
+    elements.editMessage = document.querySelector("#editMessage");
+    elements.goalDialog = document.querySelector("#goalDialog");
+    elements.goalForm = document.querySelector("#goalForm");
+    elements.goalInput = document.querySelector("#goalInput");
+    elements.goalMessage = document.querySelector("#goalMessage");
 }
 
 function bindEvents() {
@@ -102,6 +112,11 @@ function bindEvents() {
     elements.clearFiltersButton.addEventListener("click", clearFilters);
     elements.table.addEventListener("click", handleTableAction);
     elements.undoButton.addEventListener("click", undoRemove);
+    elements.editForm.addEventListener("submit", handleEditSubmit);
+    elements.goalForm.addEventListener("submit", handleGoalSubmit);
+    document.querySelectorAll("[data-close-dialog]").forEach((button) => {
+        button.addEventListener("click", () => button.closest("dialog").close());
+    });
 }
 
 function loadDemoState() {
@@ -367,7 +382,8 @@ function handleTableAction(event) {
         showMessage(agreement.pago ? "Acordo marcado como pago." : "Acordo reaberto.");
     }
 
-    if (button.dataset.action === "edit" && !editAgreement(agreement)) {
+    if (button.dataset.action === "edit") {
+        openEditDialog(agreement);
         return;
     }
 
@@ -382,43 +398,62 @@ function handleTableAction(event) {
     renderList();
 }
 
-// Edita valor e vencimento via prompt; retorna true se algo mudou.
-function editAgreement(agreement) {
-    const valueAnswer = window.prompt(`Novo valor do acordo ${agreement.numero} (R$):`, formatCurrencyInput(agreement.valor));
+let editingId = null;
 
-    if (valueAnswer === null) {
-        return false;
+function openEditDialog(agreement) {
+    editingId = agreement.id;
+    elements.editDialogTitle.textContent = `Editar acordo ${agreement.numero}`;
+    elements.editValue.value = formatCurrencyInput(agreement.valor);
+    elements.editDueDate.value = agreement.vencimento;
+    elements.editMessage.textContent = "";
+    elements.editDialog.showModal();
+    elements.editValue.select();
+}
+
+function showDialogError(messageElement, input, message) {
+    messageElement.textContent = message;
+    input.setAttribute("aria-invalid", "true");
+    input.focus();
+}
+
+function handleEditSubmit(event) {
+    event.preventDefault();
+    const agreement = state.agreements.find((item) => item.id === editingId);
+
+    if (!agreement) {
+        elements.editDialog.close();
+        return;
     }
 
-    const valor = parseCurrency(valueAnswer);
+    elements.editValue.removeAttribute("aria-invalid");
+    elements.editDueDate.removeAttribute("aria-invalid");
+    const valor = parseCurrency(elements.editValue.value);
+    const vencimento = elements.editDueDate.value;
 
     if (valor <= 0) {
-        showMessage("Informe um valor maior que zero, por exemplo 1.250,00.", true);
-        return false;
+        showDialogError(elements.editMessage, elements.editValue, "Informe um valor maior que zero, por exemplo 1.250,00.");
+        return;
     }
-
-    const dueAnswer = window.prompt("Novo vencimento (AAAA-MM-DD):", agreement.vencimento);
-
-    if (dueAnswer === null) {
-        return false;
-    }
-
-    const vencimento = dueAnswer.trim();
 
     if (!isValidDueDate(vencimento)) {
-        showMessage("Informe um vencimento válido entre 2000 e 2100 no formato AAAA-MM-DD.", true);
-        return false;
+        showDialogError(elements.editMessage, elements.editDueDate, "Informe um vencimento válido entre 2000 e 2100.");
+        return;
     }
+
+    elements.editDialog.close();
 
     if (valor === agreement.valor && vencimento === agreement.vencimento) {
         showMessage("Nada foi alterado.");
-        return false;
+        return;
     }
 
     agreement.valor = valor;
     agreement.vencimento = vencimento;
     showMessage(`Acordo ${agreement.numero} atualizado.`);
-    return true;
+    saveDemoState();
+    renderMetrics();
+    renderList();
+    highlightRow(agreement.id);
 }
 
 // Em vez de pedir confirmacao, remove na hora e oferece "Desfazer" por alguns segundos.
@@ -471,19 +506,23 @@ function clearFilters() {
 }
 
 function editGoal() {
-    const answer = window.prompt("Nova meta mensal (R$):", formatCurrencyInput(state.goal));
+    elements.goalInput.value = formatCurrencyInput(state.goal);
+    elements.goalInput.removeAttribute("aria-invalid");
+    elements.goalMessage.textContent = "";
+    elements.goalDialog.showModal();
+    elements.goalInput.select();
+}
 
-    if (answer === null) {
-        return;
-    }
-
-    const goal = parseCurrency(answer);
+function handleGoalSubmit(event) {
+    event.preventDefault();
+    const goal = parseCurrency(elements.goalInput.value);
 
     if (goal <= 0) {
-        showMessage("Informe uma meta maior que zero, por exemplo 50.000,00.", true);
+        showDialogError(elements.goalMessage, elements.goalInput, "Informe uma meta maior que zero, por exemplo 50.000,00.");
         return;
     }
 
+    elements.goalDialog.close();
     state.goal = goal;
     saveDemoState();
     renderMetrics();

@@ -166,6 +166,37 @@
             <button type="button" class="undo-button" id="undoButton">Desfazer</button>
         </div>
 
+        <dialog class="app-dialog" id="editDialog" aria-labelledby="editDialogTitle">
+            <form class="agreement-form" id="editForm" novalidate>
+                <h2 id="editDialogTitle">Editar acordo</h2>
+                <label for="editValue">Valor</label>
+                <input id="editValue" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" required>
+
+                <label for="editDueDate">Vencimento</label>
+                <input id="editDueDate" type="date" min="2000-01-01" max="2100-12-31" required>
+
+                <p class="form-message error" id="editMessage" aria-live="polite"></p>
+                <div class="dialog-actions">
+                    <button type="button" class="ghost-button" data-close-dialog>Cancelar</button>
+                    <button type="submit" class="primary-button">Salvar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <dialog class="app-dialog" id="goalDialog" aria-labelledby="goalDialogTitle">
+            <form class="agreement-form" id="goalForm" novalidate>
+                <h2 id="goalDialogTitle">Meta mensal</h2>
+                <label for="goalInput">Valor da meta</label>
+                <input id="goalInput" type="text" inputmode="decimal" autocomplete="off" placeholder="50.000,00" required>
+
+                <p class="form-message error" id="goalMessage" aria-live="polite"></p>
+                <div class="dialog-actions">
+                    <button type="button" class="ghost-button" data-close-dialog>Cancelar</button>
+                    <button type="submit" class="primary-button">Salvar meta</button>
+                </div>
+            </form>
+        </dialog>
+
         <footer class="page-footer">
             Projeto front-end com dados demonstrativos, filtros, ordena&ccedil;&atilde;o e persist&ecirc;ncia local.
         </footer>
