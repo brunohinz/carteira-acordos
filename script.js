@@ -208,7 +208,8 @@ function renderMetrics() {
     elements.monthGeneratedValue.textContent = formatCurrency(centsToCurrency(sumCurrency(monthGenerated)));
     elements.monthGeneratedCount.textContent = pluralize(monthGenerated.length, "acordo gerado", "acordos gerados");
     elements.paidValue.textContent = formatCurrency(paidValue);
-    elements.paidCount.textContent = pluralize(paid.length, "acordo pago", "acordos pagos");
+    // O card soma todos os pagos; o recorte do mes (o que conta para a meta) fica explicito no rodape.
+    elements.paidCount.textContent = `${pluralize(paid.length, "acordo pago", "acordos pagos")}, ${formatCurrency(paidThisMonthValue)} no mês`;
     elements.openValue.textContent = formatCurrency(centsToCurrency(sumCurrency(open)));
     elements.openCount.textContent = pluralize(open.length, "acordo pendente", "acordos pendentes");
     elements.overdueValue.textContent = formatCurrency(centsToCurrency(sumCurrency(overdue)));

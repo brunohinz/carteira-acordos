@@ -102,3 +102,8 @@ test("dialog de edicao mostra preview do valor digitado", () => {
     assert.equal($("#editValuePreview").classList.contains("error"), true);
     assert.equal($("#editValue").getAttribute("aria-invalid"), "true");
 });
+
+test("card de pagos separa o total do valor pago no mes", () => {
+    const { $ } = loadApp();
+    assert.match($("#paidCount").textContent, /^\d+ acordos? pagos?, R\$\s?[\d.,]+ no mês$/);
+});
