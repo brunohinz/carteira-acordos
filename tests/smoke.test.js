@@ -107,3 +107,22 @@ test("card de pagos separa o total do valor pago no mes", () => {
     const { $ } = loadApp();
     assert.match($("#paidCount").textContent, /^\d+ acordos? pagos?, R\$\s?[\d.,]+ no mês$/);
 });
+
+test("ao voltar para a aba num novo dia, refaz a tela", () => {
+    const { window, $ } = loadApp();
+    $("#lastUpdated").textContent = "velho";
+    window.dispatchEvent(new window.Event("focus"));
+    assert.equal($("#lastUpdated").textContent, "velho");
+
+    // Simula a virada do dia avancando o relogio da pagina em 24h.
+    window.eval(`
+        const RealDate = Date;
+        Date = class extends RealDate {
+            constructor(...args) {
+                super(...(args.length ? args : [RealDate.now() + 86400000]));
+            }
+        };
+    `);
+    window.dispatchEvent(new window.Event("focus"));
+    assert.match($("#lastUpdated").textContent, /^Atualizado em/);
+});

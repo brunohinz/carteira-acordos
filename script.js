@@ -118,6 +118,8 @@ function bindEvents() {
     elements.undoButton.addEventListener("click", undoRemove);
     elements.editForm.addEventListener("submit", handleEditSubmit);
     elements.goalForm.addEventListener("submit", handleGoalSubmit);
+    document.addEventListener("visibilitychange", refreshIfDayChanged);
+    window.addEventListener("focus", refreshIfDayChanged);
     document.querySelectorAll("[data-close-dialog]").forEach((button) => {
         button.addEventListener("click", () => button.closest("dialog").close());
     });
@@ -186,7 +188,22 @@ function createDemoAgreement(numero, cliente, valor, dueOffset, createdOffset, p
     };
 }
 
+// Dia (AAAA-MM-DD) do ultimo render completo; status como "Vence hoje" dependem dele.
+let renderedDay = "";
+
+// Se a aba ficou aberta de um dia para o outro, refaz status, metricas e "Atualizado em" ao voltar.
+function refreshIfDayChanged() {
+    if (document.visibilityState === "hidden") {
+        return;
+    }
+
+    if (formatInputDate(new Date()) !== renderedDay) {
+        render();
+    }
+}
+
 function render() {
+    renderedDay = formatInputDate(new Date());
     elements.searchInput.value = state.search;
     elements.statusFilter.value = state.statusFilter;
     elements.sortOrder.value = state.sortOrder;
