@@ -316,6 +316,18 @@ function describeValueInput(rawValue) {
     return { text: `Será salvo como ${formatCurrency(value)}`, isError: false };
 }
 
+// Percentual inteiro (0 a 100) da meta atingido; meta zerada/invalida vira 0 em vez de NaN/Infinity.
+function calculateGoalProgress(paid, goal) {
+    const paidCents = currencyToCents(paid);
+    const goalCents = currencyToCents(goal);
+
+    if (goalCents <= 0 || paidCents <= 0) {
+        return 0;
+    }
+
+    return Math.min(Math.round((paidCents / goalCents) * 100), 100);
+}
+
 // Quanto falta para a meta mensal e o ritmo diario necessario ate o fim do mes
 // (conta o dia de hoje). "today" e injetavel para os testes.
 function describeGoalPace(paidThisMonth, goal, today = new Date()) {
@@ -525,6 +537,7 @@ if (typeof module !== "undefined" && module.exports) {
         describeValueInput,
         escapeHtml,
         buildListSummary,
+        calculateGoalProgress,
         describeGoalPace,
         escapeCsvField,
         buildAgreementsCsv,

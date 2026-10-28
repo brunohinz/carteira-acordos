@@ -203,7 +203,7 @@ function renderMetrics() {
     const paidValue = centsToCurrency(sumCurrency(paid));
     // A meta e mensal: so conta o que foi pago no mes corrente.
     const paidThisMonthValue = centsToCurrency(sumCurrency(state.agreements.filter((agreement) => wasPaidInMonth(agreement))));
-    const progress = Math.min(Math.round((paidThisMonthValue / state.goal) * 100), 100);
+    const progress = calculateGoalProgress(paidThisMonthValue, state.goal);
 
     elements.monthGeneratedValue.textContent = formatCurrency(centsToCurrency(sumCurrency(monthGenerated)));
     elements.monthGeneratedCount.textContent = pluralize(monthGenerated.length, "acordo gerado", "acordos gerados");

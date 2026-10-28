@@ -20,6 +20,7 @@ const {
     wasPaidInMonth,
     wasCreatedInMonth,
     sumCurrency,
+    calculateGoalProgress,
     matchesSearchTerm,
     matchesStatus,
     compareText,
@@ -385,4 +386,13 @@ test("sumCurrency soma em centavos sem erro de ponto flutuante", () => {
     assert.equal(sumCurrency([]), 0);
     assert.equal(sumCurrency([{ valor: 0.1 }, { valor: 0.2 }]), 30);
     assert.equal(sumCurrency([{ valor: 8420.5 }, { valor: 2210.35 }]), 1063085);
+});
+
+test("calculateGoalProgress limita a 100% e nunca devolve NaN", () => {
+    assert.equal(calculateGoalProgress(21000, 42000), 50);
+    assert.equal(calculateGoalProgress(50000, 42000), 100);
+    assert.equal(calculateGoalProgress(0, 42000), 0);
+    assert.equal(calculateGoalProgress(1000, 0), 0);
+    assert.equal(calculateGoalProgress(1000, undefined), 0);
+    assert.equal(calculateGoalProgress(Number.NaN, 42000), 0);
 });
