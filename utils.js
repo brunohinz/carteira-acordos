@@ -173,7 +173,20 @@ function matchesSearchTerm(agreement, term) {
         return true;
     }
 
-    return normalizeSearchText(`${agreement.numero} ${agreement.cliente}`).includes(normalizeSearchText(term));
+    return normalizeSearchText(`${agreement.numero} ${agreement.cliente} ${describeValueForSearch(agreement.valor)}`)
+        .includes(normalizeSearchText(term));
+}
+
+// Formas do valor que a busca reconhece: "8.420,50", "8420,50" e "8420.50".
+function describeValueForSearch(value) {
+    const formatted = formatCurrencyInput(value);
+
+    if (!formatted) {
+        return "";
+    }
+
+    const plain = formatted.replace(/\./g, "");
+    return `${formatted} ${plain} ${plain.replace(",", ".")}`;
 }
 
 function matchesStatus(agreement, filter, today = new Date()) {
@@ -530,6 +543,7 @@ if (typeof module !== "undefined" && module.exports) {
         formatDate,
         getStatusInfo,
         matchesSearchTerm,
+        describeValueForSearch,
         matchesStatus,
         compareNumbers,
         compareText,

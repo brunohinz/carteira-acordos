@@ -410,3 +410,12 @@ test("compareAgreementsBy ordena por maior e menor valor, desempatando pelo cont
     assert.deepEqual(byLow, ["CT-2", "CT-3", "CT-1"]);
     assert.equal(normalizeSortOrder("value-high"), "value-high");
 });
+
+test("matchesSearchTerm encontra o acordo pelo valor em formatos comuns", () => {
+    const agreement = { numero: "CT-2026-001", cliente: "Unidade Centro", valor: 8420.5 };
+    assert.equal(matchesSearchTerm(agreement, "8.420,50"), true);
+    assert.equal(matchesSearchTerm(agreement, "8420"), true);
+    assert.equal(matchesSearchTerm(agreement, "8420.50"), true);
+    assert.equal(matchesSearchTerm(agreement, "9999"), false);
+    assert.equal(matchesSearchTerm({ numero: "CT-1", cliente: "Sem valor" }, "0,00"), false);
+});
