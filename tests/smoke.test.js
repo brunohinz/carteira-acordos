@@ -126,3 +126,40 @@ test("ao voltar para a aba num novo dia, refaz a tela", () => {
     window.dispatchEvent(new window.Event("focus"));
     assert.match($("#lastUpdated").textContent, /^Atualizado em/);
 });
+
+test("remove um acordo e desfaz pela notificacao", () => {
+    const { $, rows } = loadApp();
+    const firstNumber = rows()[0].querySelector("strong").textContent;
+    rows()[0].querySelector('[data-action="remove"]').click();
+    assert.equal(rows().length, 6);
+    assert.equal($("#undoToast").hidden, false);
+    assert.match($("#undoText").textContent, new RegExp(firstNumber));
+
+    $("#undoButton").click();
+    assert.equal(rows().length, 7);
+    assert.equal($("#undoToast").hidden, true);
+    assert.equal(rows()[0].querySelector("strong").textContent, firstNumber);
+});
+
+test("importa backup JSON substituindo a carteira e a meta", async () => {
+    const { window, $, rows } = loadApp();
+    const backup = {
+        formato: "carteira-acordos-backup",
+        versao: 1,
+        meta: 10000,
+        acordos: [
+            { numero: "IMP-1", cliente: "Importado A", valor: 100, vencimento: "2030-02-01" },
+            { numero: "IMP-2", cliente: "Importado B", valor: 200, vencimento: "2030-03-01" },
+            { numero: "imp-1", cliente: "Duplicado", valor: 300, vencimento: "2030-04-01" }
+        ]
+    };
+    const file = { name: "backup.json", text: async () => JSON.stringify(backup) };
+    window.confirm = () => true;
+    Object.defineProperty($("#importBackupInput"), "files", { value: [file], configurable: true });
+    $("#importBackupInput").dispatchEvent(new window.Event("change"));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    assert.equal(rows().length, 2);
+    assert.match($("#formMessage").textContent, /2 acordos importados \(1 registro ignorado/);
+    assert.match($("#goalHint").textContent, /10\.000,00/);
+});
