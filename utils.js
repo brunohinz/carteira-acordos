@@ -228,6 +228,14 @@ function compareAgreementsBy(sortOrder, a, b) {
         return compareNumbers(getCreatedTime(a), getCreatedTime(b)) || compareText(a.numero, b.numero);
     }
 
+    if (sortOrder === "value-high") {
+        return compareNumbers(currencyToCents(b.valor), currencyToCents(a.valor)) || compareText(a.numero, b.numero);
+    }
+
+    if (sortOrder === "value-low") {
+        return compareNumbers(currencyToCents(a.valor), currencyToCents(b.valor)) || compareText(a.numero, b.numero);
+    }
+
     return compareNumbers(getDueDateTime(a), getDueDateTime(b)) || compareText(a.numero, b.numero);
 }
 
@@ -387,7 +395,7 @@ function buildAgreementsCsv(agreements, today = new Date()) {
         .join("\r\n");
 }
 
-const SORT_OPTIONS = ["due-soon", "due-late", "created-new", "created-old"];
+const SORT_OPTIONS = ["due-soon", "due-late", "created-new", "created-old", "value-high", "value-low"];
 const STATUS_FILTER_OPTIONS = ["all", "open", "paid", "overdue", "due-today", "next-7"];
 
 function normalizeSortOrder(value) {

@@ -21,6 +21,7 @@ const {
     wasCreatedInMonth,
     sumCurrency,
     calculateGoalProgress,
+    normalizeSortOrder,
     matchesSearchTerm,
     matchesStatus,
     compareText,
@@ -395,4 +396,17 @@ test("calculateGoalProgress limita a 100% e nunca devolve NaN", () => {
     assert.equal(calculateGoalProgress(1000, 0), 0);
     assert.equal(calculateGoalProgress(1000, undefined), 0);
     assert.equal(calculateGoalProgress(Number.NaN, 42000), 0);
+});
+
+test("compareAgreementsBy ordena por maior e menor valor, desempatando pelo contrato", () => {
+    const list = [
+        { numero: "CT-2", valor: 500 },
+        { numero: "CT-1", valor: 1200.5 },
+        { numero: "CT-3", valor: 500 }
+    ];
+    const byHigh = [...list].sort((a, b) => compareAgreementsBy("value-high", a, b)).map((item) => item.numero);
+    const byLow = [...list].sort((a, b) => compareAgreementsBy("value-low", a, b)).map((item) => item.numero);
+    assert.deepEqual(byHigh, ["CT-1", "CT-2", "CT-3"]);
+    assert.deepEqual(byLow, ["CT-2", "CT-3", "CT-1"]);
+    assert.equal(normalizeSortOrder("value-high"), "value-high");
 });
