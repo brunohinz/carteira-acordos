@@ -63,6 +63,7 @@ function cacheElements() {
     elements.editClient = document.querySelector("#editClient");
     elements.editNumber = document.querySelector("#editNumber");
     elements.editValue = document.querySelector("#editValue");
+    elements.editValuePreview = document.querySelector("#editValuePreview");
     elements.editDueDate = document.querySelector("#editDueDate");
     elements.editMessage = document.querySelector("#editMessage");
     elements.goalDialog = document.querySelector("#goalDialog");
@@ -74,6 +75,7 @@ function cacheElements() {
 function bindEvents() {
     elements.form.addEventListener("submit", handleAddAgreement);
     elements.value.addEventListener("input", renderValuePreview);
+    elements.editValue.addEventListener("input", renderEditValuePreview);
     elements.value.addEventListener("blur", () => {
         const value = parseCurrency(elements.value.value);
 
@@ -337,12 +339,20 @@ function handleAddAgreement(event) {
     highlightRow(id);
 }
 
-// Atualiza o texto de apoio do campo Valor (preview formatado ou erro).
+// Atualiza o texto de apoio de um campo de valor (preview formatado ou erro).
+function renderPreviewFor(input, previewElement) {
+    const preview = describeValueInput(input.value);
+    previewElement.textContent = preview.text;
+    previewElement.classList.toggle("error", preview.isError);
+    input.setAttribute("aria-invalid", String(preview.isError));
+}
+
 function renderValuePreview() {
-    const preview = describeValueInput(elements.value.value);
-    elements.valuePreview.textContent = preview.text;
-    elements.valuePreview.classList.toggle("error", preview.isError);
-    elements.value.setAttribute("aria-invalid", String(preview.isError));
+    renderPreviewFor(elements.value, elements.valuePreview);
+}
+
+function renderEditValuePreview() {
+    renderPreviewFor(elements.editValue, elements.editValuePreview);
 }
 
 // Destaca por alguns segundos a linha do acordo recem-adicionado (se estiver visivel).
@@ -414,6 +424,7 @@ function openEditDialog(agreement) {
     elements.editValue.value = formatCurrencyInput(agreement.valor);
     elements.editDueDate.value = agreement.vencimento;
     elements.editMessage.textContent = "";
+    renderEditValuePreview();
     elements.editDialog.showModal();
     elements.editClient.focus();
 }

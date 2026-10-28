@@ -92,3 +92,13 @@ test("edita um acordo pelo dialog", () => {
     assert.equal($("#editDialog").open, false);
     assert.match($("#agreementTable").textContent, /Cliente Editado/);
 });
+
+test("dialog de edicao mostra preview do valor digitado", () => {
+    const { window, $ } = loadApp();
+    $('[data-action="edit"]').click();
+    assert.match($("#editValuePreview").textContent, /Será salvo como R\$/);
+    $("#editValue").value = "abc";
+    $("#editValue").dispatchEvent(new window.Event("input"));
+    assert.equal($("#editValuePreview").classList.contains("error"), true);
+    assert.equal($("#editValue").getAttribute("aria-invalid"), "true");
+});

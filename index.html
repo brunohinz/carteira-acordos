@@ -176,7 +176,8 @@
                 <input id="editNumber" type="text" autocomplete="off" required>
 
                 <label for="editValue">Valor</label>
-                <input id="editValue" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" required>
+                <input id="editValue" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-describedby="editValuePreview" required>
+                <p class="field-hint" id="editValuePreview" aria-live="polite"></p>
 
                 <label for="editDueDate">Vencimento</label>
                 <input id="editDueDate" type="date" min="2000-01-01" max="2100-12-31" required>
