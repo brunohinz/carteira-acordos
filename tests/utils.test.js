@@ -18,6 +18,8 @@ const {
     getDueDiffDays,
     isOverdue,
     wasPaidInMonth,
+    wasCreatedInMonth,
+    sumCurrency,
     matchesSearchTerm,
     matchesStatus,
     compareText,
@@ -368,4 +370,19 @@ test("describeGoalPace mostra quanto falta e o ritmo diario ate o fim do mes", (
     assert.equal(describeGoalPace(39000, 40000, new Date(2026, 9, 31)), "Faltam R$\u00a01.000,00, hoje é o último dia do mês");
     assert.equal(describeGoalPace(40000, 40000, today), "Meta do mês batida!");
     assert.equal(describeGoalPace(100, 0, today), "");
+});
+
+test("wasCreatedInMonth so considera acordos gerados no mes de referencia", () => {
+    const today = new Date(2026, 9, 28);
+    assert.equal(wasCreatedInMonth({ criadoEm: new Date(2026, 9, 1, 9).toISOString() }, today), true);
+    assert.equal(wasCreatedInMonth({ criadoEm: new Date(2026, 8, 30, 9).toISOString() }, today), false);
+    assert.equal(wasCreatedInMonth({ criadoEm: new Date(2025, 9, 15, 9).toISOString() }, today), false);
+    assert.equal(wasCreatedInMonth({ criadoEm: "lixo" }, today), false);
+    assert.equal(wasCreatedInMonth({}, today), false);
+});
+
+test("sumCurrency soma em centavos sem erro de ponto flutuante", () => {
+    assert.equal(sumCurrency([]), 0);
+    assert.equal(sumCurrency([{ valor: 0.1 }, { valor: 0.2 }]), 30);
+    assert.equal(sumCurrency([{ valor: 8420.5 }, { valor: 2210.35 }]), 1063085);
 });

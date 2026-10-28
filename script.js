@@ -196,7 +196,7 @@ function render() {
 }
 
 function renderMetrics() {
-    const monthGenerated = state.agreements.filter(wasCreatedThisMonth);
+    const monthGenerated = state.agreements.filter((agreement) => wasCreatedInMonth(agreement));
     const paid = state.agreements.filter((agreement) => agreement.pago);
     const open = state.agreements.filter((agreement) => !agreement.pago);
     const overdue = state.agreements.filter((agreement) => isOverdue(agreement));
@@ -665,19 +665,6 @@ function resetDemo() {
 
 function compareAgreements(a, b) {
     return compareAgreementsBy(state.sortOrder, a, b);
-}
-
-function wasCreatedThisMonth(agreement) {
-    const createdAt = new Date(agreement.criadoEm);
-    const today = new Date();
-
-    return !Number.isNaN(createdAt.getTime())
-        && createdAt.getFullYear() === today.getFullYear()
-        && createdAt.getMonth() === today.getMonth();
-}
-
-function sumCurrency(agreements) {
-    return agreements.reduce((total, agreement) => total + currencyToCents(agreement.valor), 0);
 }
 
 function formatDateTime(value) {

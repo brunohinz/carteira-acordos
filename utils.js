@@ -99,17 +99,28 @@ function isOverdue(agreement, today = new Date()) {
     return !agreement.pago && getDueDiffDays(agreement, today) < 0;
 }
 
+// Data valida no mesmo mes/ano de "today".
+function isInSameMonth(value, today = new Date()) {
+    const date = new Date(value);
+
+    return !Number.isNaN(date.getTime())
+        && date.getFullYear() === today.getFullYear()
+        && date.getMonth() === today.getMonth();
+}
+
 // Pago dentro do mes/ano de "today" (usado pela meta mensal).
 function wasPaidInMonth(agreement, today = new Date()) {
-    if (!agreement.pago || !agreement.pagoEm) {
-        return false;
-    }
+    return Boolean(agreement.pago && agreement.pagoEm) && isInSameMonth(agreement.pagoEm, today);
+}
 
-    const paidAt = new Date(agreement.pagoEm);
+// Gerado dentro do mes/ano de "today" (card "Gerado no mes").
+function wasCreatedInMonth(agreement, today = new Date()) {
+    return Boolean(agreement.criadoEm) && isInSameMonth(agreement.criadoEm, today);
+}
 
-    return !Number.isNaN(paidAt.getTime())
-        && paidAt.getFullYear() === today.getFullYear()
-        && paidAt.getMonth() === today.getMonth();
+// Soma em centavos para evitar erro de ponto flutuante.
+function sumCurrency(agreements) {
+    return agreements.reduce((total, agreement) => total + currencyToCents(agreement.valor), 0);
 }
 
 function formatDate(value) {
@@ -492,7 +503,10 @@ if (typeof module !== "undefined" && module.exports) {
         getDueDateTime,
         getDueDiffDays,
         isOverdue,
+        isInSameMonth,
         wasPaidInMonth,
+        wasCreatedInMonth,
+        sumCurrency,
         formatDate,
         getStatusInfo,
         matchesSearchTerm,
