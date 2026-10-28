@@ -10,22 +10,25 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 
 ## Funcionalidades
 
-- Indicadores de valor gerado no mês, valor pago, valor em aberto e atrasos.
-- Meta mensal configurável (botão "Alterar meta"), calculada só com os acordos pagos no mês corrente.
+- Indicadores de valor gerado no mês, valor pago (total e quanto foi pago no mês), valor em aberto e atrasos.
+- Meta mensal configurável (botão "Alterar meta"), calculada só com os acordos pagos no mês corrente, mostrando quanto falta e o ritmo diário necessário até o fim do mês.
 - Base inicial com acordos demonstrativos.
 - Cadastro de novos acordos, com prévia do valor formatado e validação de vencimento.
-- Edição de valor e vencimento de um acordo existente.
-- Busca por contrato ou cliente, sem diferenciar acentos e maiúsculas (Esc limpa a busca).
+- Edição de cliente, contrato, valor e vencimento em um diálogo acessível (bloqueia contrato duplicado e mostra a prévia do valor).
+- Busca por contrato, cliente ou valor (8.420,50, 8420,50 ou 8420.50), sem diferenciar acentos e maiúsculas (Esc limpa a busca).
 - Filtro por status: todos, em aberto, pagos, atrasados, vence hoje e próximos 7 dias.
-- Ordenação por vencimento ou por data de geração.
+- Ordenação por vencimento, por data de geração ou por valor.
 - Marcação de acordos como pagos, reabertura e remoção com opção de desfazer.
 - Exportação da lista atual em CSV (respeita busca e filtros, abre direto no Excel em pt-BR).
 - Backup completo em JSON e importação de um backup (valida os dados e ignora contratos duplicados).
 - Restauração da base demonstrativa.
 - Persistência local com `localStorage` (acordos, filtros, busca e meta).
+- Status e indicadores se atualizam sozinhos ao voltar para a aba em um novo dia.
 - Layout responsivo para desktop e celular.
 
 ## Capturas de tela
+
+As capturas abaixo são de uma versão anterior; a edição em diálogo e o ritmo da meta ainda não aparecem nelas.
 
 | Novo acordo | Filtro "Atrasados" + busca |
 |---|---|
@@ -74,7 +77,7 @@ style.css                  Estilos e responsividade
 script.js                  Estado, renderização e interações (DOM)
 utils.js                   Funções puras: moeda, datas, filtros, CSV, backup e armazenamento
 tests/utils.test.js        Testes das funções puras
-tests/smoke.test.js        Smoke test de DOM (jsdom): adicionar, filtrar, exportar e editar
+tests/smoke.test.js        Smoke test de DOM (jsdom): adicionar, filtrar, exportar, editar, desfazer e importar
 .github/workflows/ci.yml   Check e testes automáticos a cada push
 ```
 
