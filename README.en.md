@@ -13,19 +13,20 @@ Carteira de Acordos is a front-end dashboard for tracking financial agreements (
 ## Features
 
 - KPIs: amount generated this month, amount paid (total and paid this month), amount open, and overdue count.
-- A configurable monthly goal ("Alterar meta"), calculated only from agreements paid in the current month, showing how much is left and the daily pace needed until month end.
+- A configurable monthly goal ("Alterar meta"), calculated only from agreements paid in the current month, showing how much is left and the daily pace needed until month end. The card turns green once the goal is met.
 - Demo dataset included, and you can restore it at any time.
 - Create agreements with a formatted-value preview and due-date validation.
 - Edit client, contract, amount and due date in an accessible dialog (blocks duplicate contracts and previews the amount).
-- Search by contract, client or amount (8.420,50, 8420,50 or 8420.50), ignoring accents and case. `Esc` clears the search.
+- Search by contract, client or amount (8.420,50, 8420,50 or 8420.50), ignoring accents and case. `/` jumps to the search box and `Esc` clears it.
+- The list summary shows how many agreements are visible and their total amount.
 - Status filters: all, open, paid, overdue, due today, and next 7 days.
 - Sort by due date, creation date or amount.
 - Mark agreements as paid, reopen them, and delete them with undo.
-- **CSV export** of the current view. It respects search and filters and opens directly in Excel with pt-BR settings.
+- **CSV export** of the current view. It respects search and filters and opens directly in Excel with pt-BR settings, and ends with a total row.
 - **JSON backup and import**. The import validates the data and skips duplicate contracts.
 - Persists agreements, filters, search and goal in `localStorage`.
 - Statuses and KPIs refresh automatically when you return to the tab on a new day.
-- Responsive layout for desktop and mobile.
+- Responsive layout for desktop and mobile, a print view (KPIs and list only), and support for `prefers-reduced-motion`.
 
 ## Tech stack
 
