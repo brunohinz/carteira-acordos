@@ -718,3 +718,69 @@ tbody tr.is-new td {
 .dialog-actions > * {
     flex: 1;
 }
+
+/* Impressao (Ctrl+P): so indicadores e a lista filtrada, sem formulario, botoes e acoes. */
+@media print {
+    body {
+        background: #fff;
+    }
+
+    .topbar-actions button,
+    .form-panel,
+    .list-tools,
+    .link-button,
+    .panel-badge,
+    .undo-toast,
+    .page-footer,
+    #clearFiltersButton,
+    th:last-child,
+    td:last-child {
+        display: none !important;
+    }
+
+    .portfolio-app {
+        width: auto;
+        max-width: none;
+        padding: 0;
+    }
+
+    .workspace {
+        display: block;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .metric-card {
+        min-height: 0;
+        padding: 10px;
+    }
+
+    .metric-card strong {
+        font-size: 1.05rem;
+        white-space: nowrap;
+    }
+
+    .panel,
+    .metric-card {
+        box-shadow: none;
+    }
+
+    .metric-card {
+        break-inside: avoid;
+    }
+
+    .table-shell {
+        overflow: visible;
+    }
+
+    table {
+        min-width: 0;
+    }
+
+    tr {
+        break-inside: avoid;
+    }
+}
