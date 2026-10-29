@@ -80,7 +80,9 @@ test("exporta CSV da lista visivel", async () => {
     assert.equal(downloads.length, 1);
     const csv = await downloads[0].text();
     assert.match(csv, /^\uFEFF?Contrato;Cliente;Valor/);
-    assert.equal(csv.trim().split("\r\n").length, 8);
+    // Cabecalho + 7 acordos + linha de total.
+    assert.equal(csv.trim().split("\r\n").length, 9);
+    assert.match(csv.trim().split("\r\n").pop(), /^Total;7 acordos;/);
 });
 
 test("edita um acordo pelo dialog", () => {

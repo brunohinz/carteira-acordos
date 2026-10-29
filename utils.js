@@ -412,8 +412,11 @@ function buildAgreementsCsv(agreements, today = new Date()) {
         formatDate(agreement.criadoEm),
         agreement.pagoEm ? formatDate(agreement.pagoEm) : ""
     ]);
+    // Linha final com a soma (em centavos, para nao acumular erro de ponto flutuante).
+    const totalValue = centsToCurrency(sumCurrency(agreements)).toFixed(2).replace(".", ",");
+    const totalRow = ["Total", pluralize(agreements.length, "acordo", "acordos"), totalValue, "", "", "", ""];
 
-    return [header, ...rows]
+    return [header, ...rows, totalRow]
         .map((row) => row.map(escapeCsvField).join(";"))
         .join("\r\n");
 }

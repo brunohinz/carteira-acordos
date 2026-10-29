@@ -249,9 +249,18 @@ test("buildAgreementsCsv gera cabecalho e linhas no padrao pt-BR", () => {
     const csv = buildAgreementsCsv([
         { numero: "CT-1", cliente: "Unidade; Centro", valor: 1234.5, vencimento: "2026-10-20", criadoEm: "2026-10-01T12:00:00", pago: false, pagoEm: null }
     ], today);
-    const [header, line] = csv.split("\r\n");
+    const [header, line, total] = csv.split("\r\n");
     assert.equal(header, "Contrato;Cliente;Valor;Vencimento;Status;Gerado em;Pago em");
     assert.equal(line, 'CT-1;"Unidade; Centro";1234,50;20/10/2026;Atrasado;01/10/2026;');
+    assert.equal(total, "Total;1 acordo;1234,50;;;;");
+});
+
+test("buildAgreementsCsv soma os valores na linha de total sem erro de arredondamento", () => {
+    const csv = buildAgreementsCsv([
+        { numero: "A", cliente: "X", valor: 0.1, vencimento: "2026-10-20", criadoEm: "2026-10-01T12:00:00", pago: false, pagoEm: null },
+        { numero: "B", cliente: "Y", valor: 0.2, vencimento: "2026-10-20", criadoEm: "2026-10-01T12:00:00", pago: false, pagoEm: null }
+    ], new Date(2026, 9, 23));
+    assert.equal(csv.split("\r\n").pop(), "Total;2 acordos;0,30;;;;");
 });
 
 test("buildListSummary mostra o termo buscado quando houver", () => {
