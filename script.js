@@ -248,7 +248,12 @@ function renderList() {
         ? "Nenhum acordo corresponde à busca ou ao filtro atual."
         : "Nenhum acordo encontrado.";
     elements.clearFiltersButton.hidden = !(hasFilters && state.agreements.length > 0);
-    elements.listSummary.textContent = buildListSummary(visibleAgreements.length, state.agreements.length, state.search);
+    elements.listSummary.textContent = buildListSummary(
+        visibleAgreements.length,
+        state.agreements.length,
+        state.search,
+        centsToCurrency(sumCurrency(visibleAgreements))
+    );
 
     visibleAgreements.forEach((agreement) => {
         elements.table.appendChild(createAgreementRow(agreement));

@@ -374,9 +374,19 @@ function describeGoalPace(paidThisMonth, goal, today = new Date()) {
         : `${remaining}, cerca de ${formatCurrency(centsToCurrency(dailyCents))} por dia em ${pluralize(daysLeft, "dia", "dias")}`;
 }
 
-function buildListSummary(visibleCount, totalCount, search = "") {
-    const summary = `${pluralize(visibleCount, "acordo encontrado", "acordos encontrados")} de ${totalCount}`;
-    return search ? `${summary} para "${search}"` : summary;
+// visibleValue (opcional) e a soma dos acordos listados; so aparece quando ha algo na lista.
+function buildListSummary(visibleCount, totalCount, search = "", visibleValue = null) {
+    let summary = `${pluralize(visibleCount, "acordo encontrado", "acordos encontrados")} de ${totalCount}`;
+
+    if (search) {
+        summary += ` para "${search}"`;
+    }
+
+    if (visibleCount > 0 && visibleValue !== null) {
+        summary += `, somando ${formatCurrency(visibleValue)}`;
+    }
+
+    return summary;
 }
 
 function escapeCsvField(value) {

@@ -259,6 +259,12 @@ test("buildListSummary mostra o termo buscado quando houver", () => {
     assert.equal(buildListSummary(1, 7, "sao"), '1 acordo encontrado de 7 para "sao"');
 });
 
+test("buildListSummary soma o valor dos acordos listados", () => {
+    assert.match(buildListSummary(2, 7, "", 1500.5), /^2 acordos encontrados de 7, somando R\$\s1\.500,50$/);
+    assert.match(buildListSummary(1, 7, "sao", 100), /para "sao", somando R\$\s100,00$/);
+    assert.equal(buildListSummary(0, 7, "x", 0), '0 acordos encontrados de 7 para "x"');
+});
+
 test("describeValueInput mostra preview formatado ou erro para valor invalido", () => {
     const { describeValueInput } = require("../utils.js");
     assert.deepEqual(describeValueInput(""), { text: "", isError: false });
