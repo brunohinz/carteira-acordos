@@ -163,3 +163,17 @@ test("importa backup JSON substituindo a carteira e a meta", async () => {
     assert.match($("#formMessage").textContent, /2 acordos importados \(1 registro ignorado/);
     assert.match($("#goalHint").textContent, /10\.000,00/);
 });
+
+test("reabrir o dialog de edicao limpa o erro da tentativa cancelada", () => {
+    const { $, submit, rows } = loadApp();
+    rows()[0].querySelector('[data-action="edit"]').click();
+    $("#editClient").value = "";
+    submit("#editForm");
+    assert.equal($("#editClient").getAttribute("aria-invalid"), "true");
+    assert.notEqual($("#editMessage").textContent, "");
+
+    $("#editDialog").close();
+    rows()[0].querySelector('[data-action="edit"]').click();
+    assert.equal($("#editClient").hasAttribute("aria-invalid"), false);
+    assert.equal($("#editMessage").textContent, "");
+});

@@ -441,7 +441,10 @@ function openEditDialog(agreement) {
     elements.editNumber.value = agreement.numero;
     elements.editValue.value = formatCurrencyInput(agreement.valor);
     elements.editDueDate.value = agreement.vencimento;
+    // Ao reabrir, nao deixa preso o erro de uma tentativa anterior cancelada (Esc/Cancelar).
     elements.editMessage.textContent = "";
+    [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate]
+        .forEach((input) => input.removeAttribute("aria-invalid"));
     renderEditValuePreview();
     elements.editDialog.showModal();
     elements.editClient.focus();
