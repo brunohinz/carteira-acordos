@@ -653,6 +653,19 @@ tbody tr.is-new td {
         animation: none;
         background: rgba(45, 108, 223, .14);
     }
+
+    /* Sem o "pulo" dos botoes no hover e sem transicoes para quem pediu menos movimento. */
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+    }
+
+    .ghost-button:hover,
+    .row-button:hover,
+    .primary-button:hover {
+        transform: none;
+    }
 }
 
 .link-button {
