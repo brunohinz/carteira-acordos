@@ -118,11 +118,31 @@ function bindEvents() {
     elements.undoButton.addEventListener("click", undoRemove);
     elements.editForm.addEventListener("submit", handleEditSubmit);
     elements.goalForm.addEventListener("submit", handleGoalSubmit);
+    document.addEventListener("keydown", focusSearchOnSlash);
     document.addEventListener("visibilitychange", refreshIfDayChanged);
     window.addEventListener("focus", refreshIfDayChanged);
     document.querySelectorAll("[data-close-dialog]").forEach((button) => {
         button.addEventListener("click", () => button.closest("dialog").close());
     });
+}
+
+// Atalho "/" leva para a busca, exceto quando o usuario ja esta digitando ou com um dialog aberto.
+function focusSearchOnSlash(event) {
+    if (event.key !== "/" || event.ctrlKey || event.metaKey || event.altKey) {
+        return;
+    }
+
+    const target = event.target;
+    const isTyping = target instanceof Element
+        && (target.closest("input, textarea, select, [contenteditable]") !== null);
+
+    if (isTyping || document.querySelector("dialog[open]")) {
+        return;
+    }
+
+    event.preventDefault();
+    elements.searchInput.focus();
+    elements.searchInput.select();
 }
 
 function loadDemoState() {

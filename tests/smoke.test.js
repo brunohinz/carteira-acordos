@@ -177,3 +177,16 @@ test("reabrir o dialog de edicao limpa o erro da tentativa cancelada", () => {
     assert.equal($("#editClient").hasAttribute("aria-invalid"), false);
     assert.equal($("#editMessage").textContent, "");
 });
+
+test("atalho / foca a busca, mas nao rouba a tecla de outro campo", () => {
+    const { window, $ } = loadApp();
+    const press = (target) => target.dispatchEvent(new window.KeyboardEvent("keydown", { key: "/", bubbles: true, cancelable: true }));
+
+    const typed = press($("#agreementNumber"));
+    assert.equal(typed, true);
+    assert.notEqual(window.document.activeElement, $("#searchInput"));
+
+    const handled = press(window.document.body);
+    assert.equal(handled, false);
+    assert.equal(window.document.activeElement, $("#searchInput"));
+});
