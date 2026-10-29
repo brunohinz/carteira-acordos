@@ -53,6 +53,7 @@ function cacheElements() {
     elements.goalProgressBar = document.querySelector("#goalProgressBar");
     elements.goalHint = document.querySelector("#goalHint");
     elements.goalPace = document.querySelector("#goalPace");
+    elements.goalCard = document.querySelector("#goalCard");
     elements.editGoalButton = document.querySelector("#editGoalButton");
     elements.undoToast = document.querySelector("#undoToast");
     elements.undoText = document.querySelector("#undoText");
@@ -257,6 +258,7 @@ function renderMetrics() {
     elements.goalProgressTrack.setAttribute("aria-valuetext", `${progress}% da meta: ${formatCurrency(paidThisMonthValue)} de ${formatCurrency(state.goal)}`);
     elements.goalHint.textContent = `${formatCurrency(paidThisMonthValue)} pagos no mês de ${formatCurrency(state.goal)}`;
     elements.goalPace.textContent = describeGoalPace(paidThisMonthValue, state.goal);
+    elements.goalCard.classList.toggle("is-goal-met", isGoalMet(paidThisMonthValue, state.goal));
 }
 
 function renderList() {

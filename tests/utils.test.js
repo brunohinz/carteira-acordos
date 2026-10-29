@@ -434,3 +434,12 @@ test("matchesSearchTerm encontra o acordo pelo valor em formatos comuns", () => 
     assert.equal(matchesSearchTerm(agreement, "9999"), false);
     assert.equal(matchesSearchTerm({ numero: "CT-1", cliente: "Sem valor" }, "0,00"), false);
 });
+
+test("isGoalMet so considera batida quando o pago alcanca a meta", () => {
+    const { isGoalMet, calculateGoalProgress } = require("../utils.js");
+    assert.equal(isGoalMet(42000, 42000), true);
+    assert.equal(isGoalMet(50000, 42000), true);
+    assert.equal(calculateGoalProgress(41850, 42000), 100);
+    assert.equal(isGoalMet(41850, 42000), false);
+    assert.equal(isGoalMet(100, 0), false);
+});

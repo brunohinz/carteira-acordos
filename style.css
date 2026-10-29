@@ -262,6 +262,21 @@ h2 {
     background: linear-gradient(90deg, var(--blue), var(--teal));
 }
 
+/* Meta do mes batida: card e barra em verde. */
+.progress-card.is-goal-met {
+    border-color: var(--green);
+    background: var(--soft-green);
+}
+
+.progress-card.is-goal-met #goalProgress,
+.progress-card.is-goal-met .goal-pace {
+    color: var(--green);
+}
+
+.progress-card.is-goal-met .progress-track span {
+    background: var(--green);
+}
+
 .workspace {
     display: grid;
     grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);

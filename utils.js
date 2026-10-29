@@ -349,6 +349,12 @@ function calculateGoalProgress(paid, goal) {
     return Math.min(Math.round((paidCents / goalCents) * 100), 100);
 }
 
+// Meta batida de fato (em centavos); 99,6% nao conta, mesmo que o percentual arredonde para 100.
+function isGoalMet(paid, goal) {
+    const goalCents = currencyToCents(goal);
+    return goalCents > 0 && currencyToCents(paid) >= goalCents;
+}
+
 // Quanto falta para a meta mensal e o ritmo diario necessario ate o fim do mes
 // (conta o dia de hoje). "today" e injetavel para os testes.
 function describeGoalPace(paidThisMonth, goal, today = new Date()) {
@@ -359,7 +365,7 @@ function describeGoalPace(paidThisMonth, goal, today = new Date()) {
         return "";
     }
 
-    if (paidCents >= goalCents) {
+    if (isGoalMet(paidThisMonth, goal)) {
         return "Meta do mês batida!";
     }
 
@@ -573,6 +579,7 @@ if (typeof module !== "undefined" && module.exports) {
         escapeHtml,
         buildListSummary,
         calculateGoalProgress,
+        isGoalMet,
         describeGoalPace,
         escapeCsvField,
         buildAgreementsCsv,

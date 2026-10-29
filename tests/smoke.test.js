@@ -192,3 +192,12 @@ test("atalho / foca a busca, mas nao rouba a tecla de outro campo", () => {
     assert.equal(handled, false);
     assert.equal(window.document.activeElement, $("#searchInput"));
 });
+
+test("card da meta fica destacado quando a meta do mes e batida", () => {
+    const { $, submit } = loadApp();
+    assert.equal($("#goalCard").classList.contains("is-goal-met"), false);
+    $("#editGoalButton").click();
+    $("#goalInput").value = "1,00";
+    submit("#goalForm");
+    assert.equal($("#goalCard").classList.contains("is-goal-met"), true);
+});
