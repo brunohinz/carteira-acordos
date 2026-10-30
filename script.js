@@ -447,7 +447,7 @@ function handleTableAction(event) {
     if (button.dataset.action === "toggle-paid") {
         agreement.pago = !agreement.pago;
         agreement.pagoEm = agreement.pago ? new Date().toISOString() : null;
-        showMessage(agreement.pago ? "Acordo marcado como pago." : "Acordo reaberto.");
+        showMessage(agreement.pago ? `Acordo ${agreement.numero} marcado como pago.` : `Acordo ${agreement.numero} reaberto.`);
     }
 
     if (button.dataset.action === "edit") {
@@ -464,6 +464,22 @@ function handleTableAction(event) {
     saveDemoState();
     renderMetrics();
     renderList();
+
+    if (button.dataset.action === "toggle-paid") {
+        highlightRow(agreement.id);
+        focusRowAction(agreement.id, "toggle-paid");
+    }
+}
+
+// A lista é redesenhada a cada ação; devolve o foco ao mesmo botão da linha (se ela ainda
+// estiver visível) para quem usa teclado não voltar ao início da página.
+function focusRowAction(id, action) {
+    const target = Array.from(elements.table.querySelectorAll(`button[data-action="${action}"]`))
+        .find((item) => item.dataset.id === id);
+
+    if (target) {
+        target.focus();
+    }
 }
 
 let editingId = null;

@@ -260,3 +260,16 @@ test("busca destaca o trecho encontrado na lista", () => {
     $("#searchInput").dispatchEvent(new window.Event("input"));
     assert.equal(rows()[0].querySelector("mark").textContent, "São Lucas");
 });
+
+test("marcar pago cita o contrato e mantém o foco no botão da mesma linha", () => {
+    const { window, $, rows } = loadApp();
+    const row = rows().find((item) => item.querySelector('[data-action="toggle-paid"]').textContent === "Marcar pago");
+    const id = row.dataset.id;
+    const number = row.querySelector("strong").textContent;
+    row.querySelector('[data-action="toggle-paid"]').click();
+
+    assert.equal($("#formMessage").textContent, `Acordo ${number} marcado como pago.`);
+    const active = window.document.activeElement;
+    assert.equal(active.dataset.id, id);
+    assert.equal(active.textContent, "Reabrir");
+});
