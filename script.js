@@ -262,6 +262,17 @@ function renderMetrics() {
     elements.goalHint.textContent = `${formatCurrency(paidThisMonthValue)} pagos no mês de ${formatCurrency(state.goal)}`;
     elements.goalPace.textContent = describeGoalPace(paidThisMonthValue, state.goal);
     elements.goalCard.classList.toggle("is-goal-met", isGoalMet(paidThisMonthValue, state.goal));
+    renderStatusFilterCounts();
+}
+
+// Mostra no select de status quantos acordos cada filtro traria, ex.: "Atrasados (2)".
+function renderStatusFilterCounts() {
+    const counts = countByStatusFilter(state.agreements);
+
+    Array.from(elements.statusFilter.options).forEach((option) => {
+        option.dataset.label ??= option.textContent;
+        option.textContent = `${option.dataset.label} (${counts[option.value] ?? 0})`;
+    });
 }
 
 function renderList() {

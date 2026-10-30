@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
     describeGoalPace,
+    countByStatusFilter,
     paidDateToIso,
     isAfterToday,
     parseCurrency,
@@ -458,4 +459,21 @@ test("isAfterToday compara só o dia", () => {
     assert.equal(isAfterToday("2026-10-30", today), false);
     assert.equal(isAfterToday("2026-10-31", today), true);
     assert.equal(isAfterToday("2026-09-01", today), false);
+});
+
+test("countByStatusFilter conta cada opção do filtro de status", () => {
+    const today = new Date(2026, 9, 30);
+    const agreements = [
+        { valor: 1, vencimento: "2026-10-29", pago: false },
+        { valor: 1, vencimento: "2026-10-30", pago: false },
+        { valor: 1, vencimento: "2026-11-03", pago: false },
+        { valor: 1, vencimento: "2026-10-01", pago: true, pagoEm: "2026-10-02T12:00:00.000Z" }
+    ];
+    const counts = countByStatusFilter(agreements, today);
+    assert.equal(counts.all, 4);
+    assert.equal(counts.paid, 1);
+    assert.equal(counts.open, 3);
+    assert.equal(counts.overdue, 1);
+    assert.equal(counts["due-today"], 1);
+    assert.equal(counts["next-7"] >= 1, true);
 });

@@ -235,3 +235,14 @@ test("acordo em aberto não mostra o campo Pago em", () => {
     openRow.querySelector('[data-action="edit"]').click();
     assert.equal($("#editPaidField").hidden, true);
 });
+
+test("select de status mostra a contagem de cada filtro e atualiza ao pagar", () => {
+    const { $, rows } = loadApp();
+    const optionText = (value) => $(`#statusFilter option[value="${value}"]`).textContent;
+    assert.equal(optionText("all"), "Todos (7)");
+    assert.equal(optionText("paid"), "Pagos (2)");
+
+    rows().find((row) => row.querySelector('[data-action="toggle-paid"]').textContent === "Marcar pago")
+        .querySelector('[data-action="toggle-paid"]').click();
+    assert.equal(optionText("paid"), "Pagos (3)");
+});
