@@ -16,17 +16,17 @@ Carteira de Acordos is a front-end dashboard for tracking financial agreements (
 - A configurable monthly goal ("Alterar meta"), calculated only from agreements paid in the current month, showing how much is left and the daily pace needed until month end. The card turns green once the goal is met.
 - Demo dataset included, and you can restore it at any time.
 - Create agreements with a formatted-value preview and due-date validation.
-- Edit client, contract, amount and due date in an accessible dialog (blocks duplicate contracts and previews the amount).
-- Search by contract, client or amount (8.420,50, 8420,50 or 8420.50), ignoring accents and case. `/` jumps to the search box and `Esc` clears it.
+- Edit client, contract, amount and due date in an accessible dialog (blocks duplicate contracts and previews the amount). For paid agreements you can also fix the payment date.
+- Search by contract, client or amount (8.420,50, 8420,50 or 8420.50), ignoring accents and case, with the matching text highlighted in the list. `/` jumps to the search box and `Esc` clears it.
 - The list summary shows how many agreements are visible and their total amount.
-- Status filters: all, open, paid, overdue, due today, and next 7 days.
+- Status filters: all, open, paid, overdue, due today, and next 7 days, each showing how many agreements it matches. The tab title shows how many are overdue.
 - Sort by due date, creation date or amount.
-- Mark agreements as paid, reopen them, and delete them with undo.
-- **CSV export** of the current view. It respects search and filters and opens directly in Excel with pt-BR settings, and ends with a total row.
+- Mark agreements as paid, reopen them, and delete them with undo (`Esc` dismisses the notice).
+- **CSV export** of the current view. It respects search and filters and opens directly in Excel with pt-BR settings, and ends with a total row; the file name includes the active filter.
 - **JSON backup and import**. The import validates the data and skips duplicate contracts.
 - Persists agreements, filters, search and goal in `localStorage`.
 - Statuses and KPIs refresh automatically when you return to the tab on a new day.
-- Responsive layout for desktop and mobile, a print view (KPIs and list only), and support for `prefers-reduced-motion`.
+- Responsive layout for desktop and mobile, automatic dark mode (follows the system), a print view (KPIs and list only), and support for `prefers-reduced-motion`.
 
 ## Tech stack
 
@@ -68,7 +68,7 @@ tests/utils.test.js        Unit tests for the pure functions
 
 ## Screenshots
 
-The screenshots below are from an earlier version; the edit dialog and the goal pace are not shown yet.
+The screenshots below are from an earlier version; the edit dialog, the goal pace and dark mode are not shown yet.
 
 | New agreement | "Atrasados" (overdue) filter + search |
 |---|---|
