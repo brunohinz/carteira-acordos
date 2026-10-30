@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
     describeGoalPace,
+    buildCsvFileName,
     highlightSearchMatch,
     buildDocumentTitle,
     countByStatusFilter,
@@ -493,4 +494,12 @@ test("highlightSearchMatch marca o trecho ignorando acentos e escapa o resto", (
     assert.equal(highlightSearchMatch("CT-1 e ct-1", "ct-1"), "<mark>CT-1</mark> e <mark>ct-1</mark>");
     assert.equal(highlightSearchMatch("Unidade", ""), "Unidade");
     assert.equal(highlightSearchMatch("Unidade", "xyz"), "Unidade");
+});
+
+test("buildCsvFileName indica filtro e busca no nome do arquivo", () => {
+    const today = new Date(2026, 9, 30);
+    assert.equal(buildCsvFileName("all", "", today), "carteira-acordos-2026-10-30.csv");
+    assert.equal(buildCsvFileName("overdue", "", today), "carteira-acordos-atrasados-2026-10-30.csv");
+    assert.equal(buildCsvFileName("next-7", "  centro ", today), "carteira-acordos-proximos-7-dias-busca-2026-10-30.csv");
+    assert.equal(buildCsvFileName("desconhecido", "", today), "carteira-acordos-2026-10-30.csv");
 });

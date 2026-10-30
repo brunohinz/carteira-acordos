@@ -443,6 +443,30 @@ function buildAgreementsCsv(agreements, today = new Date()) {
         .join("\r\n");
 }
 
+const CSV_FILTER_SLUGS = {
+    open: "em-aberto",
+    paid: "pagos",
+    overdue: "atrasados",
+    "due-today": "vence-hoje",
+    "next-7": "proximos-7-dias"
+};
+
+// Nome do CSV indica o recorte exportado, ex.: "carteira-acordos-atrasados-busca-2026-10-30.csv".
+function buildCsvFileName(statusFilter, search, today = new Date()) {
+    const parts = ["carteira-acordos"];
+
+    if (CSV_FILTER_SLUGS[statusFilter]) {
+        parts.push(CSV_FILTER_SLUGS[statusFilter]);
+    }
+
+    if (String(search || "").trim()) {
+        parts.push("busca");
+    }
+
+    parts.push(formatInputDate(today));
+    return `${parts.join("-")}.csv`;
+}
+
 const SORT_OPTIONS = ["due-soon", "due-late", "created-new", "created-old", "value-high", "value-low"];
 const STATUS_FILTER_OPTIONS = ["all", "open", "paid", "overdue", "due-today", "next-7"];
 
@@ -616,6 +640,7 @@ function escapeHtml(value) {
 
 if (typeof module !== "undefined" && module.exports) {
     module.exports = {
+        buildCsvFileName,
         highlightSearchMatch,
         buildDocumentTitle,
         countByStatusFilter,

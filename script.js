@@ -694,7 +694,7 @@ function exportCsv() {
 
     // BOM para o Excel reconhecer UTF-8 (acentos).
     const csv = `\uFEFF${buildAgreementsCsv(visibleAgreements)}`;
-    downloadFile(csv, `carteira-acordos-${formatInputDate(new Date())}.csv`, "text/csv;charset=utf-8");
+    downloadFile(csv, buildCsvFileName(state.statusFilter, state.search), "text/csv;charset=utf-8");
     showMessage(`${pluralize(visibleAgreements.length, "acordo exportado", "acordos exportados")} em CSV.`);
 }
 
