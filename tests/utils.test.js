@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
     describeGoalPace,
+    buildDocumentTitle,
     countByStatusFilter,
     paidDateToIso,
     isAfterToday,
@@ -476,4 +477,10 @@ test("countByStatusFilter conta cada opção do filtro de status", () => {
     assert.equal(counts.overdue, 1);
     assert.equal(counts["due-today"], 1);
     assert.equal(counts["next-7"] >= 1, true);
+});
+
+test("buildDocumentTitle mostra atrasados só quando existem", () => {
+    assert.equal(buildDocumentTitle("Carteira", 0), "Carteira");
+    assert.equal(buildDocumentTitle("Carteira", 1), "(1 atrasado) Carteira");
+    assert.equal(buildDocumentTitle("Carteira", 3), "(3 atrasados) Carteira");
 });

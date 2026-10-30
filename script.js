@@ -10,6 +10,7 @@ const state = {
 };
 
 const elements = {};
+const BASE_TITLE = document.title;
 
 document.addEventListener("DOMContentLoaded", () => {
     cacheElements();
@@ -263,6 +264,7 @@ function renderMetrics() {
     elements.goalPace.textContent = describeGoalPace(paidThisMonthValue, state.goal);
     elements.goalCard.classList.toggle("is-goal-met", isGoalMet(paidThisMonthValue, state.goal));
     renderStatusFilterCounts();
+    document.title = buildDocumentTitle(BASE_TITLE, overdue.length);
 }
 
 // Mostra no select de status quantos acordos cada filtro traria, ex.: "Atrasados (2)".

@@ -246,3 +246,10 @@ test("select de status mostra a contagem de cada filtro e atualiza ao pagar", ()
         .querySelector('[data-action="toggle-paid"]').click();
     assert.equal(optionText("paid"), "Pagos (3)");
 });
+
+test("título da aba mostra quantos acordos estão atrasados", () => {
+    const { window, $ } = loadApp();
+    const overdue = Number($("#overdueCount").textContent.match(/^\d+/)[0]);
+    assert.ok(overdue > 0);
+    assert.match(window.document.title, new RegExp(`^\\(${overdue} atrasados?\\) Carteira de acordos`));
+});

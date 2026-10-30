@@ -446,6 +446,13 @@ function buildAgreementsCsv(agreements, today = new Date()) {
 const SORT_OPTIONS = ["due-soon", "due-late", "created-new", "created-old", "value-high", "value-low"];
 const STATUS_FILTER_OPTIONS = ["all", "open", "paid", "overdue", "due-today", "next-7"];
 
+// Título da aba com os atrasados na frente, para chamar atenção mesmo com a aba em segundo plano.
+function buildDocumentTitle(baseTitle, overdueCount) {
+    return overdueCount > 0
+        ? `(${pluralize(overdueCount, "atrasado", "atrasados")}) ${baseTitle}`
+        : baseTitle;
+}
+
 // Quantos acordos cada opção do filtro de status mostraria (para exibir no select).
 function countByStatusFilter(agreements, today = new Date()) {
     return Object.fromEntries(STATUS_FILTER_OPTIONS.map((filter) => [
@@ -567,6 +574,7 @@ function escapeHtml(value) {
 
 if (typeof module !== "undefined" && module.exports) {
     module.exports = {
+        buildDocumentTitle,
         countByStatusFilter,
         paidDateToIso,
         isAfterToday,
