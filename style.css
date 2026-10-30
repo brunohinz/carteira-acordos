@@ -17,6 +17,51 @@
     --soft-red: #fff0f2;
     --shadow: 0 18px 42px rgba(24, 32, 38, .09);
     --soft-shadow: 0 8px 24px rgba(24, 32, 38, .06);
+    --soft-violet: #f2effb;
+    --field: #ffffff;
+    --field-subtle: #fbfcfd;
+    --label: #4b5a65;
+    --track: #e7edf2;
+    --topbar: rgba(255, 255, 255, .86);
+    --toast: #182026;
+    --primary: #2d6cdf;
+    --primary-hover: #245cc3;
+    --backdrop: rgba(24, 32, 38, .45);
+    color-scheme: light;
+}
+
+/* Modo escuro automático (segue o sistema), reaproveitando as mesmas variáveis.
+   Só na tela: a impressão continua clara. */
+@media screen and (prefers-color-scheme: dark) {
+    :root {
+        --bg: #11161b;
+        --panel: #1a2128;
+        --ink: #e6ebef;
+        --muted: #9aa8b3;
+        --line: #2a343d;
+        --line-strong: #3a4651;
+        --blue: #6b9bf0;
+        --teal: #3fbab3;
+        --green: #4cc08a;
+        --amber: #e0a44a;
+        --red: #ec7c8a;
+        --violet: #a68cf0;
+        --soft-blue: #1c2a44;
+        --soft-green: #17312a;
+        --soft-amber: #362b16;
+        --soft-red: #3a1f25;
+        --soft-violet: #2a2342;
+        --shadow: 0 18px 42px rgba(0, 0, 0, .45);
+        --soft-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+        --field: #212a32;
+        --field-subtle: #1d252c;
+        --label: #b3c0ca;
+        --track: #2a343d;
+        --topbar: rgba(26, 33, 40, .9);
+        --toast: #2c3742;
+        --backdrop: rgba(0, 0, 0, .6);
+        color-scheme: dark;
+    }
 }
 
 * {
@@ -60,7 +105,7 @@ select {
     border: 1px solid var(--line);
     border-radius: 8px;
     padding: 18px;
-    background: rgba(255, 255, 255, .86);
+    background: var(--topbar);
     box-shadow: var(--soft-shadow);
 }
 
@@ -81,7 +126,7 @@ select {
     border: 1px solid var(--line);
     border-radius: 8px;
     padding: 10px;
-    background: #f9fbfd;
+    background: var(--field-subtle);
 }
 
 .brand-mark span {
@@ -169,7 +214,7 @@ h2 {
 .ghost-button {
     border: 1px solid var(--line-strong);
     color: var(--ink);
-    background: #fff;
+    background: var(--field);
 }
 
 .ghost-button:hover,
@@ -182,12 +227,12 @@ h2 {
     width: 100%;
     border: 0;
     color: #fff;
-    background: var(--blue);
+    background: var(--primary);
     box-shadow: 0 10px 22px rgba(45, 108, 223, .22);
 }
 
 .primary-button:hover {
-    background: #245cc3;
+    background: var(--primary-hover);
 }
 
 .ghost-button:focus-visible,
@@ -251,7 +296,7 @@ h2 {
     overflow: hidden;
     border-radius: 999px;
     margin: 0 0 8px;
-    background: #e7edf2;
+    background: var(--track);
 }
 
 .progress-track span {
@@ -315,7 +360,7 @@ h2 {
 .agreement-form label,
 .tool-field span {
     display: block;
-    color: #4b5a65;
+    color: var(--label);
     font-size: .8rem;
     font-weight: 800;
     text-transform: uppercase;
@@ -333,14 +378,14 @@ select {
     border-radius: 7px;
     padding: 0 11px;
     color: var(--ink);
-    background: #fbfcfd;
+    background: var(--field-subtle);
     outline: none;
     transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
 input:hover,
 select:hover {
-    background: #fff;
+    background: var(--field);
 }
 
 input:focus,
@@ -480,7 +525,7 @@ td small {
     min-height: 32px;
     border: 1px solid var(--line-strong);
     color: var(--ink);
-    background: #fff;
+    background: var(--field);
     font-size: .82rem;
 }
 
@@ -493,7 +538,7 @@ td small {
 .row-button.reopen {
     color: var(--violet);
     border-color: rgba(108, 75, 184, .24);
-    background: #f2effb;
+    background: var(--soft-violet);
 }
 
 .row-button.remove {
@@ -509,7 +554,7 @@ td small {
     margin: 18px 0 0;
     padding: 24px;
     color: var(--muted);
-    background: #fbfcfd;
+    background: var(--field-subtle);
     text-align: center;
 }
 
@@ -548,7 +593,7 @@ td small {
     padding: 10px 12px 10px 16px;
     border-radius: 8px;
     color: #fff;
-    background: var(--ink);
+    background: var(--toast);
     box-shadow: var(--shadow);
     transform: translateX(-50%);
 }
@@ -701,7 +746,7 @@ tbody tr.is-new td {
 }
 
 .app-dialog::backdrop {
-    background: rgba(24, 32, 38, .45);
+    background: var(--backdrop);
 }
 
 .app-dialog h2 {
