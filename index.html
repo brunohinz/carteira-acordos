@@ -184,6 +184,11 @@
                 <label for="editDueDate">Vencimento</label>
                 <input id="editDueDate" type="date" min="2000-01-01" max="2100-12-31" required>
 
+                <div id="editPaidField" hidden>
+                    <label for="editPaidDate">Pago em</label>
+                    <input id="editPaidDate" type="date" min="2000-01-01" max="2100-12-31">
+                </div>
+
                 <p class="form-message error" id="editMessage" aria-live="polite"></p>
                 <div class="dialog-actions">
                     <button type="button" class="ghost-button" data-close-dialog>Cancelar</button>

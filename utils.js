@@ -83,6 +83,22 @@ function formatInputDate(date) {
     return `${year}-${month}-${day}`;
 }
 
+// Data do campo "Pago em" (AAAA-MM-DD) como ISO; usa meio-dia local para o dia não
+// mudar ao converter para UTC. Devolve null se a data for inválida.
+function paidDateToIso(value) {
+    if (!isValidDueDate(value)) {
+        return null;
+    }
+
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day, 12).toISOString();
+}
+
+// Dia AAAA-MM-DD depois de "today" (comparação de texto funciona nesse formato).
+function isAfterToday(value, today = new Date()) {
+    return String(value) > formatInputDate(today);
+}
+
 function getDueDateTime(agreement) {
     const dueDate = new Date(`${agreement.vencimento}T00:00:00`);
     return Number.isNaN(dueDate.getTime()) ? Number.MAX_SAFE_INTEGER : dueDate.getTime();
@@ -543,6 +559,8 @@ function escapeHtml(value) {
 
 if (typeof module !== "undefined" && module.exports) {
     module.exports = {
+        paidDateToIso,
+        isAfterToday,
         normalizeSearchText,
         normalizeContractKey,
         isValidDueDate,

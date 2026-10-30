@@ -2,6 +2,8 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
     describeGoalPace,
+    paidDateToIso,
+    isAfterToday,
     parseCurrency,
     normalizeCurrencyValue,
     formatCurrency,
@@ -442,4 +444,18 @@ test("isGoalMet so considera batida quando o pago alcanca a meta", () => {
     assert.equal(calculateGoalProgress(41850, 42000), 100);
     assert.equal(isGoalMet(41850, 42000), false);
     assert.equal(isGoalMet(100, 0), false);
+});
+
+test("paidDateToIso mantém o dia escolhido e rejeita data inválida", () => {
+    const iso = paidDateToIso("2026-10-05");
+    assert.equal(formatInputDate(new Date(iso)), "2026-10-05");
+    assert.equal(paidDateToIso("2026-02-30"), null);
+    assert.equal(paidDateToIso(""), null);
+});
+
+test("isAfterToday compara só o dia", () => {
+    const today = new Date(2026, 9, 30, 23, 59);
+    assert.equal(isAfterToday("2026-10-30", today), false);
+    assert.equal(isAfterToday("2026-10-31", today), true);
+    assert.equal(isAfterToday("2026-09-01", today), false);
 });

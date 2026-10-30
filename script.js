@@ -66,6 +66,8 @@ function cacheElements() {
     elements.editValue = document.querySelector("#editValue");
     elements.editValuePreview = document.querySelector("#editValuePreview");
     elements.editDueDate = document.querySelector("#editDueDate");
+    elements.editPaidField = document.querySelector("#editPaidField");
+    elements.editPaidDate = document.querySelector("#editPaidDate");
     elements.editMessage = document.querySelector("#editMessage");
     elements.goalDialog = document.querySelector("#goalDialog");
     elements.goalForm = document.querySelector("#goalForm");
@@ -469,9 +471,12 @@ function openEditDialog(agreement) {
     elements.editNumber.value = agreement.numero;
     elements.editValue.value = formatCurrencyInput(agreement.valor);
     elements.editDueDate.value = agreement.vencimento;
+    // "Pago em" só aparece (e só é validado) para acordos pagos.
+    elements.editPaidField.hidden = !agreement.pago;
+    elements.editPaidDate.value = agreement.pago && agreement.pagoEm ? formatInputDate(new Date(agreement.pagoEm)) : "";
     // Ao reabrir, não deixa preso o erro de uma tentativa anterior cancelada (Esc/Cancelar).
     elements.editMessage.textContent = "";
-    [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate]
+    [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate, elements.editPaidDate]
         .forEach((input) => input.removeAttribute("aria-invalid"));
     renderEditValuePreview();
     elements.editDialog.showModal();
@@ -493,7 +498,7 @@ function handleEditSubmit(event) {
         return;
     }
 
-    [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate]
+    [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate, elements.editPaidDate]
         .forEach((input) => input.removeAttribute("aria-invalid"));
     const cliente = elements.editClient.value.trim();
     const numero = elements.editNumber.value.trim();
@@ -525,10 +530,24 @@ function handleEditSubmit(event) {
         return;
     }
 
+    const currentPaidDate = agreement.pagoEm ? formatInputDate(new Date(agreement.pagoEm)) : "";
+    const paidDate = agreement.pago ? elements.editPaidDate.value : currentPaidDate;
+
+    if (agreement.pago && !isValidDueDate(paidDate)) {
+        showDialogError(elements.editMessage, elements.editPaidDate, "Informe uma data de pagamento válida.");
+        return;
+    }
+
+    if (agreement.pago && isAfterToday(paidDate)) {
+        showDialogError(elements.editMessage, elements.editPaidDate, "A data de pagamento não pode estar no futuro.");
+        return;
+    }
+
     elements.editDialog.close();
 
     if (cliente === agreement.cliente && numero === agreement.numero
-        && valor === agreement.valor && vencimento === agreement.vencimento) {
+        && valor === agreement.valor && vencimento === agreement.vencimento
+        && paidDate === currentPaidDate) {
         showMessage("Nada foi alterado.");
         return;
     }
@@ -537,6 +556,11 @@ function handleEditSubmit(event) {
     agreement.numero = numero;
     agreement.valor = valor;
     agreement.vencimento = vencimento;
+
+    if (agreement.pago && paidDate !== currentPaidDate) {
+        agreement.pagoEm = paidDateToIso(paidDate);
+    }
+
     showMessage(`Acordo ${agreement.numero} atualizado.`);
     saveDemoState();
     renderMetrics();

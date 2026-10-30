@@ -211,3 +211,27 @@ test("Esc fecha o aviso de Desfazer e a remocao continua valendo", () => {
     assert.equal($("#undoToast").hidden, true);
     assert.equal(rows().length, 6);
 });
+
+test("edita a data de pagamento de um acordo pago e recusa data futura", () => {
+    const { $, submit, rows } = loadApp();
+    const paidRow = rows().find((row) => row.querySelector('[data-action="toggle-paid"]').textContent === "Reabrir");
+    paidRow.querySelector('[data-action="edit"]').click();
+    assert.equal($("#editPaidField").hidden, false);
+
+    $("#editPaidDate").value = "2100-01-01";
+    submit("#editForm");
+    assert.equal($("#editDialog").open, true);
+    assert.equal($("#editPaidDate").getAttribute("aria-invalid"), "true");
+
+    $("#editPaidDate").value = "2026-01-02";
+    submit("#editForm");
+    assert.equal($("#editDialog").open, false);
+    assert.match($("#agreementTable").textContent, /Pago em 02\/01\/2026/);
+});
+
+test("acordo em aberto não mostra o campo Pago em", () => {
+    const { $, rows } = loadApp();
+    const openRow = rows().find((row) => row.querySelector('[data-action="toggle-paid"]').textContent === "Marcar pago");
+    openRow.querySelector('[data-action="edit"]').click();
+    assert.equal($("#editPaidField").hidden, true);
+});
