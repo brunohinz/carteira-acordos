@@ -201,3 +201,13 @@ test("card da meta fica destacado quando a meta do mes e batida", () => {
     submit("#goalForm");
     assert.equal($("#goalCard").classList.contains("is-goal-met"), true);
 });
+
+test("Esc fecha o aviso de Desfazer e a remocao continua valendo", () => {
+    const { window, $, rows } = loadApp();
+    rows()[0].querySelector('[data-action="remove"]').click();
+    assert.equal($("#undoToast").hidden, false);
+
+    window.document.body.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+    assert.equal($("#undoToast").hidden, true);
+    assert.equal(rows().length, 6);
+});

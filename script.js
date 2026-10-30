@@ -120,6 +120,7 @@ function bindEvents() {
     elements.editForm.addEventListener("submit", handleEditSubmit);
     elements.goalForm.addEventListener("submit", handleGoalSubmit);
     document.addEventListener("keydown", focusSearchOnSlash);
+    document.addEventListener("keydown", dismissUndoOnEscape);
     document.addEventListener("visibilitychange", refreshIfDayChanged);
     window.addEventListener("focus", refreshIfDayChanged);
     document.querySelectorAll("[data-close-dialog]").forEach((button) => {
@@ -560,6 +561,20 @@ function hideUndoToast() {
     window.clearTimeout(undoTimer);
     pendingUndo = null;
     elements.undoToast.hidden = true;
+}
+
+// Esc dispensa o aviso de "Desfazer" (a remoção fica valendo), exceto com um dialog aberto
+// ou quando o Esc já foi usado para limpar a busca.
+function dismissUndoOnEscape(event) {
+    if (event.key !== "Escape" || event.defaultPrevented || elements.undoToast.hidden) {
+        return;
+    }
+
+    if (document.querySelector("dialog[open]")) {
+        return;
+    }
+
+    hideUndoToast();
 }
 
 function undoRemove() {
