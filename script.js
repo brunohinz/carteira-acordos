@@ -325,10 +325,10 @@ function createAgreementRow(agreement) {
 
     row.innerHTML = `
         <td>
-            <strong>${safeNumber}</strong>
+            <strong>${highlightSearchMatch(agreement.numero, state.search)}</strong>
             <small>Gerado em ${formatDate(agreement.criadoEm)}</small>
         </td>
-        <td>${escapeHtml(agreement.cliente)}</td>
+        <td>${highlightSearchMatch(agreement.cliente, state.search)}</td>
         <td class="value-cell">${formatCurrency(agreement.valor)}</td>
         <td>
             <strong>${formatDate(agreement.vencimento)}</strong>

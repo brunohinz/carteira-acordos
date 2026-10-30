@@ -253,3 +253,10 @@ test("título da aba mostra quantos acordos estão atrasados", () => {
     assert.ok(overdue > 0);
     assert.match(window.document.title, new RegExp(`^\\(${overdue} atrasados?\\) Carteira de acordos`));
 });
+
+test("busca destaca o trecho encontrado na lista", () => {
+    const { window, $, rows } = loadApp();
+    $("#searchInput").value = "sao lucas";
+    $("#searchInput").dispatchEvent(new window.Event("input"));
+    assert.equal(rows()[0].querySelector("mark").textContent, "São Lucas");
+});

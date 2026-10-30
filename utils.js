@@ -563,6 +563,48 @@ function parseBackup(text) {
     };
 }
 
+// HTML escapado com os trechos que batem com a busca em <mark>, ignorando caixa e acentos
+// como a própria busca. Normaliza caractere a caractere para manter as posições do texto original.
+function highlightSearchMatch(text, term) {
+    const original = String(text);
+    const needle = normalizeSearchText(String(term || "").trim());
+
+    if (!needle) {
+        return escapeHtml(original);
+    }
+
+    const chars = Array.from(original);
+    let normalized = "";
+    const startOf = [];
+
+    chars.forEach((char, index) => {
+        const piece = normalizeSearchText(char);
+        for (let i = 0; i < piece.length; i += 1) {
+            startOf.push(index);
+        }
+        normalized += piece;
+    });
+
+    let html = "";
+    let cursor = 0;
+    let found = normalized.indexOf(needle);
+
+    while (found !== -1) {
+        const from = startOf[found];
+        const to = startOf[found + needle.length - 1] + 1;
+
+        if (from >= cursor) {
+            html += escapeHtml(chars.slice(cursor, from).join(""));
+            html += `<mark>${escapeHtml(chars.slice(from, to).join(""))}</mark>`;
+            cursor = to;
+        }
+
+        found = normalized.indexOf(needle, found + needle.length);
+    }
+
+    return html + escapeHtml(chars.slice(cursor).join(""));
+}
+
 function escapeHtml(value) {
     return String(value)
         .replace(/&/g, "&amp;")
@@ -574,6 +616,7 @@ function escapeHtml(value) {
 
 if (typeof module !== "undefined" && module.exports) {
     module.exports = {
+        highlightSearchMatch,
         buildDocumentTitle,
         countByStatusFilter,
         paidDateToIso,

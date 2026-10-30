@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
     describeGoalPace,
+    highlightSearchMatch,
     buildDocumentTitle,
     countByStatusFilter,
     paidDateToIso,
@@ -483,4 +484,13 @@ test("buildDocumentTitle mostra atrasados só quando existem", () => {
     assert.equal(buildDocumentTitle("Carteira", 0), "Carteira");
     assert.equal(buildDocumentTitle("Carteira", 1), "(1 atrasado) Carteira");
     assert.equal(buildDocumentTitle("Carteira", 3), "(3 atrasados) Carteira");
+});
+
+test("highlightSearchMatch marca o trecho ignorando acentos e escapa o resto", () => {
+    assert.equal(highlightSearchMatch("Colégio São Lucas", "sao"), "Colégio <mark>São</mark> Lucas");
+    assert.equal(highlightSearchMatch("Colegio", "COLÉ"), "<mark>Cole</mark>gio");
+    assert.equal(highlightSearchMatch("<b>Unidade</b>", "uni"), "&lt;b&gt;<mark>Uni</mark>dade&lt;/b&gt;");
+    assert.equal(highlightSearchMatch("CT-1 e ct-1", "ct-1"), "<mark>CT-1</mark> e <mark>ct-1</mark>");
+    assert.equal(highlightSearchMatch("Unidade", ""), "Unidade");
+    assert.equal(highlightSearchMatch("Unidade", "xyz"), "Unidade");
 });

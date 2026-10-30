@@ -678,6 +678,15 @@ td small {
     border: 0;
 }
 
+/* Trecho que bate com a busca. */
+tbody mark {
+    border-radius: 3px;
+    padding: 0 1px;
+    color: inherit;
+    background: var(--soft-amber);
+    box-shadow: inset 0 -2px 0 var(--amber);
+}
+
 tbody tr.is-new td {
     animation: row-highlight 3s ease-out;
 }
