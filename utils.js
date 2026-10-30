@@ -1,4 +1,4 @@
-// Funcoes puras (sem DOM) usadas pelo dashboard e pelos testes.
+// Funções puras (sem DOM) usadas pelo dashboard e pelos testes.
 
 function normalizeSearchText(value) {
     return String(value)
@@ -88,7 +88,7 @@ function getDueDateTime(agreement) {
     return Number.isNaN(dueDate.getTime()) ? Number.MAX_SAFE_INTEGER : dueDate.getTime();
 }
 
-// "today" e injetavel para os testes nao dependerem da data atual.
+// "today" é injetável para os testes não dependerem da data atual.
 function getDueDiffDays(agreement, today = new Date()) {
     const start = new Date(today);
     start.setHours(0, 0, 0, 0);
@@ -99,7 +99,7 @@ function isOverdue(agreement, today = new Date()) {
     return !agreement.pago && getDueDiffDays(agreement, today) < 0;
 }
 
-// Data valida no mesmo mes/ano de "today".
+// Data válida no mesmo mês/ano de "today".
 function isInSameMonth(value, today = new Date()) {
     const date = new Date(value);
 
@@ -108,12 +108,12 @@ function isInSameMonth(value, today = new Date()) {
         && date.getMonth() === today.getMonth();
 }
 
-// Pago dentro do mes/ano de "today" (usado pela meta mensal).
+// Pago dentro do mês/ano de "today" (usado pela meta mensal).
 function wasPaidInMonth(agreement, today = new Date()) {
     return Boolean(agreement.pago && agreement.pagoEm) && isInSameMonth(agreement.pagoEm, today);
 }
 
-// Gerado dentro do mes/ano de "today" (card "Gerado no mes").
+// Gerado dentro do mês/ano de "today" (card "Gerado no mês").
 function wasCreatedInMonth(agreement, today = new Date()) {
     return Boolean(agreement.criadoEm) && isInSameMonth(agreement.criadoEm, today);
 }
@@ -227,7 +227,7 @@ function getCreatedTime(agreement) {
     return Number.isNaN(createdAt.getTime()) ? 0 : createdAt.getTime();
 }
 
-// Ordenacao pura: recebe o criterio em vez de ler o estado global.
+// Ordenação pura: recebe o critério em vez de ler o estado global.
 function compareAgreementsBy(sortOrder, a, b) {
     if (sortOrder === "due-late") {
         return compareNumbers(getDueDateTime(b), getDueDateTime(a)) || compareText(a.numero, b.numero);
@@ -322,7 +322,7 @@ function formatCurrencyInput(value) {
     });
 }
 
-// Texto de apoio exibido abaixo do campo Valor enquanto o usuario digita.
+// Texto de apoio exibido abaixo do campo Valor enquanto o usuário digita.
 function describeValueInput(rawValue) {
     if (!String(rawValue || "").trim()) {
         return { text: "", isError: false };
@@ -337,7 +337,7 @@ function describeValueInput(rawValue) {
     return { text: `Será salvo como ${formatCurrency(value)}`, isError: false };
 }
 
-// Percentual inteiro (0 a 100) da meta atingido; meta zerada/invalida vira 0 em vez de NaN/Infinity.
+// Percentual inteiro (0 a 100) da meta atingido; meta zerada/inválida vira 0 em vez de NaN/Infinity.
 function calculateGoalProgress(paid, goal) {
     const paidCents = currencyToCents(paid);
     const goalCents = currencyToCents(goal);
@@ -349,14 +349,14 @@ function calculateGoalProgress(paid, goal) {
     return Math.min(Math.round((paidCents / goalCents) * 100), 100);
 }
 
-// Meta batida de fato (em centavos); 99,6% nao conta, mesmo que o percentual arredonde para 100.
+// Meta batida de fato (em centavos); 99,6% não conta, mesmo que o percentual arredonde para 100.
 function isGoalMet(paid, goal) {
     const goalCents = currencyToCents(goal);
     return goalCents > 0 && currencyToCents(paid) >= goalCents;
 }
 
-// Quanto falta para a meta mensal e o ritmo diario necessario ate o fim do mes
-// (conta o dia de hoje). "today" e injetavel para os testes.
+// Quanto falta para a meta mensal e o ritmo diário necessário até o fim do mês
+// (conta o dia de hoje). "today" é injetável para os testes.
 function describeGoalPace(paidThisMonth, goal, today = new Date()) {
     const paidCents = currencyToCents(paidThisMonth);
     const goalCents = currencyToCents(goal);
@@ -380,7 +380,7 @@ function describeGoalPace(paidThisMonth, goal, today = new Date()) {
         : `${remaining}, cerca de ${formatCurrency(centsToCurrency(dailyCents))} por dia em ${pluralize(daysLeft, "dia", "dias")}`;
 }
 
-// visibleValue (opcional) e a soma dos acordos listados; so aparece quando ha algo na lista.
+// visibleValue (opcional) é a soma dos acordos listados; só aparece quando há algo na lista.
 function buildListSummary(visibleCount, totalCount, search = "", visibleValue = null) {
     let summary = `${pluralize(visibleCount, "acordo encontrado", "acordos encontrados")} de ${totalCount}`;
 
@@ -398,7 +398,7 @@ function buildListSummary(visibleCount, totalCount, search = "", visibleValue = 
 function escapeCsvField(value) {
     let text = String(value ?? "");
 
-    // Evita que planilhas interpretem o campo como formula (CSV injection).
+    // Evita que planilhas interpretem o campo como fórmula (CSV injection).
     if (/^[=+\-@\t\r]/.test(text)) {
         text = `'${text}`;
     }
@@ -406,7 +406,7 @@ function escapeCsvField(value) {
     return /[";\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 }
 
-// CSV com ";" e virgula decimal, que o Excel em pt-BR abre direto.
+// CSV com ";" e vírgula decimal, que o Excel em pt-BR abre direto.
 function buildAgreementsCsv(agreements, today = new Date()) {
     const header = ["Contrato", "Cliente", "Valor", "Vencimento", "Status", "Gerado em", "Pago em"];
     const rows = agreements.map((agreement) => [
@@ -418,7 +418,7 @@ function buildAgreementsCsv(agreements, today = new Date()) {
         formatDate(agreement.criadoEm),
         agreement.pagoEm ? formatDate(agreement.pagoEm) : ""
     ]);
-    // Linha final com a soma (em centavos, para nao acumular erro de ponto flutuante).
+    // Linha final com a soma (em centavos, para não acumular erro de ponto flutuante).
     const totalValue = centsToCurrency(sumCurrency(agreements)).toFixed(2).replace(".", ",");
     const totalRow = ["Total", pluralize(agreements.length, "acordo", "acordos"), totalValue, "", "", "", ""];
 
@@ -438,8 +438,8 @@ function normalizeStatusFilter(value) {
     return STATUS_FILTER_OPTIONS.includes(value) ? value : "all";
 }
 
-// Le o estado salvo; "storage" segue a interface do localStorage (injetavel nos testes).
-// Devolve null quando nao ha nada salvo ou o conteudo esta corrompido.
+// Lê o estado salvo; "storage" segue a interface do localStorage (injetável nos testes).
+// Devolve null quando não há nada salvo ou o conteúdo está corrompido.
 function readSavedState(storage, key, defaultGoal) {
     let saved;
 
@@ -492,8 +492,8 @@ function buildBackup(agreements, goal, now = new Date()) {
     };
 }
 
-// Le um backup (ou uma lista simples de acordos) e devolve dados validados.
-// Lanca Error com mensagem pronta para o usuario quando o arquivo nao serve.
+// Lê um backup (ou uma lista simples de acordos) e devolve dados validados.
+// Lança Error com mensagem pronta para o usuário quando o arquivo não serve.
 function parseBackup(text) {
     let data;
 

@@ -127,7 +127,7 @@ function bindEvents() {
     });
 }
 
-// Atalho "/" leva para a busca, exceto quando o usuario ja esta digitando ou com um dialog aberto.
+// Atalho "/" leva para a busca, exceto quando o usuário já está digitando ou com um dialog aberto.
 function focusSearchOnSlash(event) {
     if (event.key !== "/" || event.ctrlKey || event.metaKey || event.altKey) {
         return;
@@ -152,7 +152,7 @@ function loadDemoState() {
     try {
         saved = readSavedState(localStorage, DEMO_STORAGE_KEY, DEFAULT_GOAL);
     } catch (error) {
-        // localStorage pode nem estar acessivel (modo privado/bloqueado).
+        // localStorage pode nem estar acessível (modo privado/bloqueado).
         saved = null;
     }
 
@@ -209,10 +209,10 @@ function createDemoAgreement(numero, cliente, valor, dueOffset, createdOffset, p
     };
 }
 
-// Dia (AAAA-MM-DD) do ultimo render completo; status como "Vence hoje" dependem dele.
+// Dia (AAAA-MM-DD) do último render completo; status como "Vence hoje" dependem dele.
 let renderedDay = "";
 
-// Se a aba ficou aberta de um dia para o outro, refaz status, metricas e "Atualizado em" ao voltar.
+// Se a aba ficou aberta de um dia para o outro, refaz status, métricas e "Atualizado em" ao voltar.
 function refreshIfDayChanged() {
     if (document.visibilityState === "hidden") {
         return;
@@ -239,14 +239,14 @@ function renderMetrics() {
     const open = state.agreements.filter((agreement) => !agreement.pago);
     const overdue = state.agreements.filter((agreement) => isOverdue(agreement));
     const paidValue = centsToCurrency(sumCurrency(paid));
-    // A meta e mensal: so conta o que foi pago no mes corrente.
+    // A meta é mensal: só conta o que foi pago no mês corrente.
     const paidThisMonthValue = centsToCurrency(sumCurrency(state.agreements.filter((agreement) => wasPaidInMonth(agreement))));
     const progress = calculateGoalProgress(paidThisMonthValue, state.goal);
 
     elements.monthGeneratedValue.textContent = formatCurrency(centsToCurrency(sumCurrency(monthGenerated)));
     elements.monthGeneratedCount.textContent = pluralize(monthGenerated.length, "acordo gerado", "acordos gerados");
     elements.paidValue.textContent = formatCurrency(paidValue);
-    // O card soma todos os pagos; o recorte do mes (o que conta para a meta) fica explicito no rodape.
+    // O card soma todos os pagos; o recorte do mês (o que conta para a meta) fica explícito no rodapé.
     elements.paidCount.textContent = `${pluralize(paid.length, "acordo pago", "acordos pagos")}, ${formatCurrency(paidThisMonthValue)} no mês`;
     elements.openValue.textContent = formatCurrency(centsToCurrency(sumCurrency(open)));
     elements.openCount.textContent = pluralize(open.length, "acordo pendente", "acordos pendentes");
@@ -400,7 +400,7 @@ function renderEditValuePreview() {
     renderPreviewFor(elements.editValue, elements.editValuePreview);
 }
 
-// Destaca por alguns segundos a linha do acordo recem-adicionado (se estiver visivel).
+// Destaca por alguns segundos a linha do acordo recém-adicionado (se estiver visível).
 function highlightRow(id) {
     const row = Array.from(elements.table.rows).find((item) => item.dataset.id === id);
 
@@ -452,7 +452,7 @@ function handleTableAction(event) {
 
 let editingId = null;
 
-// Contrato repetido ignorando caixa, espacos e acentos; ignoreId deixa o proprio acordo de fora na edicao.
+// Contrato repetido ignorando caixa, espaços e acentos; ignoreId deixa o próprio acordo de fora na edição.
 function isDuplicateContract(numero, ignoreId = null) {
     const contractKey = normalizeContractKey(numero);
 
@@ -468,7 +468,7 @@ function openEditDialog(agreement) {
     elements.editNumber.value = agreement.numero;
     elements.editValue.value = formatCurrencyInput(agreement.valor);
     elements.editDueDate.value = agreement.vencimento;
-    // Ao reabrir, nao deixa preso o erro de uma tentativa anterior cancelada (Esc/Cancelar).
+    // Ao reabrir, não deixa preso o erro de uma tentativa anterior cancelada (Esc/Cancelar).
     elements.editMessage.textContent = "";
     [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate]
         .forEach((input) => input.removeAttribute("aria-invalid"));
@@ -543,7 +543,7 @@ function handleEditSubmit(event) {
     highlightRow(agreement.id);
 }
 
-// Em vez de pedir confirmacao, remove na hora e oferece "Desfazer" por alguns segundos.
+// Em vez de pedir confirmação, remove na hora e oferece "Desfazer" por alguns segundos.
 const UNDO_TIMEOUT_MS = 8000;
 let pendingUndo = null;
 let undoTimer = null;
@@ -732,7 +732,7 @@ function showMessage(message, isError = false) {
     elements.formMessage.textContent = message;
     elements.formMessage.classList.toggle("error", isError);
 
-    // Sucesso some rapido; erro fica mais tempo para dar tempo de ler.
+    // Sucesso some rápido; erro fica mais tempo para dar tempo de ler.
     messageTimer = window.setTimeout(() => {
         elements.formMessage.textContent = "";
         elements.formMessage.classList.remove("error");

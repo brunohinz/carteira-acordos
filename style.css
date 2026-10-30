@@ -262,7 +262,7 @@ h2 {
     background: linear-gradient(90deg, var(--blue), var(--teal));
 }
 
-/* Meta do mes batida: card e barra em verde. */
+/* Meta do mês batida: card e barra em verde. */
 .progress-card.is-goal-met {
     border-color: var(--green);
     background: var(--soft-green);
@@ -654,7 +654,7 @@ tbody tr.is-new td {
         background: rgba(45, 108, 223, .14);
     }
 
-    /* Sem o "pulo" dos botoes no hover e sem transicoes para quem pediu menos movimento. */
+    /* Sem o "pulo" dos botões no hover e sem transições para quem pediu menos movimento. */
     *,
     *::before,
     *::after {
@@ -719,7 +719,7 @@ tbody tr.is-new td {
     flex: 1;
 }
 
-/* Impressao (Ctrl+P): so indicadores e a lista filtrada, sem formulario, botoes e acoes. */
+/* Impressão (Ctrl+P): só indicadores e a lista filtrada, sem formulário, botões e ações. */
 @media print {
     body {
         background: #fff;

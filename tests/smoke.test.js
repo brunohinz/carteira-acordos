@@ -14,11 +14,11 @@ function loadApp() {
     const { window } = dom;
     const downloads = [];
 
-    // jsdom nao implementa showModal/scrollIntoView nem object URLs.
+    // jsdom não implementa showModal/scrollIntoView nem object URLs.
     window.HTMLDialogElement.prototype.showModal = function showModal() { this.open = true; };
     window.HTMLDialogElement.prototype.close = function close() { this.open = false; };
     window.HTMLElement.prototype.scrollIntoView = () => {};
-    // Blob do Node tem .text(), o do jsdom nao.
+    // Blob do Node tem .text(), o do jsdom não.
     window.Blob = require("node:buffer").Blob;
     window.URL.createObjectURL = (blob) => { downloads.push(blob); return "blob:teste"; };
     window.URL.revokeObjectURL = () => {};
@@ -80,7 +80,7 @@ test("exporta CSV da lista visivel", async () => {
     assert.equal(downloads.length, 1);
     const csv = await downloads[0].text();
     assert.match(csv, /^\uFEFF?Contrato;Cliente;Valor/);
-    // Cabecalho + 7 acordos + linha de total.
+    // Cabeçalho + 7 acordos + linha de total.
     assert.equal(csv.trim().split("\r\n").length, 9);
     assert.match(csv.trim().split("\r\n").pop(), /^Total;7 acordos;/);
 });
@@ -116,7 +116,7 @@ test("ao voltar para a aba num novo dia, refaz a tela", () => {
     window.dispatchEvent(new window.Event("focus"));
     assert.equal($("#lastUpdated").textContent, "velho");
 
-    // Simula a virada do dia avancando o relogio da pagina em 24h.
+    // Simula a virada do dia avançando o relógio da página em 24h.
     window.eval(`
         const RealDate = Date;
         Date = class extends RealDate {
