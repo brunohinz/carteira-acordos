@@ -57,13 +57,13 @@ test("parseCurrency entende formatos brasileiros e internacionais", () => {
     assert.equal(parseCurrency(12.345), 12.35);
 });
 
-test("normalizeCurrencyValue zera valores invalidos ou negativos", () => {
+test("normalizeCurrencyValue zera valores inválidos ou negativos", () => {
     assert.equal(normalizeCurrencyValue(-5), 0);
     assert.equal(normalizeCurrencyValue(Number.NaN), 0);
     assert.equal(normalizeCurrencyValue("10.005"), 10.01);
 });
 
-test("formatCurrency e formatCurrencyInput usam o padrao pt-BR", () => {
+test("formatCurrency e formatCurrencyInput usam o padrão pt-BR", () => {
     assert.equal(formatCurrency(1234.5).replace(/\s/g, " "), "R$ 1.234,50");
     assert.equal(formatCurrencyInput(1234.5), "1.234,50");
     assert.equal(formatCurrencyInput(0), "");
@@ -79,7 +79,7 @@ test("pluralize escolhe singular ou plural", () => {
     assert.equal(pluralize(3, "dia", "dias"), "3 dias");
 });
 
-test("isValidDueDate rejeita datas impossiveis e anos absurdos", () => {
+test("isValidDueDate rejeita datas impossíveis e anos absurdos", () => {
     assert.equal(isValidDueDate("2026-10-21"), true);
     assert.equal(isValidDueDate("2026-02-30"), false);
     assert.equal(isValidDueDate("1899-01-01"), false);
@@ -96,7 +96,7 @@ test("addDays e formatInputDate geram datas no formato do input", () => {
     assert.equal(formatInputDate(addDays(new Date(2026, 2, 1), -1)), "2026-02-28");
 });
 
-test("normalizeOptionalDateTime aceita datas validas e descarta lixo", () => {
+test("normalizeOptionalDateTime aceita datas válidas e descarta lixo", () => {
     assert.equal(normalizeOptionalDateTime("2026-10-20T12:00:00.000Z"), "2026-10-20T12:00:00.000Z");
     assert.equal(normalizeOptionalDateTime("data-invalida"), null);
     assert.equal(normalizeOptionalDateTime(""), null);
@@ -104,27 +104,27 @@ test("normalizeOptionalDateTime aceita datas validas e descarta lixo", () => {
     assert.equal(normalizeOptionalDateTime(undefined), null);
 });
 
-test("normalizeContractKey ignora espacos, acentos e caixa", () => {
+test("normalizeContractKey ignora espaços, acentos e caixa", () => {
     assert.equal(normalizeContractKey("CT-2026-001"), normalizeContractKey(" ct - 2026 - 001 "));
     assert.equal(normalizeContractKey("Ação 01"), "acao01");
     assert.notEqual(normalizeContractKey("CT-001"), normalizeContractKey("CT-002"));
 });
 
-test("getDueDiffDays conta dias ate o vencimento a partir de uma data fixa", () => {
+test("getDueDiffDays conta dias até o vencimento a partir de uma data fixa", () => {
     const today = new Date(2026, 9, 23, 15, 30);
     assert.equal(getDueDiffDays({ vencimento: "2026-10-23" }, today), 0);
     assert.equal(getDueDiffDays({ vencimento: "2026-10-30" }, today), 7);
     assert.equal(getDueDiffDays({ vencimento: "2026-10-20" }, today), -3);
 });
 
-test("isOverdue so considera atrasado o acordo vencido e nao pago", () => {
+test("isOverdue só considera atrasado o acordo vencido e não pago", () => {
     const today = new Date(2026, 9, 23);
     assert.equal(isOverdue({ vencimento: "2026-10-22", pago: false }, today), true);
     assert.equal(isOverdue({ vencimento: "2026-10-22", pago: true }, today), false);
     assert.equal(isOverdue({ vencimento: "2026-10-23", pago: false }, today), false);
 });
 
-test("getDueDateTime joga vencimentos invalidos para o fim da fila", () => {
+test("getDueDateTime joga vencimentos inválidos para o fim da fila", () => {
     assert.equal(getDueDateTime({ vencimento: "invalido" }), Number.MAX_SAFE_INTEGER);
 });
 
@@ -147,17 +147,17 @@ test("matchesStatus aplica os filtros todos, em aberto, pagos e atrasados", () =
     assert.deepEqual([paid, late, open].map((a) => matchesStatus(a, "overdue", today)), [false, true, false]);
 });
 
-test("compareText ordena contratos com numeros de forma natural", () => {
+test("compareText ordena contratos com números de forma natural", () => {
     assert.ok(compareText("CT-2", "CT-10") < 0);
     assert.equal(compareText("ct-1", "CT-1"), 0);
 });
 
-test("getCreatedTime trata criadoEm invalido como zero", () => {
+test("getCreatedTime trata criadoEm inválido como zero", () => {
     assert.equal(getCreatedTime({ criadoEm: "lixo" }), 0);
     assert.equal(getCreatedTime({ criadoEm: "2026-10-01T00:00:00.000Z" }), Date.parse("2026-10-01T00:00:00.000Z"));
 });
 
-test("compareAgreementsBy ordena por vencimento e por data de criacao", () => {
+test("compareAgreementsBy ordena por vencimento e por data de criação", () => {
     const a = { numero: "CT-1", vencimento: "2026-10-10", criadoEm: "2026-09-01T00:00:00.000Z" };
     const b = { numero: "CT-2", vencimento: "2026-10-05", criadoEm: "2026-09-20T00:00:00.000Z" };
     const c = { numero: "CT-3", vencimento: "2026-10-05", criadoEm: "2026-08-15T00:00:00.000Z" };
@@ -175,7 +175,7 @@ test("normalizeAgreement descarta registros sem dados essenciais", () => {
     assert.equal(normalizeAgreement({ numero: "", cliente: "X", vencimento: "2026-10-01" }), null);
 });
 
-test("normalizeAgreement corrige tipos e campos invalidos", () => {
+test("normalizeAgreement corrige tipos e campos inválidos", () => {
     const result = normalizeAgreement({
         id: "abc",
         numero: 123,
@@ -231,7 +231,7 @@ test("getStatusInfo classifica pago, atrasado, vence hoje e em aberto", () => {
     assert.equal(open.detail, "Vence em 5 dias");
 });
 
-test("matchesStatus filtra vence hoje e proximos 7 dias so entre os nao pagos", () => {
+test("matchesStatus filtra vence hoje e próximos 7 dias só entre os não pagos", () => {
     const today = new Date(2026, 9, 23);
     const dueToday = { vencimento: "2026-10-23", pago: false };
     const inWeek = { vencimento: "2026-10-30", pago: false };
@@ -243,14 +243,14 @@ test("matchesStatus filtra vence hoje e proximos 7 dias so entre os nao pagos", 
     assert.deepEqual(all.map((a) => matchesStatus(a, "next-7", today)), [true, true, false, false, false]);
 });
 
-test("escapeCsvField protege aspas, separador e formulas", () => {
+test("escapeCsvField protege aspas, separador e fórmulas", () => {
     assert.equal(escapeCsvField("simples"), "simples");
     assert.equal(escapeCsvField('a;b "c"'), '"a;b ""c"""');
     assert.equal(escapeCsvField("=SOMA(A1)"), "'=SOMA(A1)");
     assert.equal(escapeCsvField(null), "");
 });
 
-test("buildAgreementsCsv gera cabecalho e linhas no padrao pt-BR", () => {
+test("buildAgreementsCsv gera cabeçalho e linhas no padrão pt-BR", () => {
     const today = new Date(2026, 9, 23);
     const csv = buildAgreementsCsv([
         { numero: "CT-1", cliente: "Unidade; Centro", valor: 1234.5, vencimento: "2026-10-20", criadoEm: "2026-10-01T12:00:00", pago: false, pagoEm: null }
@@ -280,7 +280,7 @@ test("buildListSummary soma o valor dos acordos listados", () => {
     assert.equal(buildListSummary(0, 7, "x", 0), '0 acordos encontrados de 7 para "x"');
 });
 
-test("describeValueInput mostra preview formatado ou erro para valor invalido", () => {
+test("describeValueInput mostra preview formatado ou erro para valor inválido", () => {
     const { describeValueInput } = require("../utils.js");
     assert.deepEqual(describeValueInput(""), { text: "", isError: false });
     assert.deepEqual(describeValueInput("   "), { text: "", isError: false });
@@ -291,7 +291,7 @@ test("describeValueInput mostra preview formatado ou erro para valor invalido", 
     assert.match(ok.text, /1\.250,50/);
 });
 
-test("wasPaidInMonth so considera pagamentos no mes de referencia", () => {
+test("wasPaidInMonth só considera pagamentos no mês de referencia", () => {
     const today = new Date(2026, 9, 26);
     assert.equal(wasPaidInMonth({ pago: true, pagoEm: new Date(2026, 9, 1, 12).toISOString() }, today), true);
     assert.equal(wasPaidInMonth({ pago: true, pagoEm: new Date(2026, 8, 30, 12).toISOString() }, today), false);
@@ -301,7 +301,7 @@ test("wasPaidInMonth so considera pagamentos no mes de referencia", () => {
     assert.equal(wasPaidInMonth({ pago: true, pagoEm: "invalida" }, today), false);
 });
 
-test("buildBackup inclui formato, meta e apenas acordos validos", () => {
+test("buildBackup inclui formato, meta e apenas acordos válidos", () => {
     const now = new Date("2026-10-26T13:00:00.000Z");
     const backup = buildBackup([
         { id: "a", numero: "CT-1", cliente: "Unidade", valor: 10.005, vencimento: "2026-11-01", criadoEm: "2026-10-01T00:00:00.000Z", pago: false },
@@ -317,7 +317,7 @@ test("buildBackup inclui formato, meta e apenas acordos validos", () => {
     assert.equal(backup.acordos[0].pagoEm, null);
 });
 
-test("parseBackup aceita o proprio backup e descarta invalidos e duplicados", () => {
+test("parseBackup aceita o próprio backup e descarta inválidos e duplicados", () => {
     const backup = buildBackup([
         { id: "a", numero: "CT-1", cliente: "Unidade", valor: 100, vencimento: "2026-11-01", criadoEm: "2026-10-01T00:00:00.000Z" },
         { id: "b", numero: " ct - 1", cliente: "Duplicado", valor: 50, vencimento: "2026-11-02", criadoEm: "2026-10-01T00:00:00.000Z" },
@@ -331,7 +331,7 @@ test("parseBackup aceita o proprio backup e descarta invalidos e duplicados", ()
     assert.equal(result.skipped, 3);
 });
 
-test("parseBackup aceita lista simples e rejeita arquivos invalidos", () => {
+test("parseBackup aceita lista simples e rejeita arquivos inválidos", () => {
     const result = parseBackup(JSON.stringify([{ numero: "CT-9", cliente: "X", valor: 1, vencimento: "2026-12-01" }]));
     assert.equal(result.agreements.length, 1);
     assert.equal(result.goal, 0);
@@ -350,7 +350,7 @@ function createMemoryStorage(initial = {}) {
     };
 }
 
-test("writeSavedState e readSavedState fazem ida e volta com normalizacao", () => {
+test("writeSavedState e readSavedState fazem ida e volta com normalização", () => {
     const storage = createMemoryStorage();
     const ok = writeSavedState(storage, "k", {
         agreements: [{ id: "a", numero: "CT-1", cliente: "U", valor: 10, vencimento: "2026-11-01", criadoEm: "2026-10-01T00:00:00.000Z", pago: false, pagoEm: "x" }],
@@ -373,7 +373,7 @@ test("writeSavedState e readSavedState fazem ida e volta com normalizacao", () =
     assert.equal(saved.goal, 50000);
 });
 
-test("readSavedState devolve null para vazio/corrompido e usa defaults invalidos", () => {
+test("readSavedState devolve null para vazio/corrompido e usa defaults inválidos", () => {
     assert.equal(readSavedState(createMemoryStorage(), "k", 42000), null);
     assert.equal(readSavedState(createMemoryStorage({ k: "{quebrado" }), "k", 42000), null);
     assert.equal(readSavedState(createMemoryStorage({ k: JSON.stringify({ foo: 1 }) }), "k", 42000), null);
@@ -387,7 +387,7 @@ test("writeSavedState devolve false quando o armazenamento recusa", () => {
     assert.equal(writeSavedState(storage, "k", { agreements: [] }), false);
 });
 
-test("describeGoalPace mostra quanto falta e o ritmo diario ate o fim do mes", () => {
+test("describeGoalPace mostra quanto falta e o ritmo diário até o fim do mes", () => {
     const today = new Date(2026, 9, 27); // 27/10: faltam 5 dias contando hoje
     assert.equal(describeGoalPace(30000, 40000, today), "Faltam R$\u00a010.000,00, cerca de R$\u00a02.000,00 por dia em 5 dias");
     assert.equal(describeGoalPace(39000, 40000, new Date(2026, 9, 31)), "Faltam R$\u00a01.000,00, hoje é o último dia do mês");
@@ -395,7 +395,7 @@ test("describeGoalPace mostra quanto falta e o ritmo diario ate o fim do mes", (
     assert.equal(describeGoalPace(100, 0, today), "");
 });
 
-test("wasCreatedInMonth so considera acordos gerados no mes de referencia", () => {
+test("wasCreatedInMonth só considera acordos gerados no mês de referencia", () => {
     const today = new Date(2026, 9, 28);
     assert.equal(wasCreatedInMonth({ criadoEm: new Date(2026, 9, 1, 9).toISOString() }, today), true);
     assert.equal(wasCreatedInMonth({ criadoEm: new Date(2026, 8, 30, 9).toISOString() }, today), false);
@@ -441,7 +441,7 @@ test("matchesSearchTerm encontra o acordo pelo valor em formatos comuns", () => 
     assert.equal(matchesSearchTerm({ numero: "CT-1", cliente: "Sem valor" }, "0,00"), false);
 });
 
-test("isGoalMet so considera batida quando o pago alcanca a meta", () => {
+test("isGoalMet só considera batida quando o pago alcança a meta", () => {
     const { isGoalMet, calculateGoalProgress } = require("../utils.js");
     assert.equal(isGoalMet(42000, 42000), true);
     assert.equal(isGoalMet(50000, 42000), true);

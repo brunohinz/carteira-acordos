@@ -74,7 +74,7 @@ test("busca e filtro de status reduzem a lista", () => {
     assert.equal(rows().length, 2);
 });
 
-test("exporta CSV da lista visivel", async () => {
+test("exporta CSV da lista visível", async () => {
     const { $, downloads } = loadApp();
     $("#exportCsvButton").click();
     assert.equal(downloads.length, 1);
@@ -95,7 +95,7 @@ test("edita um acordo pelo dialog", () => {
     assert.match($("#agreementTable").textContent, /Cliente Editado/);
 });
 
-test("dialog de edicao mostra preview do valor digitado", () => {
+test("dialog de edição mostra preview do valor digitado", () => {
     const { window, $ } = loadApp();
     $('[data-action="edit"]').click();
     assert.match($("#editValuePreview").textContent, /Será salvo como R\$/);
@@ -105,7 +105,7 @@ test("dialog de edicao mostra preview do valor digitado", () => {
     assert.equal($("#editValue").getAttribute("aria-invalid"), "true");
 });
 
-test("card de pagos separa o total do valor pago no mes", () => {
+test("card de pagos separa o total do valor pago no mês", () => {
     const { $ } = loadApp();
     assert.match($("#paidCount").textContent, /^\d+ acordos? pagos?, R\$\s?[\d.,]+ no mês$/);
 });
@@ -129,7 +129,7 @@ test("ao voltar para a aba num novo dia, refaz a tela", () => {
     assert.match($("#lastUpdated").textContent, /^Atualizado em/);
 });
 
-test("remove um acordo e desfaz pela notificacao", () => {
+test("remove um acordo e desfaz pela notificação", () => {
     const { $, rows } = loadApp();
     const firstNumber = rows()[0].querySelector("strong").textContent;
     rows()[0].querySelector('[data-action="remove"]').click();
@@ -166,7 +166,7 @@ test("importa backup JSON substituindo a carteira e a meta", async () => {
     assert.match($("#goalHint").textContent, /10\.000,00/);
 });
 
-test("reabrir o dialog de edicao limpa o erro da tentativa cancelada", () => {
+test("reabrir o dialog de edição limpa o erro da tentativa cancelada", () => {
     const { $, submit, rows } = loadApp();
     rows()[0].querySelector('[data-action="edit"]').click();
     $("#editClient").value = "";
@@ -180,7 +180,7 @@ test("reabrir o dialog de edicao limpa o erro da tentativa cancelada", () => {
     assert.equal($("#editMessage").textContent, "");
 });
 
-test("atalho / foca a busca, mas nao rouba a tecla de outro campo", () => {
+test("atalho / foca a busca, mas não rouba a tecla de outro campo", () => {
     const { window, $ } = loadApp();
     const press = (target) => target.dispatchEvent(new window.KeyboardEvent("keydown", { key: "/", bubbles: true, cancelable: true }));
 
@@ -193,7 +193,7 @@ test("atalho / foca a busca, mas nao rouba a tecla de outro campo", () => {
     assert.equal(window.document.activeElement, $("#searchInput"));
 });
 
-test("card da meta fica destacado quando a meta do mes e batida", () => {
+test("card da meta fica destacado quando a meta do mês é batida", () => {
     const { $, submit } = loadApp();
     assert.equal($("#goalCard").classList.contains("is-goal-met"), false);
     $("#editGoalButton").click();
@@ -202,7 +202,7 @@ test("card da meta fica destacado quando a meta do mes e batida", () => {
     assert.equal($("#goalCard").classList.contains("is-goal-met"), true);
 });
 
-test("Esc fecha o aviso de Desfazer e a remocao continua valendo", () => {
+test("Esc fecha o aviso de Desfazer e a remoção continua valendo", () => {
     const { window, $, rows } = loadApp();
     rows()[0].querySelector('[data-action="remove"]').click();
     assert.equal($("#undoToast").hidden, false);
