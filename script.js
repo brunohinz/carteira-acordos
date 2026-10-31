@@ -595,6 +595,8 @@ function handleEditSubmit(event) {
     renderMetrics();
     renderList();
     highlightRow(agreement.id);
+    // A lista foi redesenhada, então o botão que abriu o dialog não existe mais: foca o novo.
+    focusRowAction(agreement.id, "edit");
 }
 
 // Em vez de pedir confirmação, remove na hora e oferece "Desfazer" por alguns segundos.

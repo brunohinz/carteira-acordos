@@ -95,6 +95,18 @@ test("edita um acordo pelo dialog", () => {
     assert.match($("#agreementTable").textContent, /Cliente Editado/);
 });
 
+test("salvar a edição devolve o foco ao botão Editar da mesma linha", () => {
+    const { window, $, submit } = loadApp();
+    const editButton = $('[data-action="edit"]');
+    const id = editButton.dataset.id;
+    editButton.click();
+    $("#editClient").value = "Cliente Focado";
+    submit("#editForm");
+    const active = window.document.activeElement;
+    assert.equal(active.dataset.action, "edit");
+    assert.equal(active.dataset.id, id);
+});
+
 test("dialog de edição mostra preview do valor digitado", () => {
     const { window, $ } = loadApp();
     $('[data-action="edit"]').click();
