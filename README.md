@@ -14,7 +14,7 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 - Meta mensal configurável (botão "Alterar meta"), calculada só com os acordos pagos no mês corrente, mostrando quanto falta e o ritmo diário necessário até o fim do mês. O card fica verde quando a meta é batida.
 - Base inicial com acordos demonstrativos.
 - Cadastro de novos acordos, com prévia do valor formatado e validação de vencimento.
-- Edição de cliente, contrato, valor e vencimento em um diálogo acessível (bloqueia contrato duplicado e mostra a prévia do valor). Em acordos pagos, também dá para corrigir a data de pagamento.
+- Edição de cliente, contrato, valor e vencimento em um diálogo acessível (bloqueia contrato duplicado e mostra a prévia do valor). No próprio diálogo dá para marcar o acordo como pago ou reabri-lo (com a data de hoje sugerida) e, em acordos pagos, corrigir a data de pagamento.
 - Busca por contrato, cliente ou valor (8.420,50, 8420,50 ou 8420.50), sem diferenciar acentos e maiúsculas, com o trecho encontrado destacado na lista. A tecla `/` leva para a busca e `Esc` limpa.
 - Resumo da lista com a quantidade e a soma em reais dos acordos visíveis.
 - Filtro por status: todos, em aberto, pagos, atrasados, vence hoje e próximos 7 dias, com a quantidade de acordos de cada opção. O título da aba mostra quantos estão atrasados.
@@ -88,7 +88,7 @@ Requer Node.js 18 ou superior. O app não tem dependências; o `jsdom` é usado 
 
 ```bash
 npm install     # instala o jsdom (só para os testes)
-npm test        # testes unitários + smoke test de DOM com node --test
+npm test        # testes unitários + smoke test de DOM e do CSS do modo escuro, com node --test
 npm run check   # verifica a sintaxe de utils.js e script.js
 ```
 
