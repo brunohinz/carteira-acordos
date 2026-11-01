@@ -206,8 +206,10 @@ test("atalho / foca a busca, mas não rouba a tecla de outro campo", () => {
 });
 
 test("card da meta fica destacado quando a meta do mês é batida", () => {
-    const { $, submit } = loadApp();
+    const { $, submit, rows } = loadApp();
     assert.equal($("#goalCard").classList.contains("is-goal-met"), false);
+    // Paga um acordo agora: os pagos da base demo podem cair no mês anterior (ex.: dia 1º).
+    $("#agreementTable .row-button.pay").click();
     $("#editGoalButton").click();
     $("#goalInput").value = "1,00";
     submit("#goalForm");
