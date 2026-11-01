@@ -289,3 +289,33 @@ test("marcar pago cita o contrato e mantém o foco no botão da mesma linha", ()
     assert.equal(active.dataset.id, id);
     assert.equal(active.textContent, "Reabrir");
 });
+
+test("dialog de edição marca e reabre o pagamento sem fechar, e Cancelar descarta", () => {
+    const { $, submit } = loadApp();
+    const payButton = () => $("#agreementTable .row-button.pay");
+    const id = payButton().dataset.id;
+    const rowButton = () => $(`#agreementTable [data-action="toggle-paid"][data-id="${id}"]`);
+    const openEdit = () => $(`#agreementTable [data-action="edit"][data-id="${id}"]`).click();
+
+    openEdit();
+    assert.equal($("#editPaidField").hidden, true);
+    $("#editPaidToggle").click();
+    assert.equal($("#editDialog").open, true);
+    assert.equal($("#editPaidField").hidden, false);
+    assert.equal($("#editPaidToggle").getAttribute("aria-pressed"), "true");
+    assert.match($("#editPaidDate").value, /^\d{4}-\d{2}-\d{2}$/);
+    $("#editDialog [data-close-dialog]").click();
+    assert.equal(rowButton().textContent.trim(), "Marcar pago");
+
+    openEdit();
+    $("#editPaidToggle").click();
+    submit("#editForm");
+    assert.equal(rowButton().textContent.trim(), "Reabrir");
+
+    openEdit();
+    assert.equal($("#editPaidToggle").textContent, "Reabrir (não pago)");
+    $("#editPaidToggle").click();
+    assert.equal($("#editPaidField").hidden, true);
+    submit("#editForm");
+    assert.equal(rowButton().textContent.trim(), "Marcar pago");
+});

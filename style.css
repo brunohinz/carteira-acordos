@@ -763,6 +763,10 @@ tbody tr.is-new td {
     font-size: 1.1rem;
 }
 
+.edit-paid-toggle {
+    margin-top: 14px;
+}
+
 .dialog-actions {
     display: flex;
     gap: 10px;
