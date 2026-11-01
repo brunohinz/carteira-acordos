@@ -311,6 +311,7 @@ test("dialog de edição marca e reabre o pagamento sem fechar, e Cancelar desca
     $("#editPaidToggle").click();
     submit("#editForm");
     assert.equal(rowButton().textContent.trim(), "Reabrir");
+    assert.match($("#formMessage").textContent, /atualizado e marcado como pago\./);
 
     openEdit();
     assert.equal($("#editPaidToggle").textContent, "Reabrir (não pago)");
@@ -318,4 +319,5 @@ test("dialog de edição marca e reabre o pagamento sem fechar, e Cancelar desca
     assert.equal($("#editPaidField").hidden, true);
     submit("#editForm");
     assert.equal(rowButton().textContent.trim(), "Marcar pago");
+    assert.match($("#formMessage").textContent, /atualizado e reaberto\./);
 });

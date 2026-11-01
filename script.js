@@ -620,6 +620,9 @@ function handleEditSubmit(event) {
     agreement.valor = valor;
     agreement.vencimento = vencimento;
 
+    // Deixa claro na mensagem quando a edição também mudou a situação de pagamento.
+    const paidNote = editingPaid === agreement.pago ? "" : (editingPaid ? " e marcado como pago" : " e reaberto");
+
     if (!editingPaid) {
         agreement.pagoEm = null;
     } else if (!agreement.pago || paidDate !== currentPaidDate) {
@@ -628,7 +631,7 @@ function handleEditSubmit(event) {
 
     agreement.pago = editingPaid;
 
-    showMessage(`Acordo ${agreement.numero} atualizado.`);
+    showMessage(`Acordo ${agreement.numero} atualizado${paidNote}.`);
     saveDemoState();
     renderMetrics();
     renderList();
