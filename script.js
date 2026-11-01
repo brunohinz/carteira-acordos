@@ -209,8 +209,17 @@ function createDemoAgreement(numero, cliente, valor, dueOffset, createdOffset, p
         vencimento: formatInputDate(addDays(now, dueOffset)),
         criadoEm: createdAt.toISOString(),
         pago,
-        pagoEm: pago ? addDays(createdAt, 3).toISOString() : null
+        pagoEm: pago ? demoPaidDate(createdAt, now).toISOString() : null
     };
+}
+
+// Pagamento da demo: 3 dias após a criação, mas sempre dentro do mês corrente e nunca no futuro,
+// para o card da meta não aparecer zerado nos primeiros dias do mês.
+function demoPaidDate(createdAt, now) {
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1, 12);
+    const paidAt = addDays(createdAt, 3);
+    const clamped = paidAt < monthStart ? monthStart : paidAt;
+    return clamped > now ? now : clamped;
 }
 
 // Dia (AAAA-MM-DD) do último render completo; status como "Vence hoje" dependem dele.

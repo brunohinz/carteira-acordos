@@ -40,6 +40,8 @@ test("carrega a base demo com indicadores e lista", () => {
     assert.equal(rows().length, 7);
     assert.match($("#listSummary").textContent, /7 acordos encontrados de 7/);
     assert.match($("#goalHint").textContent, /pagos no mês/);
+    // Os pagos da demo caem no mês corrente, então a meta nunca começa zerada.
+    assert.doesNotMatch($("#goalHint").textContent, /^R\$\s0,00 pagos/);
 });
 
 test("adiciona um acordo e bloqueia contrato duplicado", () => {
