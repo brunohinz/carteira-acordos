@@ -46,7 +46,7 @@ cd carteira-acordos
 # open index.html in your browser
 ```
 
-Tests (Node.js 18+):
+Tests (Node.js 20+):
 
 ```bash
 npm install     # installs jsdom (tests only)

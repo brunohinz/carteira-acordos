@@ -84,7 +84,7 @@ tests/smoke.test.js        Smoke test de DOM (jsdom): adicionar, filtrar, export
 
 ## Como rodar os testes
 
-Requer Node.js 18 ou superior. O app não tem dependências; o `jsdom` é usado só no smoke test de DOM:
+Requer Node.js 20 ou superior. O app não tem dependências; o `jsdom` é usado só no smoke test de DOM:
 
 ```bash
 npm install     # instala o jsdom (só para os testes)
