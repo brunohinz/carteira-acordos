@@ -326,3 +326,23 @@ test("dialog de edição marca e reabre o pagamento sem fechar, e Cancelar desca
     assert.equal(rowButton().textContent.trim(), "Marcar pago");
     assert.match($("#formMessage").textContent, /atualizado e reaberto\./);
 });
+
+test("adota as alterações gravadas por outra aba sem perder a busca desta", () => {
+    const { window, $, rows } = loadApp();
+    $("#searchInput").value = "zzz-sem-resultado";
+    $("#searchInput").dispatchEvent(new window.Event("input"));
+    assert.equal(rows().length, 0);
+
+    const key = "portfolio-acordos-demo";
+    const saved = JSON.parse(window.localStorage.getItem(key));
+    saved.agreements = saved.agreements.slice(0, 3);
+    saved.goal = 1234;
+    saved.search = "";
+    window.localStorage.setItem(key, JSON.stringify(saved));
+    window.dispatchEvent(new window.StorageEvent("storage", { key, newValue: JSON.stringify(saved) }));
+
+    assert.equal($("#searchInput").value, "zzz-sem-resultado");
+    $("#searchInput").value = "";
+    $("#searchInput").dispatchEvent(new window.Event("input"));
+    assert.equal(rows().length, 3);
+});

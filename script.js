@@ -129,6 +129,7 @@ function bindEvents() {
     document.addEventListener("keydown", dismissUndoOnEscape);
     document.addEventListener("visibilitychange", refreshIfDayChanged);
     window.addEventListener("focus", refreshIfDayChanged);
+    window.addEventListener("storage", syncFromOtherTab);
     document.querySelectorAll("[data-close-dialog]").forEach((button) => {
         button.addEventListener("click", () => button.closest("dialog").close());
     });
@@ -226,6 +227,26 @@ function demoPaidDate(createdAt, now) {
 }
 
 // Dia (AAAA-MM-DD) do último render completo; status como "Vence hoje" dependem dele.
+// Com o app aberto em duas abas, uma salvaria por cima da outra. Ao detectar que outra aba
+// gravou, adota os acordos e a meta dela (busca, filtro e ordenação desta aba ficam como estão).
+function syncFromOtherTab(event) {
+    if (event.key !== DEMO_STORAGE_KEY || event.newValue === null) {
+        return;
+    }
+
+    const saved = readSavedState(localStorage, DEMO_STORAGE_KEY, DEFAULT_GOAL);
+
+    if (!saved) {
+        return;
+    }
+
+    // O "Desfazer" pendente aponta para uma posição da lista antiga.
+    hideUndoToast();
+    state.agreements = saved.agreements;
+    state.goal = saved.goal;
+    render();
+}
+
 let renderedDay = "";
 
 // Se a aba ficou aberta de um dia para o outro, refaz status, métricas e "Atualizado em" ao voltar.
