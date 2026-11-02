@@ -70,6 +70,7 @@ function cacheElements() {
     elements.editPaidField = document.querySelector("#editPaidField");
     elements.editPaidDate = document.querySelector("#editPaidDate");
     elements.editPaidToggle = document.querySelector("#editPaidToggle");
+    elements.editPaidStatus = document.querySelector("#editPaidStatus");
     elements.editMessage = document.querySelector("#editMessage");
     elements.goalDialog = document.querySelector("#goalDialog");
     elements.goalForm = document.querySelector("#goalForm");
@@ -515,6 +516,7 @@ function openEditDialog(agreement) {
     elements.editDueDate.value = agreement.vencimento;
     elements.editPaidDate.value = agreement.pago && agreement.pagoEm ? formatInputDate(new Date(agreement.pagoEm)) : "";
     setEditPaid(agreement.pago);
+    elements.editPaidStatus.textContent = "";
     // Ao reabrir, não deixa preso o erro de uma tentativa anterior cancelada (Esc/Cancelar).
     elements.editMessage.textContent = "";
     [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate, elements.editPaidDate]
@@ -533,8 +535,12 @@ function setEditPaid(paid) {
 }
 
 // Alterna pago/não pago sem fechar o dialog; ao marcar, sugere a data de hoje.
+// A troca é anunciada para leitores de tela, já que o foco pode sair do botão.
 function toggleEditPaid() {
     setEditPaid(!editingPaid);
+    elements.editPaidStatus.textContent = editingPaid
+        ? "Será marcado como pago ao salvar. Informe a data de pagamento."
+        : "Será reaberto como não pago ao salvar.";
 
     if (editingPaid) {
         if (!elements.editPaidDate.value) {

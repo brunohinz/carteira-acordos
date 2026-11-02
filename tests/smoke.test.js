@@ -305,6 +305,7 @@ test("dialog de edição marca e reabre o pagamento sem fechar, e Cancelar desca
     assert.equal($("#editDialog").open, true);
     assert.equal($("#editPaidField").hidden, false);
     assert.equal($("#editPaidToggle").getAttribute("aria-pressed"), "true");
+    assert.match($("#editPaidStatus").textContent, /marcado como pago ao salvar/);
     assert.match($("#editPaidDate").value, /^\d{4}-\d{2}-\d{2}$/);
     $("#editDialog [data-close-dialog]").click();
     assert.equal(rowButton().textContent.trim(), "Marcar pago");
@@ -317,8 +318,10 @@ test("dialog de edição marca e reabre o pagamento sem fechar, e Cancelar desca
 
     openEdit();
     assert.equal($("#editPaidToggle").textContent, "Reabrir (não pago)");
+    assert.equal($("#editPaidStatus").textContent, "");
     $("#editPaidToggle").click();
     assert.equal($("#editPaidField").hidden, true);
+    assert.match($("#editPaidStatus").textContent, /reaberto como não pago/);
     submit("#editForm");
     assert.equal(rowButton().textContent.trim(), "Marcar pago");
     assert.match($("#formMessage").textContent, /atualizado e reaberto\./);
