@@ -648,7 +648,7 @@ let undoTimer = null;
 function showUndoToast(agreement, index) {
     window.clearTimeout(undoTimer);
     pendingUndo = { agreement, index };
-    elements.undoText.textContent = `Acordo ${agreement.numero} removido.`;
+    elements.undoText.textContent = `Acordo ${agreement.numero} (${formatCurrency(agreement.valor)}) removido.`;
     elements.undoToast.hidden = false;
     undoTimer = window.setTimeout(hideUndoToast, UNDO_TIMEOUT_MS);
 }

@@ -146,10 +146,12 @@ test("ao voltar para a aba num novo dia, refaz a tela", () => {
 test("remove um acordo e desfaz pela notificação", () => {
     const { $, rows } = loadApp();
     const firstNumber = rows()[0].querySelector("strong").textContent;
+    const firstValue = rows()[0].querySelector(".value-cell").textContent;
     rows()[0].querySelector('[data-action="remove"]').click();
     assert.equal(rows().length, 6);
     assert.equal($("#undoToast").hidden, false);
     assert.match($("#undoText").textContent, new RegExp(firstNumber));
+    assert.ok($("#undoText").textContent.includes(firstValue));
 
     $("#undoButton").click();
     assert.equal(rows().length, 7);
