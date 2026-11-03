@@ -19,11 +19,12 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 - Resumo da lista com a quantidade e a soma em reais dos acordos visíveis.
 - Filtro por status: todos, em aberto, pagos, atrasados, vence hoje e próximos 7 dias, com a quantidade de acordos de cada opção. O título da aba mostra quantos estão atrasados.
 - Ordenação por vencimento, por data de geração ou por valor.
-- Marcação de acordos como pagos, reabertura e remoção com opção de desfazer (`Esc` dispensa o aviso).
+- Marcação de acordos como pagos, reabertura e remoção com opção de desfazer; o aviso mostra o contrato e o valor removidos (`Esc` dispensa o aviso).
 - Exportação da lista atual em CSV (respeita busca e filtros, abre direto no Excel em pt-BR), com uma linha final de total e o filtro no nome do arquivo.
 - Backup completo em JSON e importação de um backup (valida os dados e ignora contratos duplicados).
 - Restauração da base demonstrativa.
 - Persistência local com `localStorage` (acordos, filtros, busca e meta).
+- Com o app aberto em duas abas, uma adota os acordos e a meta gravados pela outra, sem sobrescrever; se o acordo em edição for removido na outra aba, a edição é fechada com um aviso.
 - Status e indicadores se atualizam sozinhos ao voltar para a aba em um novo dia.
 - Layout responsivo para desktop e celular, modo escuro automático (segue o sistema), versão para impressão (só indicadores e lista) e respeito a `prefers-reduced-motion`.
 
@@ -51,7 +52,7 @@ Versão mobile (cerca de 390 px):
 - Cálculo e atualização de indicadores financeiros.
 - Persistência de dados no navegador com localStorage.
 - Layout responsivo com CSS Grid e Flexbox.
-- Testes automatizados das regras de moeda, datas, filtros, backup e armazenamento com `node --test` e CI no GitHub Actions.
+- Testes automatizados das regras de moeda, datas, filtros, backup e armazenamento com `node --test` e CI no GitHub Actions (Node 20 e 22).
 - Organização de uma interface administrativa em formato de dashboard.
 
 ## Tecnologias

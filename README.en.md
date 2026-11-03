@@ -21,10 +21,11 @@ Carteira de Acordos is a front-end dashboard for tracking financial agreements (
 - The list summary shows how many agreements are visible and their total amount.
 - Status filters: all, open, paid, overdue, due today, and next 7 days, each showing how many agreements it matches. The tab title shows how many are overdue.
 - Sort by due date, creation date or amount.
-- Mark agreements as paid, reopen them, and delete them with undo (`Esc` dismisses the notice).
+- Mark agreements as paid, reopen them, and delete them with undo; the notice shows the removed contract and amount (`Esc` dismisses it).
 - **CSV export** of the current view. It respects search and filters and opens directly in Excel with pt-BR settings, and ends with a total row; the file name includes the active filter.
 - **JSON backup and import**. The import validates the data and skips duplicate contracts.
 - Persists agreements, filters, search and goal in `localStorage`.
+- With the app open in two tabs, each one picks up the agreements and goal saved by the other instead of overwriting them; if the agreement being edited is removed in the other tab, the edit dialog closes with a notice.
 - Statuses and KPIs refresh automatically when you return to the tab on a new day.
 - Responsive layout for desktop and mobile, automatic dark mode (follows the system), a print view (KPIs and list only), and support for `prefers-reduced-motion`.
 
@@ -34,7 +35,7 @@ Carteira de Acordos is a front-end dashboard for tracking financial agreements (
 - CSS (Grid and Flexbox, responsive)
 - Vanilla JavaScript for state, rendering, filters, sorting and financial calculations
 - `localStorage` for persistence
-- `node --test` for unit tests plus a jsdom DOM smoke test (the app itself has no dependencies), with CI on GitHub Actions
+- `node --test` for unit tests plus a jsdom DOM smoke test (the app itself has no dependencies), with CI on GitHub Actions (Node 20 and 22)
 
 ## Getting started
 
