@@ -346,3 +346,20 @@ test("adota as alterações gravadas por outra aba sem perder a busca desta", ()
     $("#searchInput").dispatchEvent(new window.Event("input"));
     assert.equal(rows().length, 3);
 });
+
+test("fecha a edição e avisa quando outra aba remove o acordo aberto", () => {
+    const { window, $, rows } = loadApp();
+    rows()[0].querySelector('[data-action="edit"]').click();
+    assert.equal($("#editDialog").open, true);
+
+    const key = "portfolio-acordos-demo";
+    const saved = JSON.parse(window.localStorage.getItem(key));
+    const editedNumber = $("#editNumber").value;
+    saved.agreements = saved.agreements.filter((item) => item.numero !== editedNumber);
+    window.localStorage.setItem(key, JSON.stringify(saved));
+    window.dispatchEvent(new window.StorageEvent("storage", { key, newValue: JSON.stringify(saved) }));
+
+    assert.equal($("#editDialog").open, false);
+    assert.match($("#formMessage").textContent, /removido em outra aba/);
+    assert.equal(rows().length, 6);
+});

@@ -244,7 +244,19 @@ function syncFromOtherTab(event) {
     hideUndoToast();
     state.agreements = saved.agreements;
     state.goal = saved.goal;
+    closeEditIfRemovedElsewhere();
     render();
+}
+
+// Se o acordo em edição sumiu na outra aba, salvar não teria onde gravar: fecha e explica.
+function closeEditIfRemovedElsewhere() {
+    if (!elements.editDialog.open || state.agreements.some((item) => item.id === editingId)) {
+        return;
+    }
+
+    elements.editDialog.close();
+    editingId = null;
+    showMessage("O acordo em edição foi removido em outra aba; a edição foi descartada.", true);
 }
 
 let renderedDay = "";
