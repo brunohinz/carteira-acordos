@@ -366,3 +366,24 @@ test("fecha a edição e avisa quando outra aba remove o acordo aberto", () => {
     assert.match($("#formMessage").textContent, /removido em outra aba/);
     assert.equal(rows().length, 6);
 });
+
+test("dialog da meta aberto acompanha a meta alterada em outra aba, sem apagar o que foi digitado", () => {
+    const { window, $ } = loadApp();
+    const key = "portfolio-acordos-demo";
+    const otherTabSaves = (goal) => {
+        const saved = JSON.parse(window.localStorage.getItem(key));
+        saved.goal = goal;
+        window.localStorage.setItem(key, JSON.stringify(saved));
+        window.dispatchEvent(new window.StorageEvent("storage", { key, newValue: JSON.stringify(saved) }));
+    };
+
+    $("#editGoalButton").click();
+    assert.equal($("#goalDialog").open, true);
+    otherTabSaves(77000);
+    assert.equal($("#goalInput").value, "77.000,00");
+    assert.match($("#goalMessage").textContent, /alterada em outra aba/);
+
+    $("#goalInput").value = "12.345,00";
+    otherTabSaves(88000);
+    assert.equal($("#goalInput").value, "12.345,00");
+});

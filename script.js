@@ -242,10 +242,25 @@ function syncFromOtherTab(event) {
 
     // O "Desfazer" pendente aponta para uma posição da lista antiga.
     hideUndoToast();
+    const previousGoal = state.goal;
     state.agreements = saved.agreements;
     state.goal = saved.goal;
     closeEditIfRemovedElsewhere();
+    refreshGoalDialogIfUntouched(previousGoal);
     render();
+}
+
+// Com o dialog da meta aberto, mostra a meta nova da outra aba, mas só se o campo ainda
+// estiver com o valor original (não apaga o que o usuário já começou a digitar).
+function refreshGoalDialogIfUntouched(previousGoal) {
+    if (!elements.goalDialog.open || state.goal === previousGoal) {
+        return;
+    }
+
+    if (parseCurrency(elements.goalInput.value) === previousGoal) {
+        elements.goalInput.value = formatCurrencyInput(state.goal);
+        elements.goalMessage.textContent = "A meta foi alterada em outra aba; o campo mostra o valor atual.";
+    }
 }
 
 // Se o acordo em edição sumiu na outra aba, salvar não teria onde gravar: fecha e explica.
