@@ -243,8 +243,15 @@ function syncFromOtherTab(event) {
     // O "Desfazer" pendente aponta para uma posição da lista antiga.
     hideUndoToast();
     const previousGoal = state.goal;
+    const changed = JSON.stringify(saved.agreements) !== JSON.stringify(state.agreements) || saved.goal !== previousGoal;
     state.agreements = saved.agreements;
     state.goal = saved.goal;
+
+    // A mensagem fica na região aria-live, então leitores de tela sabem que a lista mudou sozinha.
+    if (changed) {
+        showMessage("Carteira atualizada com alterações feitas em outra aba.");
+    }
+
     closeEditIfRemovedElsewhere();
     refreshGoalDialogIfUntouched(previousGoal);
     render();

@@ -345,6 +345,8 @@ test("adota as alterações gravadas por outra aba sem perder a busca desta", ()
     window.dispatchEvent(new window.StorageEvent("storage", { key, newValue: JSON.stringify(saved) }));
 
     assert.equal($("#searchInput").value, "zzz-sem-resultado");
+    assert.match($("#formMessage").textContent, /atualizada com alterações feitas em outra aba/);
+    assert.equal($("#formMessage").getAttribute("aria-live"), "polite");
     $("#searchInput").value = "";
     $("#searchInput").dispatchEvent(new window.Event("input"));
     assert.equal(rows().length, 3);
@@ -404,4 +406,13 @@ test("armazenamento cheio avisa o usuário, mas o acordo continua na lista", () 
     assert.match($("#formMessage").textContent, /Não foi possível salvar no navegador \(armazenamento cheio ou bloqueado\)/);
     assert.equal($("#formMessage").classList.contains("error"), true);
     assert.equal(JSON.parse(window.localStorage.getItem("portfolio-acordos-demo")).agreements.length, 7);
+});
+
+test("gravação de outra aba sem mudança na carteira não gera aviso", () => {
+    const { window, $ } = loadApp();
+    const key = "portfolio-acordos-demo";
+    const saved = JSON.parse(window.localStorage.getItem(key));
+    saved.search = "outra busca";
+    window.dispatchEvent(new window.StorageEvent("storage", { key, newValue: JSON.stringify(saved) }));
+    assert.equal($("#formMessage").textContent, "");
 });
