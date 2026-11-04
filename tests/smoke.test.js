@@ -387,3 +387,21 @@ test("dialog da meta aberto acompanha a meta alterada em outra aba, sem apagar o
     otherTabSaves(88000);
     assert.equal($("#goalInput").value, "12.345,00");
 });
+
+test("armazenamento cheio avisa o usuário, mas o acordo continua na lista", () => {
+    const { window, $, submit, rows } = loadApp();
+    window.Storage.prototype.setItem = () => {
+        throw new window.DOMException("O armazenamento está cheio.", "QuotaExceededError");
+    };
+
+    $("#agreementClient").value = "Unidade Cheia";
+    $("#agreementNumber").value = "CT-QUOTA-1";
+    $("#agreementDueDate").value = "2030-05-10";
+    $("#agreementValue").value = "900,00";
+    submit("#agreementForm");
+
+    assert.equal(rows().length, 8);
+    assert.match($("#formMessage").textContent, /Não foi possível salvar no navegador \(armazenamento cheio ou bloqueado\)/);
+    assert.equal($("#formMessage").classList.contains("error"), true);
+    assert.equal(JSON.parse(window.localStorage.getItem("portfolio-acordos-demo")).agreements.length, 7);
+});
