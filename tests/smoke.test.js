@@ -172,11 +172,14 @@ test("importa backup JSON substituindo a carteira e a meta", async () => {
         ]
     };
     const file = { name: "backup.json", text: async () => JSON.stringify(backup) };
-    window.confirm = () => true;
+    let confirmText = "";
+    window.confirm = (text) => { confirmText = text; return true; };
     Object.defineProperty($("#importBackupInput"), "files", { value: [file], configurable: true });
     $("#importBackupInput").dispatchEvent(new window.Event("change"));
     await new Promise((resolve) => setTimeout(resolve, 0));
 
+    // A confirmação compara o que entra com o que será substituído.
+    assert.match(confirmText, /Importar 2 acordos de "backup\.json"\? A carteira atual, com 7 acordos, será substituída\./);
     assert.equal(rows().length, 2);
     assert.match($("#formMessage").textContent, /2 acordos importados \(1 registro ignorado/);
     assert.match($("#goalHint").textContent, /10\.000,00/);

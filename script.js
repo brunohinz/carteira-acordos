@@ -810,7 +810,7 @@ async function importBackup() {
         return;
     }
 
-    const confirmed = window.confirm(`Importar ${pluralize(backup.agreements.length, "acordo", "acordos")} de "${file.name}"? A carteira atual será substituída.`);
+    const confirmed = window.confirm(`Importar ${pluralize(backup.agreements.length, "acordo", "acordos")} de "${file.name}"? A carteira atual, com ${pluralize(state.agreements.length, "acordo", "acordos")}, será substituída.`);
 
     if (!confirmed) {
         return;
