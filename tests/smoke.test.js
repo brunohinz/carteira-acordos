@@ -466,3 +466,23 @@ test("formata valor da edição e da meta ao sair do campo", () => {
     $("#goalInput").dispatchEvent(new window.Event("blur"));
     assert.equal($("#goalInput").value, "50.000,00");
 });
+
+test("digitar de novo no diálogo remove aria-invalid do campo", () => {
+    const { window, $, submit, rows } = loadApp();
+    rows()[0].querySelector('[data-action="edit"]').click();
+    $("#editClient").value = "";
+    submit("#editForm");
+    assert.equal($("#editClient").getAttribute("aria-invalid"), "true");
+    $("#editClient").value = "Unidade Corrigida";
+    $("#editClient").dispatchEvent(new window.Event("input"));
+    assert.equal($("#editClient").hasAttribute("aria-invalid"), false);
+
+    $("#editDialog [data-close-dialog]").click();
+    $("#editGoalButton").click();
+    $("#goalInput").value = "0";
+    submit("#goalForm");
+    assert.equal($("#goalInput").getAttribute("aria-invalid"), "true");
+    $("#goalInput").value = "10.000,00";
+    $("#goalInput").dispatchEvent(new window.Event("input"));
+    assert.equal($("#goalInput").hasAttribute("aria-invalid"), false);
+});

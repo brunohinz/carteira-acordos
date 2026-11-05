@@ -140,6 +140,13 @@ function bindEvents() {
     elements.editForm.addEventListener("submit", handleEditSubmit);
     elements.editPaidToggle.addEventListener("click", toggleEditPaid);
     elements.goalForm.addEventListener("submit", handleGoalSubmit);
+    // Ao corrigir o campo, some o destaque de erro da tentativa anterior.
+    // editValue fica de fora: o preview ao vivo já controla o aria-invalid dele.
+    [elements.editClient, elements.editNumber, elements.editDueDate, elements.editPaidDate, elements.goalInput]
+        .forEach((input) => {
+            input.addEventListener("input", () => input.removeAttribute("aria-invalid"));
+            input.addEventListener("change", () => input.removeAttribute("aria-invalid"));
+        });
     document.addEventListener("keydown", focusSearchOnSlash);
     document.addEventListener("keydown", dismissUndoOnEscape);
     document.addEventListener("visibilitychange", refreshIfDayChanged);
