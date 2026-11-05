@@ -69,15 +69,17 @@ tests/utils.test.js        Unit tests for the pure functions
 
 ## Screenshots
 
-The screenshots below are from an earlier version; the edit dialog, the goal pace and dark mode are not shown yet.
-
 | New agreement | "Atrasados" (overdue) filter + search |
 |---|---|
 | ![New agreement form](assets/new-agreement.png) | ![Filter and search](assets/filters.png) |
 
-| Change goal | Undo delete |
+| Edit dialog | Change goal (daily pace on the card) |
 |---|---|
-| ![Change goal](assets/goal.png) | ![Undo delete](assets/undo-delete.png) |
+| ![Edit agreement](assets/edit-dialog.png) | ![Change goal](assets/goal.png) |
+
+| Undo delete | Dark mode |
+|---|---|
+| ![Undo delete](assets/undo-delete.png) | ![Dashboard in dark mode](assets/dark-mode.png) |
 
 Mobile layout (about 390 px):
 

@@ -30,15 +30,17 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 
 ## Capturas de tela
 
-As capturas abaixo são de uma versão anterior; a edição em diálogo, o ritmo da meta e o modo escuro ainda não aparecem nelas.
-
 | Novo acordo | Filtro "Atrasados" + busca |
 |---|---|
 | ![Formulário de novo acordo](assets/new-agreement.png) | ![Filtro e busca](assets/filters.png) |
 
-| Alterar meta | Desfazer exclusão |
+| Edição em diálogo | Alterar meta (ritmo diário no card) |
 |---|---|
-| ![Alterar meta](assets/goal.png) | ![Desfazer exclusão](assets/undo-delete.png) |
+| ![Edição de acordo](assets/edit-dialog.png) | ![Alterar meta](assets/goal.png) |
+
+| Desfazer exclusão | Modo escuro |
+|---|---|
+| ![Desfazer exclusão](assets/undo-delete.png) | ![Dashboard em modo escuro](assets/dark-mode.png) |
 
 Versão mobile (cerca de 390 px):
 
