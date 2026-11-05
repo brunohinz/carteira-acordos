@@ -178,8 +178,10 @@ test("importa backup JSON substituindo a carteira e a meta", async () => {
     $("#importBackupInput").dispatchEvent(new window.Event("change"));
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // A confirmação compara o que entra com o que será substituído.
+    // A confirmação compara o que entra com o que será substituído e cita a meta quando difere.
     assert.match(confirmText, /Importar 2 acordos de "backup\.json"\? A carteira atual, com 7 acordos, será substituída\./);
+    assert.match(confirmText, /meta do arquivo \(R\$\s*10\.000,00\)/);
+    assert.match(confirmText, /diferente da atual \(R\$\s*42\.000,00\)/);
     assert.equal(rows().length, 2);
     assert.match($("#formMessage").textContent, /2 acordos importados \(1 registro ignorado/);
     assert.match($("#goalHint").textContent, /10\.000,00/);

@@ -587,6 +587,21 @@ function parseBackup(text) {
     };
 }
 
+
+// Texto da confirmação ao importar: quantos acordos vêm/vão e, se a meta do arquivo
+// for válida e diferente da atual, mostra as duas para o usuário decidir com clareza.
+function buildImportConfirmMessage(fileName, fileCount, currentCount, fileGoal, currentGoal) {
+    let message = `Importar ${pluralize(fileCount, "acordo", "acordos")} de "${fileName}"? A carteira atual, com ${pluralize(currentCount, "acordo", "acordos")}, será substituída.`;
+    const incomingGoal = normalizeCurrencyValue(fileGoal);
+    const presentGoal = normalizeCurrencyValue(currentGoal);
+
+    if (incomingGoal > 0 && incomingGoal !== presentGoal) {
+        message += ` A meta do arquivo (${formatCurrency(incomingGoal)}) é diferente da atual (${formatCurrency(presentGoal)}) e também será aplicada.`;
+    }
+
+    return message;
+}
+
 // HTML escapado com os trechos que batem com a busca em <mark>, ignorando caixa e acentos
 // como a própria busca. Normaliza caractere a caractere para manter as posições do texto original.
 function highlightSearchMatch(text, term) {
@@ -693,6 +708,7 @@ if (typeof module !== "undefined" && module.exports) {
         BACKUP_FORMAT,
         BACKUP_VERSION,
         buildBackup,
-        parseBackup
+        parseBackup,
+        buildImportConfirmMessage
     };
 }

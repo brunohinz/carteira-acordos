@@ -43,6 +43,7 @@ const {
     buildBackup,
     BACKUP_FORMAT,
     parseBackup,
+    buildImportConfirmMessage,
     readSavedState,
     writeSavedState
 } = require("../utils.js");
@@ -339,6 +340,21 @@ test("parseBackup aceita lista simples e rejeita arquivos inválidos", () => {
     assert.throws(() => parseBackup("{nao e json"), /JSON válido/);
     assert.throws(() => parseBackup(JSON.stringify({ foo: 1 })), /lista de acordos/);
     assert.throws(() => parseBackup(JSON.stringify({ formato: "outro", acordos: [] })), /desconhecido/);
+});
+
+test("buildImportConfirmMessage cita a meta do arquivo só quando ela difere da atual", () => {
+    const base = buildImportConfirmMessage("carteira.json", 3, 7, 0, 42000);
+    assert.match(base, /Importar 3 acordos de "carteira\.json"/);
+    assert.match(base, /carteira atual, com 7 acordos/);
+    assert.doesNotMatch(base, /meta do arquivo/);
+
+    const sameGoal = buildImportConfirmMessage("a.json", 1, 1, 42000, 42000);
+    assert.doesNotMatch(sameGoal, /meta do arquivo/);
+
+    const different = buildImportConfirmMessage("b.json", 2, 5, 50000, 42000);
+    assert.match(different, /meta do arquivo \(R\$\s*50\.000,00\)/);
+    assert.match(different, /diferente da atual \(R\$\s*42\.000,00\)/);
+    assert.match(different, /também será aplicada/);
 });
 
 function createMemoryStorage(initial = {}) {
