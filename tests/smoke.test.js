@@ -418,10 +418,37 @@ test("armazenamento cheio avisa o usuário, mas o acordo continua na lista", () 
 });
 
 test("gravação de outra aba sem mudança na carteira não gera aviso", () => {
-    const { window, $, submit } = loadApp();
+    const { window, $ } = loadApp();
     const key = "portfolio-acordos-demo";
     const saved = JSON.parse(window.localStorage.getItem(key));
     saved.search = "outra busca";
     window.dispatchEvent(new window.StorageEvent("storage", { key, newValue: JSON.stringify(saved) }));
     assert.equal($("#formMessage").textContent, "");
+});
+
+test("syncFromOtherTab ignora outra chave do localStorage e newValue nulo", () => {
+    const { window, $, rows } = loadApp();
+    const key = "portfolio-acordos-demo";
+    const before = window.localStorage.getItem(key);
+    const beforeCount = rows().length;
+
+    // Outra chave não deve mexer na carteira desta aba.
+    window.localStorage.setItem("outra-chave-qualquer", JSON.stringify({ agreements: [], goal: 1 }));
+    window.dispatchEvent(new window.StorageEvent("storage", {
+        key: "outra-chave-qualquer",
+        newValue: JSON.stringify({ agreements: [], goal: 1 })
+    }));
+    assert.equal(rows().length, beforeCount);
+    assert.equal($("#formMessage").textContent, "");
+    assert.equal(window.localStorage.getItem(key), before);
+
+    // clear() em outra aba chega com newValue null — não apaga o estado local desta.
+    window.dispatchEvent(new window.StorageEvent("storage", {
+        key,
+        newValue: null,
+        oldValue: before
+    }));
+    assert.equal(rows().length, beforeCount);
+    assert.equal($("#formMessage").textContent, "");
+    assert.equal(window.localStorage.getItem(key), before);
 });
