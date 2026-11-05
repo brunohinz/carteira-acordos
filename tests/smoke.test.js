@@ -110,7 +110,7 @@ test("salvar a edição devolve o foco ao botão Editar da mesma linha", () => {
 });
 
 test("dialog de edição mostra preview do valor digitado", () => {
-    const { window, $ } = loadApp();
+    const { window, $, submit } = loadApp();
     $('[data-action="edit"]').click();
     assert.match($("#editValuePreview").textContent, /Será salvo como R\$/);
     $("#editValue").value = "abc";
@@ -125,7 +125,7 @@ test("card de pagos separa o total do valor pago no mês", () => {
 });
 
 test("ao voltar para a aba num novo dia, refaz a tela", () => {
-    const { window, $ } = loadApp();
+    const { window, $, submit } = loadApp();
     $("#lastUpdated").textContent = "velho";
     window.dispatchEvent(new window.Event("focus"));
     assert.equal($("#lastUpdated").textContent, "velho");
@@ -200,7 +200,7 @@ test("reabrir o dialog de edição limpa o erro da tentativa cancelada", () => {
 });
 
 test("atalho / foca a busca, mas não rouba a tecla de outro campo", () => {
-    const { window, $ } = loadApp();
+    const { window, $, submit } = loadApp();
     const press = (target) => target.dispatchEvent(new window.KeyboardEvent("keydown", { key: "/", bubbles: true, cancelable: true }));
 
     const typed = press($("#agreementNumber"));
@@ -269,7 +269,7 @@ test("select de status mostra a contagem de cada filtro e atualiza ao pagar", ()
 });
 
 test("título da aba mostra quantos acordos estão atrasados", () => {
-    const { window, $ } = loadApp();
+    const { window, $, submit } = loadApp();
     const overdue = Number($("#overdueCount").textContent.match(/^\d+/)[0]);
     assert.ok(overdue > 0);
     assert.match(window.document.title, new RegExp(`^\\(${overdue} atrasados?\\) Carteira de acordos`));
@@ -370,7 +370,7 @@ test("fecha a edição e avisa quando outra aba remove o acordo aberto", () => {
 });
 
 test("dialog da meta aberto acompanha a meta alterada em outra aba, sem apagar o que foi digitado", () => {
-    const { window, $ } = loadApp();
+    const { window, $, submit } = loadApp();
     const key = "portfolio-acordos-demo";
     const otherTabSaves = (goal) => {
         const saved = JSON.parse(window.localStorage.getItem(key));
@@ -384,10 +384,17 @@ test("dialog da meta aberto acompanha a meta alterada em outra aba, sem apagar o
     otherTabSaves(77000);
     assert.equal($("#goalInput").value, "77.000,00");
     assert.match($("#goalMessage").textContent, /alterada em outra aba/);
+    assert.equal($("#goalMessage").classList.contains("warning"), true);
+    assert.equal($("#goalMessage").classList.contains("error"), false);
 
     $("#goalInput").value = "12.345,00";
     otherTabSaves(88000);
     assert.equal($("#goalInput").value, "12.345,00");
+
+    $("#goalInput").value = "0";
+    submit("#goalForm");
+    assert.equal($("#goalMessage").classList.contains("error"), true);
+    assert.equal($("#goalMessage").classList.contains("warning"), false);
 });
 
 test("armazenamento cheio avisa o usuário, mas o acordo continua na lista", () => {
@@ -409,7 +416,7 @@ test("armazenamento cheio avisa o usuário, mas o acordo continua na lista", () 
 });
 
 test("gravação de outra aba sem mudança na carteira não gera aviso", () => {
-    const { window, $ } = loadApp();
+    const { window, $, submit } = loadApp();
     const key = "portfolio-acordos-demo";
     const saved = JSON.parse(window.localStorage.getItem(key));
     saved.search = "outra busca";

@@ -422,6 +422,10 @@ select {
     color: var(--red);
 }
 
+.form-message.warning {
+    color: var(--amber);
+}
+
 .list-panel {
     min-width: 0;
 }

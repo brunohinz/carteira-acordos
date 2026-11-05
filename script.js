@@ -266,7 +266,7 @@ function refreshGoalDialogIfUntouched(previousGoal) {
 
     if (parseCurrency(elements.goalInput.value) === previousGoal) {
         elements.goalInput.value = formatCurrencyInput(state.goal);
-        elements.goalMessage.textContent = "A meta foi alterada em outra aba; o campo mostra o valor atual.";
+        showDialogWarning(elements.goalMessage, "A meta foi alterada em outra aba; o campo mostra o valor atual.");
     }
 }
 
@@ -573,7 +573,7 @@ function openEditDialog(agreement) {
     setEditPaid(agreement.pago);
     elements.editPaidStatus.textContent = "";
     // Ao reabrir, não deixa preso o erro de uma tentativa anterior cancelada (Esc/Cancelar).
-    elements.editMessage.textContent = "";
+    clearDialogMessage(elements.editMessage);
     [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate, elements.editPaidDate]
         .forEach((input) => input.removeAttribute("aria-invalid"));
     renderEditValuePreview();
@@ -609,8 +609,21 @@ function toggleEditPaid() {
 
 function showDialogError(messageElement, input, message) {
     messageElement.textContent = message;
+    messageElement.classList.remove("warning");
+    messageElement.classList.add("error");
     input.setAttribute("aria-invalid", "true");
     input.focus();
+}
+
+function clearDialogMessage(messageElement) {
+    messageElement.textContent = "";
+    messageElement.classList.remove("error", "warning");
+}
+
+function showDialogWarning(messageElement, message) {
+    messageElement.textContent = message;
+    messageElement.classList.remove("error");
+    messageElement.classList.add("warning");
 }
 
 function handleEditSubmit(event) {
@@ -767,7 +780,7 @@ function clearFilters() {
 function editGoal() {
     elements.goalInput.value = formatCurrencyInput(state.goal);
     elements.goalInput.removeAttribute("aria-invalid");
-    elements.goalMessage.textContent = "";
+    clearDialogMessage(elements.goalMessage);
     elements.goalDialog.showModal();
     elements.goalInput.select();
 }
