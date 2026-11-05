@@ -448,6 +448,20 @@ test("compareAgreementsBy ordena por maior e menor valor, desempatando pelo cont
     assert.equal(normalizeSortOrder("value-high"), "value-high");
 });
 
+test("compareAgreementsBy ordena por cliente A-Z e Z-A, desempatando pelo contrato", () => {
+    const list = [
+        { numero: "CT-2", cliente: "Beta", valor: 1, vencimento: "2026-12-01", criadoEm: "2026-01-01T00:00:00.000Z" },
+        { numero: "CT-1", cliente: "Alfa", valor: 1, vencimento: "2026-12-01", criadoEm: "2026-01-01T00:00:00.000Z" },
+        { numero: "CT-3", cliente: "Alfa", valor: 1, vencimento: "2026-12-01", criadoEm: "2026-01-01T00:00:00.000Z" }
+    ];
+    const byAz = [...list].sort((a, b) => compareAgreementsBy("client-az", a, b)).map((item) => item.numero);
+    const byZa = [...list].sort((a, b) => compareAgreementsBy("client-za", a, b)).map((item) => item.numero);
+    assert.deepEqual(byAz, ["CT-1", "CT-3", "CT-2"]);
+    assert.deepEqual(byZa, ["CT-2", "CT-1", "CT-3"]);
+    assert.equal(normalizeSortOrder("client-az"), "client-az");
+    assert.equal(normalizeSortOrder("client-za"), "client-za");
+});
+
 test("matchesSearchTerm encontra o acordo pelo valor em formatos comuns", () => {
     const agreement = { numero: "CT-2026-001", cliente: "Unidade Centro", valor: 8420.5 };
     assert.equal(matchesSearchTerm(agreement, "8.420,50"), true);

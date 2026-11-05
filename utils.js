@@ -265,6 +265,14 @@ function compareAgreementsBy(sortOrder, a, b) {
         return compareNumbers(currencyToCents(a.valor), currencyToCents(b.valor)) || compareText(a.numero, b.numero);
     }
 
+    if (sortOrder === "client-az") {
+        return compareText(a.cliente, b.cliente) || compareText(a.numero, b.numero);
+    }
+
+    if (sortOrder === "client-za") {
+        return compareText(b.cliente, a.cliente) || compareText(a.numero, b.numero);
+    }
+
     return compareNumbers(getDueDateTime(a), getDueDateTime(b)) || compareText(a.numero, b.numero);
 }
 
@@ -467,7 +475,7 @@ function buildCsvFileName(statusFilter, search, today = new Date()) {
     return `${parts.join("-")}.csv`;
 }
 
-const SORT_OPTIONS = ["due-soon", "due-late", "created-new", "created-old", "value-high", "value-low"];
+const SORT_OPTIONS = ["due-soon", "due-late", "created-new", "created-old", "value-high", "value-low", "client-az", "client-za"];
 const STATUS_FILTER_OPTIONS = ["all", "open", "paid", "overdue", "due-today", "next-7"];
 
 // Título da aba com os atrasados na frente, para chamar atenção mesmo com a aba em segundo plano.
