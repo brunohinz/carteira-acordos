@@ -452,3 +452,17 @@ test("syncFromOtherTab ignora outra chave do localStorage e newValue nulo", () =
     assert.equal($("#formMessage").textContent, "");
     assert.equal(window.localStorage.getItem(key), before);
 });
+
+test("formata valor da edição e da meta ao sair do campo", () => {
+    const { window, $, rows } = loadApp();
+    rows()[0].querySelector('[data-action="edit"]').click();
+    $("#editValue").value = "1234,5";
+    $("#editValue").dispatchEvent(new window.Event("blur"));
+    assert.equal($("#editValue").value, "1.234,50");
+    $("#editDialog [data-close-dialog]").click();
+
+    $("#editGoalButton").click();
+    $("#goalInput").value = "50000";
+    $("#goalInput").dispatchEvent(new window.Event("blur"));
+    assert.equal($("#goalInput").value, "50.000,00");
+});

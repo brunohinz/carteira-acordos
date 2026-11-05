@@ -89,6 +89,21 @@ function bindEvents() {
             elements.value.value = formatCurrencyInput(value);
         }
     });
+    // Mesma formatação amigável nos outros campos de moeda.
+    elements.editValue.addEventListener("blur", () => {
+        const value = parseCurrency(elements.editValue.value);
+
+        if (value > 0) {
+            elements.editValue.value = formatCurrencyInput(value);
+        }
+    });
+    elements.goalInput.addEventListener("blur", () => {
+        const value = parseCurrency(elements.goalInput.value);
+
+        if (value > 0) {
+            elements.goalInput.value = formatCurrencyInput(value);
+        }
+    });
     elements.searchInput.addEventListener("input", () => {
         state.search = elements.searchInput.value.trim();
         saveDemoState();
