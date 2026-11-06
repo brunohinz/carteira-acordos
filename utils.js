@@ -610,6 +610,12 @@ function buildImportConfirmMessage(fileName, fileCount, currentCount, fileGoal, 
     return message;
 }
 
+// Texto da confirmação ao restaurar a demo: deixa claro que a meta também volta ao valor padrão.
+function buildRestoreDemoConfirmMessage(defaultGoal) {
+    const goalLabel = formatCurrency(normalizeCurrencyValue(defaultGoal));
+    return `Restaurar a base demonstrativa? Os acordos adicionados ou alterados por você serão substituídos e a meta voltará para ${goalLabel}.`;
+}
+
 // HTML escapado com os trechos que batem com a busca em <mark>, ignorando caixa e acentos
 // como a própria busca. Normaliza caractere a caractere para manter as posições do texto original.
 function highlightSearchMatch(text, term) {
@@ -717,6 +723,7 @@ if (typeof module !== "undefined" && module.exports) {
         BACKUP_VERSION,
         buildBackup,
         parseBackup,
-        buildImportConfirmMessage
+        buildImportConfirmMessage,
+        buildRestoreDemoConfirmMessage
     };
 }

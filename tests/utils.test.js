@@ -44,6 +44,7 @@ const {
     BACKUP_FORMAT,
     parseBackup,
     buildImportConfirmMessage,
+    buildRestoreDemoConfirmMessage,
     readSavedState,
     writeSavedState
 } = require("../utils.js");
@@ -355,6 +356,13 @@ test("buildImportConfirmMessage cita a meta do arquivo só quando ela difere da 
     assert.match(different, /meta do arquivo \(R\$\s*50\.000,00\)/);
     assert.match(different, /diferente da atual \(R\$\s*42\.000,00\)/);
     assert.match(different, /também será aplicada/);
+});
+
+test("buildRestoreDemoConfirmMessage cita a meta padrão que será restaurada", () => {
+    const message = buildRestoreDemoConfirmMessage(42000);
+    assert.match(message, /Restaurar a base demonstrativa\?/);
+    assert.match(message, /serão substituídos/);
+    assert.match(message, /meta voltará para R\$\s*42\.000,00/);
 });
 
 function createMemoryStorage(initial = {}) {
