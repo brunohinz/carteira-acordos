@@ -371,9 +371,13 @@ function renderList() {
     elements.table.innerHTML = "";
     const hasFilters = Boolean(state.search) || state.statusFilter !== "all";
     elements.emptyState.classList.toggle("is-visible", visibleAgreements.length === 0);
-    elements.emptyStateText.textContent = hasFilters && state.agreements.length > 0
-        ? "Nenhum acordo corresponde à busca ou ao filtro atual."
-        : "Nenhum acordo encontrado.";
+    if (state.agreements.length === 0) {
+        elements.emptyStateText.textContent = "Nenhum acordo na carteira. Adicione um novo ou restaure a demo.";
+    } else if (hasFilters) {
+        elements.emptyStateText.textContent = "Nenhum acordo corresponde à busca ou ao filtro atual.";
+    } else {
+        elements.emptyStateText.textContent = "Nenhum acordo encontrado.";
+    }
     elements.clearFiltersButton.hidden = !(hasFilters && state.agreements.length > 0);
     elements.listSummary.textContent = buildListSummary(
         visibleAgreements.length,

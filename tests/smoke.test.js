@@ -531,3 +531,14 @@ test("restaurar a demo fecha diálogos de edição e de meta abertos", () => {
     $("#resetDemoButton").click();
     assert.equal($("#goalDialog").open, false);
 });
+
+test("carteira vazia sugere adicionar acordo ou restaurar a demo", () => {
+    const { window, $, rows } = loadApp();
+    window.confirm = () => true;
+    while (rows().length > 0) {
+        rows()[0].querySelector('[data-action="remove"]').click();
+    }
+    assert.equal($("#emptyState").classList.contains("is-visible"), true);
+    assert.match($("#emptyStateText").textContent, /Adicione um novo ou restaure a demo/);
+    assert.equal($("#clearFiltersButton").hidden, true);
+});
