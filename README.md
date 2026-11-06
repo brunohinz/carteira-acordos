@@ -18,11 +18,11 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 - Busca por contrato, cliente ou valor (8.420,50, 8420,50 ou 8420.50), sem diferenciar acentos e maiúsculas, com o trecho encontrado destacado na lista. A tecla `/` leva para a busca e `Esc` limpa.
 - Resumo da lista com a quantidade e a soma em reais dos acordos visíveis.
 - Filtro por status: todos, em aberto, pagos, atrasados, vence hoje e próximos 7 dias, com a quantidade de acordos de cada opção. O título da aba mostra quantos estão atrasados.
-- Ordenação por vencimento, por data de geração ou por valor.
+- Ordenação por vencimento, por data de geração, por valor ou por cliente (A-Z / Z-A).
 - Marcação de acordos como pagos, reabertura e remoção com opção de desfazer; o aviso mostra o contrato e o valor removidos (`Esc` dispensa o aviso).
 - Exportação da lista atual em CSV (respeita busca e filtros, abre direto no Excel em pt-BR), com uma linha final de total e o filtro no nome do arquivo.
 - Backup completo em JSON e importação de um backup (valida os dados e ignora contratos duplicados). Antes de substituir, a confirmação mostra quantos acordos vêm do arquivo e quantos a carteira atual tem e, se a meta do arquivo for diferente da atual, cita os dois valores porque a meta do arquivo também será aplicada.
-- Restauração da base demonstrativa.
+- Restauração da base demonstrativa (acordos, filtros e busca voltam ao padrão e a meta mensal volta para R$ 42.000,00).
 - Persistência local com `localStorage` (acordos, filtros, busca e meta).
 - Com o app aberto em duas abas, uma adota os acordos e a meta gravados pela outra, sem sobrescrever, e avisa a mudança (também para leitores de tela); se o acordo em edição for removido na outra aba, a edição é fechada com um aviso, e o diálogo da meta aberto passa a mostrar a meta nova, a menos que você já tenha digitado outro valor.
 - Status e indicadores se atualizam sozinhos ao voltar para a aba em um novo dia.
