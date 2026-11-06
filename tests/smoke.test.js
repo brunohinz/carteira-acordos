@@ -514,3 +514,20 @@ test("restaura a demo e devolve a meta ao valor padrão", () => {
     assert.match($("#goalHint").textContent, /42\.000,00/);
     assert.match($("#formMessage").textContent, /Base fictícia restaurada/);
 });
+
+test("restaurar a demo fecha diálogos de edição e de meta abertos", () => {
+    const { window, $, rows } = loadApp();
+
+    rows()[0].querySelector('[data-action="edit"]').click();
+    assert.equal($("#editDialog").open, true);
+    window.confirm = () => true;
+    $("#resetDemoButton").click();
+    assert.equal($("#editDialog").open, false);
+    assert.equal(rows().length, 7);
+
+    $("#editGoalButton").click();
+    assert.equal($("#goalDialog").open, true);
+    window.confirm = () => true;
+    $("#resetDemoButton").click();
+    assert.equal($("#goalDialog").open, false);
+});

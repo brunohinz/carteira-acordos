@@ -914,6 +914,14 @@ function resetDemo() {
     }
 
     hideUndoToast();
+    // A base demo troca os ids: fechar diálogos evita salvar em cima de um acordo que não existe mais.
+    if (elements.editDialog.open) {
+        elements.editDialog.close();
+        editingId = null;
+    }
+    if (elements.goalDialog.open) {
+        elements.goalDialog.close();
+    }
     state.agreements = createDemoAgreements();
     state.sortOrder = "due-soon";
     state.statusFilter = "all";
