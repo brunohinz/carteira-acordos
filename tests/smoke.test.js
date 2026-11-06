@@ -486,3 +486,31 @@ test("digitar de novo no diálogo remove aria-invalid do campo", () => {
     $("#goalInput").dispatchEvent(new window.Event("input"));
     assert.equal($("#goalInput").hasAttribute("aria-invalid"), false);
 });
+
+test("restaura a demo e devolve a meta ao valor padrão", () => {
+    const { window, $, submit, rows } = loadApp();
+    $("#editGoalButton").click();
+    $("#goalInput").value = "99.000,00";
+    submit("#goalForm");
+    assert.match($("#goalHint").textContent, /99\.000,00/);
+
+    $("#searchInput").value = "inexistente";
+    $("#searchInput").dispatchEvent(new window.Event("input"));
+    $("#statusFilter").value = "paid";
+    $("#statusFilter").dispatchEvent(new window.Event("change"));
+    $("#sortOrder").value = "client-az";
+    $("#sortOrder").dispatchEvent(new window.Event("change"));
+
+    let confirmText = "";
+    window.confirm = (text) => { confirmText = text; return true; };
+    $("#resetDemoButton").click();
+
+    assert.match(confirmText, /Restaurar a base demonstrativa/);
+    assert.match(confirmText, /meta voltará para R\$\s*42\.000,00/);
+    assert.equal(rows().length, 7);
+    assert.equal($("#searchInput").value, "");
+    assert.equal($("#statusFilter").value, "all");
+    assert.equal($("#sortOrder").value, "due-soon");
+    assert.match($("#goalHint").textContent, /42\.000,00/);
+    assert.match($("#formMessage").textContent, /Base fictícia restaurada/);
+});
