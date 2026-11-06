@@ -23,7 +23,7 @@ Carteira de Acordos is a front-end dashboard for tracking financial agreements (
 - Sort by due date, creation date or amount.
 - Mark agreements as paid, reopen them, and delete them with undo; the notice shows the removed contract and amount (`Esc` dismisses it).
 - **CSV export** of the current view. It respects search and filters and opens directly in Excel with pt-BR settings, and ends with a total row; the file name includes the active filter.
-- **JSON backup and import**. The import validates the data and skips duplicate contracts. Before replacing anything, the confirmation shows how many agreements come from the file and how many the current portfolio has.
+- **JSON backup and import**. The import validates the data and skips duplicate contracts. Before replacing anything, the confirmation shows how many agreements come from the file and how many the current portfolio has, and if the file's goal differs from the current one it quotes both values because the file's goal will be applied too.
 - Persists agreements, filters, search and goal in `localStorage`.
 - With the app open in two tabs, each one picks up the agreements and goal saved by the other instead of overwriting them, and announces the change (screen readers included); if the agreement being edited is removed in the other tab, the edit dialog closes with a notice, and an open goal dialog shows the new goal unless you already typed a different value.
 - Statuses and KPIs refresh automatically when you return to the tab on a new day.

@@ -21,7 +21,7 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 - Ordenação por vencimento, por data de geração ou por valor.
 - Marcação de acordos como pagos, reabertura e remoção com opção de desfazer; o aviso mostra o contrato e o valor removidos (`Esc` dispensa o aviso).
 - Exportação da lista atual em CSV (respeita busca e filtros, abre direto no Excel em pt-BR), com uma linha final de total e o filtro no nome do arquivo.
-- Backup completo em JSON e importação de um backup (valida os dados e ignora contratos duplicados). Antes de substituir, a confirmação mostra quantos acordos vêm do arquivo e quantos a carteira atual tem.
+- Backup completo em JSON e importação de um backup (valida os dados e ignora contratos duplicados). Antes de substituir, a confirmação mostra quantos acordos vêm do arquivo e quantos a carteira atual tem e, se a meta do arquivo for diferente da atual, cita os dois valores porque a meta do arquivo também será aplicada.
 - Restauração da base demonstrativa.
 - Persistência local com `localStorage` (acordos, filtros, busca e meta).
 - Com o app aberto em duas abas, uma adota os acordos e a meta gravados pela outra, sem sobrescrever, e avisa a mudança (também para leitores de tela); se o acordo em edição for removido na outra aba, a edição é fechada com um aviso, e o diálogo da meta aberto passa a mostrar a meta nova, a menos que você já tenha digitado outro valor.
