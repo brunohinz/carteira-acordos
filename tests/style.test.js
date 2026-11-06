@@ -49,7 +49,6 @@ test("theme-color do modo escuro acompanha o fundo escuro", () => {
 });
 
 test("impressão oculta diálogos e o skip link", () => {
-    const css = read("style.css");
     const printBlock = css.split("@media print")[1] || "";
     assert.match(printBlock, /\.app-dialog/);
     assert.match(printBlock, /\.skip-link/);

@@ -931,7 +931,7 @@ function resetDemo() {
     state.statusFilter = "all";
     state.search = "";
     state.goal = DEFAULT_GOAL;
-    showMessage("Base fictícia restaurada.");
+    showMessage(`Base fictícia restaurada. A meta voltou para ${formatCurrency(DEFAULT_GOAL)}.`);
     saveDemoState();
     render();
 }

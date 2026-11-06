@@ -512,7 +512,7 @@ test("restaura a demo e devolve a meta ao valor padrão", () => {
     assert.equal($("#statusFilter").value, "all");
     assert.equal($("#sortOrder").value, "due-soon");
     assert.match($("#goalHint").textContent, /42\.000,00/);
-    assert.match($("#formMessage").textContent, /Base fictícia restaurada/);
+    assert.match($("#formMessage").textContent, /Base fictícia restaurada\. A meta voltou para R\$\s*42\.000,00/);
 });
 
 test("restaurar a demo fecha diálogos de edição e de meta abertos", () => {
