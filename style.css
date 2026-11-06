@@ -816,6 +816,8 @@ tbody tr.is-new td {
     .panel-badge,
     .undo-toast,
     .page-footer,
+    .app-dialog,
+    .skip-link,
     #clearFiltersButton,
     th:last-child,
     td:last-child {
