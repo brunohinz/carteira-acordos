@@ -907,7 +907,7 @@ function downloadFile(content, fileName, type) {
 }
 
 function resetDemo() {
-    const confirmed = window.confirm("Restaurar a base demonstrativa? Os acordos adicionados ou alterados por você serão substituídos.");
+    const confirmed = window.confirm("Restaurar a base demonstrativa? Os acordos adicionados ou alterados por você serão substituídos e a meta voltará para R$ 42.000,00.");
 
     if (!confirmed) {
         return;
