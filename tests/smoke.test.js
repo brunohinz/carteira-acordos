@@ -542,3 +542,9 @@ test("carteira vazia sugere adicionar acordo ou restaurar a demo", () => {
     assert.match($("#emptyStateText").textContent, /Adicione um novo ou restaure a demo/);
     assert.equal($("#clearFiltersButton").hidden, true);
 });
+
+test("campos de cliente e contrato têm limite de tamanho", () => {
+    const { $ } = loadApp();
+    ["#agreementClient", "#editClient"].forEach((selector) => assert.equal($(selector).maxLength, 120));
+    ["#agreementNumber", "#editNumber"].forEach((selector) => assert.equal($(selector).maxLength, 40));
+});
