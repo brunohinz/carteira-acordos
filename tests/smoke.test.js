@@ -548,3 +548,16 @@ test("campos de cliente e contrato têm limite de tamanho", () => {
     ["#agreementClient", "#editClient"].forEach((selector) => assert.equal($(selector).maxLength, 120));
     ["#agreementNumber", "#editNumber"].forEach((selector) => assert.equal($(selector).maxLength, 40));
 });
+
+test("atalho Ver na lista dos cards aplica o filtro de status", () => {
+    const { window, $, rows } = loadApp();
+    $('[data-status-shortcut="paid"]').click();
+    assert.equal($("#statusFilter").value, "paid");
+    assert.ok(rows().length > 0);
+    rows().forEach((row) => assert.match(row.textContent, /Pago/));
+    assert.equal(window.document.activeElement, $("#listTitle"));
+
+    $('[data-status-shortcut="overdue"]').click();
+    assert.equal($("#statusFilter").value, "overdue");
+    rows().forEach((row) => assert.match(row.textContent, /Atrasado/));
+});

@@ -40,6 +40,7 @@ function cacheElements() {
     elements.emptyState = document.querySelector("#emptyState");
     elements.emptyStateText = document.querySelector("#emptyStateText");
     elements.clearFiltersButton = document.querySelector("#clearFiltersButton");
+    elements.listTitle = document.querySelector("#listTitle");
     elements.listSummary = document.querySelector("#listSummary");
     elements.monthGeneratedValue = document.querySelector("#monthGeneratedValue");
     elements.monthGeneratedCount = document.querySelector("#monthGeneratedCount");
@@ -135,6 +136,9 @@ function bindEvents() {
     elements.importBackupInput.addEventListener("change", importBackup);
     elements.editGoalButton.addEventListener("click", editGoal);
     elements.clearFiltersButton.addEventListener("click", clearFilters);
+    document.querySelectorAll("[data-status-shortcut]").forEach((button) => {
+        button.addEventListener("click", () => showStatusInList(button.dataset.statusShortcut));
+    });
     elements.table.addEventListener("click", handleTableAction);
     elements.undoButton.addEventListener("click", undoRemove);
     elements.editForm.addEventListener("submit", handleEditSubmit);
@@ -801,6 +805,15 @@ function clearFilters() {
     saveDemoState();
     renderList();
     elements.searchInput.focus();
+}
+
+// Atalho dos cards de indicadores: aplica o filtro de status e leva o foco para a lista.
+function showStatusInList(statusFilter) {
+    state.statusFilter = normalizeStatusFilter(statusFilter);
+    elements.statusFilter.value = state.statusFilter;
+    saveDemoState();
+    renderList();
+    elements.listTitle.focus();
 }
 
 function editGoal() {
