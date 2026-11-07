@@ -443,8 +443,8 @@ function createAgreementRow(agreement) {
 function handleAddAgreement(event) {
     event.preventDefault();
 
-    const cliente = elements.client.value.trim();
-    const numero = elements.number.value.trim();
+    const cliente = collapseSpaces(elements.client.value);
+    const numero = collapseSpaces(elements.number.value);
     const vencimento = elements.dueDate.value;
     const valor = parseCurrency(elements.value.value);
 
@@ -663,8 +663,8 @@ function handleEditSubmit(event) {
 
     [elements.editClient, elements.editNumber, elements.editValue, elements.editDueDate, elements.editPaidDate]
         .forEach((input) => input.removeAttribute("aria-invalid"));
-    const cliente = elements.editClient.value.trim();
-    const numero = elements.editNumber.value.trim();
+    const cliente = collapseSpaces(elements.editClient.value);
+    const numero = collapseSpaces(elements.editNumber.value);
     const valor = parseCurrency(elements.editValue.value);
     const vencimento = elements.editDueDate.value;
 

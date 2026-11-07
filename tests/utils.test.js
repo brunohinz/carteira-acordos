@@ -34,6 +34,7 @@ const {
     getCreatedTime,
     compareAgreementsBy,
     normalizeAgreement,
+    collapseSpaces,
     createId,
     formatDate,
     getStatusInfo,
@@ -540,4 +541,18 @@ test("buildCsvFileName indica filtro e busca no nome do arquivo", () => {
     assert.equal(buildCsvFileName("overdue", "", today), "carteira-acordos-atrasados-2026-10-30.csv");
     assert.equal(buildCsvFileName("next-7", "  centro ", today), "carteira-acordos-proximos-7-dias-busca-2026-10-30.csv");
     assert.equal(buildCsvFileName("desconhecido", "", today), "carteira-acordos-2026-10-30.csv");
+});
+
+test("collapseSpaces junta espaços repetidos e tira os das pontas", () => {
+    assert.equal(collapseSpaces("  Unidade   Centro \t"), "Unidade Centro");
+    assert.equal(collapseSpaces("CT-01"), "CT-01");
+    assert.equal(collapseSpaces("   "), "");
+});
+
+test("normalizeAgreement limpa espaços de cliente e contrato e descarta só espaços", () => {
+    const base = { id: "a", vencimento: "2030-01-10", valor: 10, criadoEm: "2026-01-01T00:00:00.000Z" };
+    const normalized = normalizeAgreement({ ...base, numero: " CT  01 ", cliente: "Unidade   Sul" });
+    assert.equal(normalized.numero, "CT 01");
+    assert.equal(normalized.cliente, "Unidade Sul");
+    assert.equal(normalizeAgreement({ ...base, numero: "   ", cliente: "X" }), null);
 });

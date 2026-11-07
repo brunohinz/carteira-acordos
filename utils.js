@@ -7,6 +7,11 @@ function normalizeSearchText(value) {
         .toLowerCase();
 }
 
+// Tira espaços das pontas e junta espaços repetidos ("Unidade   Centro " -> "Unidade Centro").
+function collapseSpaces(value) {
+    return String(value).replace(/\s+/g, " ").trim();
+}
+
 function normalizeContractKey(value) {
     return normalizeSearchText(value).replace(/\s+/g, "");
 }
@@ -54,14 +59,21 @@ function createId() {
 
 // Valida e limpa um acordo vindo do localStorage; devolve null se faltar dado essencial.
 function normalizeAgreement(agreement) {
-    if (!agreement || !agreement.numero || !agreement.cliente || !agreement.vencimento) {
+    if (!agreement || !agreement.vencimento) {
+        return null;
+    }
+
+    const numero = collapseSpaces(agreement.numero ?? "");
+    const cliente = collapseSpaces(agreement.cliente ?? "");
+
+    if (!numero || !cliente) {
         return null;
     }
 
     return {
         id: agreement.id || createId(),
-        numero: String(agreement.numero),
-        cliente: String(agreement.cliente),
+        numero,
+        cliente,
         valor: normalizeCurrencyValue(agreement.valor),
         vencimento: String(agreement.vencimento).slice(0, 10),
         criadoEm: normalizeDateTime(agreement.criadoEm),
@@ -676,6 +688,7 @@ if (typeof module !== "undefined" && module.exports) {
         paidDateToIso,
         isAfterToday,
         normalizeSearchText,
+        collapseSpaces,
         normalizeContractKey,
         isValidDueDate,
         normalizeOptionalDateTime,
