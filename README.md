@@ -10,10 +10,10 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 
 ## Funcionalidades
 
-- Indicadores de valor gerado no mês, valor pago (total e quanto foi pago no mês), valor em aberto e atrasos.
+- Indicadores de valor gerado no mês, valor pago (total e quanto foi pago no mês), valor em aberto e atrasos. Os cards de pagos, em aberto e atrasados têm o atalho "Ver na lista", que aplica o filtro correspondente.
 - Meta mensal configurável (botão "Alterar meta"), calculada só com os acordos pagos no mês corrente, mostrando quanto falta e o ritmo diário necessário até o fim do mês. O card fica verde quando a meta é batida.
 - Base inicial com acordos demonstrativos.
-- Cadastro de novos acordos, com prévia do valor formatado e validação de vencimento.
+- Cadastro de novos acordos, com prévia do valor formatado e validação de vencimento. Cliente (até 120 caracteres) e contrato (até 40) são salvos sem espaços repetidos.
 - Edição de cliente, contrato, valor e vencimento em um diálogo acessível (bloqueia contrato duplicado e mostra a prévia do valor). No próprio diálogo dá para marcar o acordo como pago ou reabri-lo (com a data de hoje sugerida) e, em acordos pagos, corrigir a data de pagamento.
 - Busca por contrato, cliente ou valor (8.420,50, 8420,50 ou 8420.50), sem diferenciar acentos e maiúsculas, com o trecho encontrado destacado na lista. A tecla `/` leva para a busca e `Esc` limpa.
 - Resumo da lista com a quantidade e a soma em reais dos acordos visíveis.

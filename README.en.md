@@ -12,10 +12,10 @@ Carteira de Acordos is a front-end dashboard for tracking financial agreements (
 
 ## Features
 
-- KPIs: amount generated this month, amount paid (total and paid this month), amount open, and overdue count.
+- KPIs: amount generated this month, amount paid (total and paid this month), amount open, and overdue count. The paid, open and overdue cards have a "Ver na lista" shortcut that applies the matching filter.
 - A configurable monthly goal ("Alterar meta"), calculated only from agreements paid in the current month, showing how much is left and the daily pace needed until month end. The card turns green once the goal is met.
 - Demo dataset included, and you can restore it at any time (agreements, filters and search reset, and the monthly goal returns to R$ 42.000,00).
-- Create agreements with a formatted-value preview and due-date validation.
+- Create agreements with a formatted-value preview and due-date validation. Client (up to 120 characters) and contract (up to 40) are saved without repeated spaces.
 - Edit client, contract, amount and due date in an accessible dialog (blocks duplicate contracts and previews the amount). The dialog can also mark the agreement as paid or reopen it (suggesting today's date), and for paid agreements you can fix the payment date.
 - Search by contract, client or amount (8.420,50, 8420,50 or 8420.50), ignoring accents and case, with the matching text highlighted in the list. `/` jumps to the search box and `Esc` clears it.
 - The list summary shows how many agreements are visible and their total amount.
