@@ -153,9 +153,15 @@
                         <thead>
                             <tr>
                                 <th scope="col">Contrato</th>
-                                <th scope="col">Cliente</th>
-                                <th scope="col">Valor</th>
-                                <th scope="col">Vencimento</th>
+                                <th scope="col" data-sort-column="client" aria-sort="none">
+                                    <button type="button" class="sort-header" title="Ordenar por cliente">Cliente</button>
+                                </th>
+                                <th scope="col" data-sort-column="value" aria-sort="none">
+                                    <button type="button" class="sort-header" title="Ordenar por valor">Valor</button>
+                                </th>
+                                <th scope="col" data-sort-column="due" aria-sort="ascending">
+                                    <button type="button" class="sort-header" title="Ordenar por vencimento">Vencimento</button>
+                                </th>
                                 <th scope="col">Status</th>
                                 <th scope="col">A&ccedil;&otilde;es</th>
                             </tr>

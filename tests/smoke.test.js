@@ -487,6 +487,40 @@ test("digitar de novo no diálogo remove aria-invalid do campo", () => {
     assert.equal($("#goalInput").hasAttribute("aria-invalid"), false);
 });
 
+test("ordenar clicando no cabeçalho da tabela sincroniza com o select", () => {
+    const { window, $, rows } = loadApp();
+    const clientHeader = $("th[data-sort-column='client']");
+    const valueHeader = $("th[data-sort-column='value']");
+    const dueHeader = $("th[data-sort-column='due']");
+
+    assert.equal($("#sortOrder").value, "due-soon");
+    assert.equal(dueHeader.getAttribute("aria-sort"), "ascending");
+    assert.equal(valueHeader.getAttribute("aria-sort"), "none");
+    assert.equal(clientHeader.getAttribute("aria-sort"), "none");
+
+    valueHeader.querySelector(".sort-header").click();
+    assert.equal($("#sortOrder").value, "value-high");
+    assert.equal(valueHeader.getAttribute("aria-sort"), "descending");
+    assert.equal(dueHeader.getAttribute("aria-sort"), "none");
+    assert.match(rows()[0].textContent, /CT-2026-003/);
+
+    valueHeader.querySelector(".sort-header").click();
+    assert.equal($("#sortOrder").value, "value-low");
+    assert.equal(valueHeader.getAttribute("aria-sort"), "ascending");
+    assert.match(rows()[0].textContent, /CT-2026-006/);
+
+    $("#sortOrder").value = "client-az";
+    $("#sortOrder").dispatchEvent(new window.Event("change"));
+    assert.equal(clientHeader.getAttribute("aria-sort"), "ascending");
+    assert.equal(valueHeader.getAttribute("aria-sort"), "none");
+    assert.match(rows()[0].textContent, /CT-2026-004/);
+
+    clientHeader.querySelector(".sort-header").click();
+    assert.equal($("#sortOrder").value, "client-za");
+    assert.equal(clientHeader.getAttribute("aria-sort"), "descending");
+    assert.match(rows()[0].textContent, /CT-2026-006/);
+});
+
 test("restaura a demo e devolve a meta ao valor padrão", () => {
     const { window, $, submit, rows } = loadApp();
     $("#editGoalButton").click();

@@ -33,6 +33,8 @@ const {
     compareText,
     getCreatedTime,
     compareAgreementsBy,
+    nextSortOrderForColumn,
+    getSortAriaForColumn,
     normalizeAgreement,
     collapseSpaces,
     createId,
@@ -170,6 +172,28 @@ test("compareAgreementsBy ordena por vencimento e por data de criação", () => 
     assert.deepEqual(order("created-new"), ["CT-2", "CT-1", "CT-3"]);
     assert.deepEqual(order("created-old"), ["CT-3", "CT-1", "CT-2"]);
     assert.deepEqual(order("desconhecido"), order("due-soon"));
+});
+
+test("nextSortOrderForColumn entra no critério principal da coluna ou inverte a direção", () => {
+    assert.equal(nextSortOrderForColumn("due", "due-soon"), "due-late");
+    assert.equal(nextSortOrderForColumn("due", "due-late"), "due-soon");
+    assert.equal(nextSortOrderForColumn("due", "client-az"), "due-soon");
+    assert.equal(nextSortOrderForColumn("value", "value-high"), "value-low");
+    assert.equal(nextSortOrderForColumn("value", "due-soon"), "value-high");
+    assert.equal(nextSortOrderForColumn("client", "client-az"), "client-za");
+    assert.equal(nextSortOrderForColumn("client", "created-new"), "client-az");
+    assert.equal(nextSortOrderForColumn("desconhecida", "due-soon"), "due-soon");
+});
+
+test("getSortAriaForColumn descreve a direção do cabeçalho ativo", () => {
+    assert.equal(getSortAriaForColumn("due", "due-soon"), "ascending");
+    assert.equal(getSortAriaForColumn("due", "due-late"), "descending");
+    assert.equal(getSortAriaForColumn("due", "value-high"), "none");
+    assert.equal(getSortAriaForColumn("value", "value-high"), "descending");
+    assert.equal(getSortAriaForColumn("value", "value-low"), "ascending");
+    assert.equal(getSortAriaForColumn("client", "client-az"), "ascending");
+    assert.equal(getSortAriaForColumn("client", "client-za"), "descending");
+    assert.equal(getSortAriaForColumn("client", "created-old"), "none");
 });
 
 test("normalizeAgreement descarta registros sem dados essenciais", () => {

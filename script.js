@@ -36,6 +36,7 @@ function cacheElements() {
     elements.searchInput = document.querySelector("#searchInput");
     elements.statusFilter = document.querySelector("#statusFilter");
     elements.sortOrder = document.querySelector("#sortOrder");
+    elements.sortHeaders = document.querySelectorAll("[data-sort-column]");
     elements.table = document.querySelector("#agreementTable");
     elements.emptyState = document.querySelector("#emptyState");
     elements.emptyStateText = document.querySelector("#emptyStateText");
@@ -125,9 +126,12 @@ function bindEvents() {
         renderList();
     });
     elements.sortOrder.addEventListener("change", () => {
-        state.sortOrder = elements.sortOrder.value;
-        saveDemoState();
-        renderList();
+        applySortOrder(elements.sortOrder.value);
+    });
+    elements.sortHeaders.forEach((header) => {
+        header.querySelector(".sort-header").addEventListener("click", () => {
+            applySortOrder(nextSortOrderForColumn(header.dataset.sortColumn, state.sortOrder));
+        });
     });
     elements.resetDemoButton.addEventListener("click", resetDemo);
     elements.exportCsvButton.addEventListener("click", exportCsv);
@@ -325,6 +329,7 @@ function render() {
     elements.searchInput.value = state.search;
     elements.statusFilter.value = state.statusFilter;
     elements.sortOrder.value = state.sortOrder;
+    renderSortHeaders();
     elements.lastUpdated.textContent = `Atualizado em ${formatDateTime(new Date())}`;
     renderMetrics();
     renderList();
@@ -947,6 +952,20 @@ function resetDemo() {
     showMessage(`Base fictícia restaurada. A meta voltou para ${formatCurrency(DEFAULT_GOAL)}.`);
     saveDemoState();
     render();
+}
+
+function applySortOrder(sortOrder) {
+    state.sortOrder = sortOrder;
+    elements.sortOrder.value = sortOrder;
+    saveDemoState();
+    renderSortHeaders();
+    renderList();
+}
+
+function renderSortHeaders() {
+    elements.sortHeaders.forEach((header) => {
+        header.setAttribute("aria-sort", getSortAriaForColumn(header.dataset.sortColumn, state.sortOrder));
+    });
 }
 
 function compareAgreements(a, b) {

@@ -288,6 +288,41 @@ function compareAgreementsBy(sortOrder, a, b) {
     return compareNumbers(getDueDateTime(a), getDueDateTime(b)) || compareText(a.numero, b.numero);
 }
 
+// Cabeçalhos clicáveis: o primeiro clique entra no critério principal da coluna; o segundo inverte.
+const SORT_COLUMNS = {
+    client: { primary: "client-az", secondary: "client-za", primaryDirection: "ascending", secondaryDirection: "descending" },
+    value: { primary: "value-high", secondary: "value-low", primaryDirection: "descending", secondaryDirection: "ascending" },
+    due: { primary: "due-soon", secondary: "due-late", primaryDirection: "ascending", secondaryDirection: "descending" }
+};
+
+function nextSortOrderForColumn(column, currentSortOrder) {
+    const config = SORT_COLUMNS[column];
+
+    if (!config) {
+        return currentSortOrder;
+    }
+
+    return currentSortOrder === config.primary ? config.secondary : config.primary;
+}
+
+function getSortAriaForColumn(column, sortOrder) {
+    const config = SORT_COLUMNS[column];
+
+    if (!config) {
+        return "none";
+    }
+
+    if (sortOrder === config.primary) {
+        return config.primaryDirection;
+    }
+
+    if (sortOrder === config.secondary) {
+        return config.secondaryDirection;
+    }
+
+    return "none";
+}
+
 function parseCurrency(value) {
     if (typeof value === "number") {
         return normalizeCurrencyValue(value);
@@ -713,6 +748,8 @@ if (typeof module !== "undefined" && module.exports) {
         compareText,
         getCreatedTime,
         compareAgreementsBy,
+        nextSortOrderForColumn,
+        getSortAriaForColumn,
         parseCurrency,
         normalizeCurrencyValue,
         currencyToCents,
