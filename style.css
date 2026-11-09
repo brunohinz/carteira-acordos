@@ -451,7 +451,8 @@ select {
 }
 
 .table-shell {
-    overflow-x: auto;
+    max-height: 70vh;
+    overflow: auto;
 }
 
 table {
@@ -461,6 +462,11 @@ table {
 }
 
 th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--panel);
+    box-shadow: 0 1px 0 var(--line);
     padding: 12px 10px;
     color: var(--muted);
     font-size: .76rem;
@@ -906,6 +912,7 @@ tbody tr.is-new td {
     }
 
     .table-shell {
+        max-height: none;
         overflow: visible;
     }
 
