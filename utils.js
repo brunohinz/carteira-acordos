@@ -222,6 +222,10 @@ function matchesStatus(agreement, filter, today = new Date()) {
         return agreement.pago;
     }
 
+    if (filter === "paid-month") {
+        return wasPaidInMonth(agreement, today);
+    }
+
     if (filter === "open") {
         return !agreement.pago;
     }
@@ -501,6 +505,7 @@ function buildAgreementsCsv(agreements, today = new Date()) {
 const CSV_FILTER_SLUGS = {
     open: "em-aberto",
     paid: "pagos",
+    "paid-month": "pagos-no-mes",
     overdue: "atrasados",
     "due-today": "vence-hoje",
     "next-7": "proximos-7-dias"
@@ -523,7 +528,7 @@ function buildCsvFileName(statusFilter, search, today = new Date()) {
 }
 
 const SORT_OPTIONS = ["due-soon", "due-late", "created-new", "created-old", "value-high", "value-low", "client-az", "client-za"];
-const STATUS_FILTER_OPTIONS = ["all", "open", "paid", "overdue", "due-today", "next-7"];
+const STATUS_FILTER_OPTIONS = ["all", "open", "paid", "paid-month", "overdue", "due-today", "next-7"];
 
 // Título da aba com os atrasados na frente, para chamar atenção mesmo com a aba em segundo plano.
 function buildDocumentTitle(baseTitle, overdueCount) {

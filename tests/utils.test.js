@@ -6,6 +6,7 @@ const {
     highlightSearchMatch,
     buildDocumentTitle,
     countByStatusFilter,
+    normalizeStatusFilter,
     paidDateToIso,
     isAfterToday,
     parseCurrency,
@@ -172,6 +173,18 @@ test("compareAgreementsBy ordena por vencimento e por data de criação", () => 
     assert.deepEqual(order("created-new"), ["CT-2", "CT-1", "CT-3"]);
     assert.deepEqual(order("created-old"), ["CT-3", "CT-1", "CT-2"]);
     assert.deepEqual(order("desconhecido"), order("due-soon"));
+});
+
+test("matchesStatus paid-month considera só pagos no mês atual e entra nos contadores e no nome do CSV", () => {
+    const today = new Date(2026, 10, 9);
+    const paidNow = { pago: true, pagoEm: "2026-11-03T10:00:00", vencimento: "2026-11-01", valor: "10,00" };
+    const paidBefore = { pago: true, pagoEm: "2026-10-30T10:00:00", vencimento: "2026-10-28", valor: "10,00" };
+    const open = { pago: false, vencimento: "2026-11-20", valor: "10,00" };
+
+    assert.deepEqual([paidNow, paidBefore, open].map((a) => matchesStatus(a, "paid-month", today)), [true, false, false]);
+    assert.equal(countByStatusFilter([paidNow, paidBefore, open], today)["paid-month"], 1);
+    assert.equal(normalizeStatusFilter("paid-month"), "paid-month");
+    assert.match(buildCsvFileName("paid-month", "", today), /pagos-no-mes/);
 });
 
 test("nextSortOrderForColumn entra no critério principal da coluna ou inverte a direção", () => {
