@@ -296,6 +296,7 @@ function compareAgreementsBy(sortOrder, a, b) {
 const SORT_COLUMNS = {
     client: { primary: "client-az", secondary: "client-za", primaryDirection: "ascending", secondaryDirection: "descending" },
     value: { primary: "value-high", secondary: "value-low", primaryDirection: "descending", secondaryDirection: "ascending" },
+    contract: { primary: "created-new", secondary: "created-old", primaryDirection: "descending", secondaryDirection: "ascending" },
     due: { primary: "due-soon", secondary: "due-late", primaryDirection: "ascending", secondaryDirection: "descending" }
 };
 

@@ -195,6 +195,9 @@ test("nextSortOrderForColumn entra no critério principal da coluna ou inverte a
     assert.equal(nextSortOrderForColumn("value", "due-soon"), "value-high");
     assert.equal(nextSortOrderForColumn("client", "client-az"), "client-za");
     assert.equal(nextSortOrderForColumn("client", "created-new"), "client-az");
+    assert.equal(nextSortOrderForColumn("contract", "due-soon"), "created-new");
+    assert.equal(nextSortOrderForColumn("contract", "created-new"), "created-old");
+    assert.equal(nextSortOrderForColumn("contract", "created-old"), "created-new");
     assert.equal(nextSortOrderForColumn("desconhecida", "due-soon"), "due-soon");
 });
 
@@ -207,6 +210,9 @@ test("getSortAriaForColumn descreve a direção do cabeçalho ativo", () => {
     assert.equal(getSortAriaForColumn("client", "client-az"), "ascending");
     assert.equal(getSortAriaForColumn("client", "client-za"), "descending");
     assert.equal(getSortAriaForColumn("client", "created-old"), "none");
+    assert.equal(getSortAriaForColumn("contract", "created-new"), "descending");
+    assert.equal(getSortAriaForColumn("contract", "created-old"), "ascending");
+    assert.equal(getSortAriaForColumn("contract", "due-soon"), "none");
 });
 
 test("normalizeAgreement descarta registros sem dados essenciais", () => {
