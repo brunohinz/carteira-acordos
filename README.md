@@ -17,8 +17,8 @@ Dashboard front-end para acompanhamento de acordos financeiros, criado como proj
 - Edição de cliente, contrato, valor e vencimento em um diálogo acessível (bloqueia contrato duplicado e mostra a prévia do valor). No próprio diálogo dá para marcar o acordo como pago ou reabri-lo (com a data de hoje sugerida) e, em acordos pagos, corrigir a data de pagamento.
 - Busca por contrato, cliente ou valor (8.420,50, 8420,50 ou 8420.50), sem diferenciar acentos e maiúsculas, com o trecho encontrado destacado na lista. A tecla `/` leva para a busca e `Esc` limpa.
 - Resumo da lista com a quantidade e a soma em reais dos acordos visíveis.
-- Filtro por status: todos, em aberto, pagos, atrasados, vence hoje e próximos 7 dias, com a quantidade de acordos de cada opção. O título da aba mostra quantos estão atrasados.
-- Ordenação por vencimento, por data de geração, por valor ou por cliente (A-Z / Z-A).
+- Filtro por status: todos, em aberto, pagos, pagos no mês, atrasados, vence hoje e próximos 7 dias, com a quantidade de acordos de cada opção. O título da aba mostra quantos estão atrasados.
+- Ordenação por vencimento, por data de geração, por valor ou por cliente (A-Z / Z-A). Também dá para clicar nos cabeçalhos Contrato (data de geração), Cliente, Valor e Vencimento; um segundo clique inverte a direção. O cabeçalho da tabela fica fixo ao rolar a lista.
 - Marcação de acordos como pagos, reabertura e remoção com opção de desfazer; o aviso mostra o contrato e o valor removidos (`Esc` dispensa o aviso).
 - Exportação da lista atual em CSV (respeita busca e filtros, abre direto no Excel em pt-BR), com uma linha final de total e o filtro no nome do arquivo.
 - Backup completo em JSON e importação de um backup (valida os dados e ignora contratos duplicados). Antes de substituir, a confirmação mostra quantos acordos vêm do arquivo e quantos a carteira atual tem e, se a meta do arquivo for diferente da atual, cita os dois valores porque a meta do arquivo também será aplicada.

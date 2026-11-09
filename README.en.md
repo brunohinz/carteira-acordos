@@ -19,8 +19,8 @@ Carteira de Acordos is a front-end dashboard for tracking financial agreements (
 - Edit client, contract, amount and due date in an accessible dialog (blocks duplicate contracts and previews the amount). The dialog can also mark the agreement as paid or reopen it (suggesting today's date), and for paid agreements you can fix the payment date.
 - Search by contract, client or amount (8.420,50, 8420,50 or 8420.50), ignoring accents and case, with the matching text highlighted in the list. `/` jumps to the search box and `Esc` clears it.
 - The list summary shows how many agreements are visible and their total amount.
-- Status filters: all, open, paid, overdue, due today, and next 7 days, each showing how many agreements it matches. The tab title shows how many are overdue.
-- Sort by due date, creation date, amount or client (A-Z / Z-A).
+- Status filters: all, open, paid, paid this month, overdue, due today, and next 7 days, each showing how many agreements it matches. The tab title shows how many are overdue.
+- Sort by due date, creation date, amount or client (A-Z / Z-A). You can also click the Contract (creation date), Client, Amount and Due date headers; a second click reverses the direction. The table header stays pinned while the list scrolls.
 - Mark agreements as paid, reopen them, and delete them with undo; the notice shows the removed contract and amount (`Esc` dismisses it).
 - **CSV export** of the current view. It respects search and filters and opens directly in Excel with pt-BR settings, and ends with a total row; the file name includes the active filter.
 - **JSON backup and import**. The import validates the data and skips duplicate contracts. Before replacing anything, the confirmation shows how many agreements come from the file and how many the current portfolio has, and if the file's goal differs from the current one it quotes both values because the file's goal will be applied too.
